@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/testonly?serverTimezone=Asia/Seoul
+    username: testuser
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: create # create update create-update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    database: h2
+
+logging:
+  level:
+    org.springframework.web.client: debug
+    org.hibernate.sql: debug
+    org.hibernate.type: trace
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController("/users")
 public interface UserController {
 
-    @PostMapping("/{user-id}")
+    @PostMapping("/block/{user-id}")
     @ResponseStatus(HttpStatus.OK)
     Long postBlock(@PathVariable("user-id") Long id);
 

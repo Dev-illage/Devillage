@@ -25,7 +25,7 @@ public interface PostController {
     @ResponseStatus(HttpStatus.OK)
     Long postReport(@PathVariable("post-id") Long id);
 
-    @PostMapping("/{post-id}/bookmark")
+    @PostMapping("/{post-id}/like")
     @ResponseStatus(HttpStatus.OK)
     Long postLike(@PathVariable("post-id") Long id);
 

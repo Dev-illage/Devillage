@@ -23,7 +23,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUser(Long userId) {
-        return null;
+        Optional<User> optionalUser = userRepository.findById(userId);
+        return optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
     @Override

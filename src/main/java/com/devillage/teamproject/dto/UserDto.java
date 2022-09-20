@@ -17,14 +17,14 @@ public class UserDto {
     public static class Response {
         private String email;
         private String nickname;
-        private String stateMessage;
+        private String statusMessage;
         private LocalDateTime passwordModifiedAt;
 
         public static Response of(User user) {
             return Response.builder()
                     .email(user.getEmail())
                     .nickname(user.getNickName())
-                    .stateMessage(user.getStatusMessage())
+                    .statusMessage(user.getStatusMessage())
                     .passwordModifiedAt(user.getPwdLastModifiedAt())
                     .build();
         }

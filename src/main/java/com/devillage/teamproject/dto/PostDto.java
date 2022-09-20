@@ -1,8 +1,7 @@
 package com.devillage.teamproject.dto;
 
-import com.devillage.teamproject.entity.Post;
 import lombok.AccessLevel;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +13,18 @@ public class PostDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
+
+        @Getter
+        @AllArgsConstructor(access = AccessLevel.PROTECTED)
+        public static class BookmarkDto {
+            private final Long user;
+            private final Long post;
+            private final Long bookmark;
+
+            public static BookmarkDto of(Long userId, Long postId, Long bookmarkId) {
+                return new BookmarkDto(userId, postId, bookmarkId);
+            }
+        }
 
     }
 

@@ -64,8 +64,12 @@ public class User extends AuditingEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private RefreshToken refreshToken;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Bookmark> bookmarks = new ArrayList<>();
+
+    public void addBookmark(Bookmark bookmark) {
+        bookmarks.add(bookmark);
+    }
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();

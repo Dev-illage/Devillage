@@ -4,6 +4,7 @@ import com.devillage.teamproject.entity.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -35,7 +36,7 @@ public class User extends AuditingEntity {
     private String nickName;
 
     @OneToMany(mappedBy = "user")
-    private List<UserRoles> userRoles;
+    private List<UserRoles> userRoles = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id")
@@ -61,33 +62,33 @@ public class User extends AuditingEntity {
     @ToString.Include
     private String oauthProvider;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
 
     @OneToMany(mappedBy = "user")
-    private List<Bookmark> bookmarks = new ArrayList<>();
+    private final List<Bookmark> bookmarks = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Post> posts = new ArrayList<>();
+    private final List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Like> likes = new ArrayList<>();
+    private final List<Like> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Comment> comments = new ArrayList<>();
+    private final List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<ReComment> reComments = new ArrayList<>();
+    private final List<ReComment> reComments = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blocker_id")
     private User blocker;
 
     @OneToMany(mappedBy = "blocker")
-    private List<User> blockedUsers = new ArrayList<>();
+    private final List<User> blockedUsers = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<ReportedPost> reportedPosts = new ArrayList<>();
+    private final List<ReportedPost> reportedPosts = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String nickName) {
@@ -98,5 +99,22 @@ public class User extends AuditingEntity {
 
     public void addPost(Post post) {
         posts.add(post);
+    }
+
+    public void passwordEncryption(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
+    }
+
+    public boolean passwordVerification(PasswordEncoder passwordEncoder, User user) {
+        return passwordEncoder.matches(user.getPassword(), this.getPassword());
+    }
+
+    public void addRefreshToken(String token) {
+        this.refreshToken = new RefreshToken(token, this);
+    }
+
+    public void addRole(Role role) {
+        UserRoles userRole = new UserRoles(role, this);
+        this.userRoles.add(userRole);
     }
 }

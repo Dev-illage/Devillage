@@ -22,4 +22,9 @@ public class RefreshToken extends AuditingEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public RefreshToken(String tokenValue, User user) {
+        this.tokenValue = tokenValue;
+        this.user = user;
+    }
 }

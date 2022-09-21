@@ -88,4 +88,15 @@ public class User extends AuditingEntity {
 
     @OneToMany(mappedBy = "user")
     private List<ReportedPost> reportedPosts = new ArrayList<>();
+
+    @Builder
+    public User(String email, String password, String nickName) {
+        this.email = email;
+        this.password = password;
+        this.nickName = nickName;
+    }
+
+    public void addPost(Post post) {
+        posts.add(post);
+    }
 }

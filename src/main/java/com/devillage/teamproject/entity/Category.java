@@ -4,6 +4,7 @@ import com.devillage.teamproject.entity.enums.CategoryType;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,10 @@ public class Category extends AuditingEntity {
     @Enumerated(EnumType.STRING)
     private CategoryType categoryType;
 
-    @OneToMany
-    @JoinColumn(name="post_id")
-    private List<Post> posts;
+    @OneToMany(mappedBy = "category")
+    private List<Post> posts = new ArrayList<>();
+
+    public void addPost(Post post) {
+        posts.add(post);
+    }
 }

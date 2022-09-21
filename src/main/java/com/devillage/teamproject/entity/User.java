@@ -92,4 +92,8 @@ public class User extends AuditingEntity {
 
     @OneToMany(mappedBy = "user")
     private List<ReportedPost> reportedPosts = new ArrayList<>();
+
+    public void deleteUser() {
+        this.userStatus = UserStatus.RESIGNED;
+    }
 }

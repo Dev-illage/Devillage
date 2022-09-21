@@ -12,4 +12,5 @@ public class JwtConstants {
     public final static String TOKEN_EXPIRED = "tokenExpired";
     public final static String TOKEN_OK = "tokenOk";
     public final static String ROLES = "roles";
+    public final static String SEQUENCE = "sequence";
 }

@@ -1,10 +1,7 @@
 package com.devillage.teamproject.dto;
 
 import com.devillage.teamproject.entity.User;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -40,6 +37,44 @@ public class AuthDto {
                     .nickName(this.nickname)
                     .email(this.email)
                     .password(this.password)
+                    .build();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class Login {
+        private String email;
+        private String password;
+
+        @Builder
+        public Login(String email, String password) {
+            this.email = email;
+            this.password = password;
+        }
+
+        public User toEntity() {
+            return User.builder()
+                    .email(email)
+                    .password(password)
+                    .build();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Builder(access = AccessLevel.PRIVATE)
+    public static class Response {
+        private String bearer;
+        private String accessToken;
+        private String refreshToken;
+
+        public static Response of(String bearer, String accessToken, String refreshToken) {
+            return Response.builder()
+                    .bearer(bearer)
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
                     .build();
         }
     }

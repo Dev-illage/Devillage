@@ -42,7 +42,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
         return this.principal;
     }
 
-    public String jwtToken() {
+    public String getJwtToken() {
         return this.jwtToken;
     }
 }

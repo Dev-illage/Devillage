@@ -4,6 +4,7 @@ import com.devillage.teamproject.entity.User;
 
 import com.devillage.teamproject.security.token.JwtAuthenticationToken;
 import com.devillage.teamproject.security.util.JwtConstants;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,21 +12,26 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
     private final byte[] secretKeyByte;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    public JwtAuthenticationProvider(@Value("${jwt.secretKey}") String secretKey) {
+    public JwtAuthenticationProvider(@Value("${jwt.secretKey}") String secretKey,
+                                     JwtTokenUtil jwtTokenUtil) {
         this.secretKeyByte = secretKey.getBytes();
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Claims claims = parseJwtAccessToken(authentication.toString());
+        Claims claims = parseJwtAccessToken(((JwtAuthenticationToken)authentication).getJwtToken());
         Collection<GrantedAuthority> authorities = getAuthorities(claims);
         String username = claims.getSubject();
 
@@ -37,12 +43,14 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         return JwtAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
+
+
     private Claims parseJwtAccessToken(String jwt) {
-        return (Claims)Jwts.parserBuilder()
-                .setSigningKey(secretKeyByte)
-                .build()
-                .parseClaimsJwt(jwt)
-                .getBody();
+            return Jwts.parserBuilder()
+                    .setSigningKey(jwtTokenUtil.getSigningKey(secretKeyByte))
+                    .build()
+                    .parseClaimsJwt(jwt)
+                    .getBody();
     }
 
     private Collection<GrantedAuthority> getAuthorities(Claims claims) {

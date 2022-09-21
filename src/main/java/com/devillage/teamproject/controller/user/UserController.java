@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.user;
 
+import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.dto.UserDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public interface UserController {
 
     @GetMapping("/profile/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    UserDto.Response getProfile(@PathVariable("user-id") Long id);
+    SingleResponseDto<UserDto.Response> getProfile(@PathVariable("user-id") Long id);
 
     @DeleteMapping("/{user-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.user;
 
+import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.service.user.UserService;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,8 +29,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public UserDto.Response getProfile(Long id) {
-        return UserDto.Response.of(userService.findUser(id));
+    public SingleResponseDto<UserDto.Response> getProfile(Long id) {
+        return SingleResponseDto.of(UserDto.Response.of(userService.findUser(id)));
     }
 
     @Override

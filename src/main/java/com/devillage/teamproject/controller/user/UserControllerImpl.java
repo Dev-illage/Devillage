@@ -35,6 +35,6 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public void deleteUser(Long id) {
-
+        userService.deleteUser(id);
     }
 }

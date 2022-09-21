@@ -1,12 +1,10 @@
 package com.devillage.teamproject.controller.auth;
 
+import com.devillage.teamproject.dto.AuthDto;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/auth")
+@RequestMapping("/auth")
 public interface AuthController {
 
     @PostMapping
@@ -15,7 +13,7 @@ public interface AuthController {
 
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.OK)
-    Long postJoin();
+    Long postJoin(AuthDto.JOIN request);
 
     @PostMapping("/token/refresh")
     @ResponseStatus(HttpStatus.OK)

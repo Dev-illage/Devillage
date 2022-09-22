@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 public interface AuthController {
 
     @PostMapping("/token")
-    @ResponseStatus(HttpStatus.OK)
-    ResponseDto.SingleResponseDto<AuthDto.Response> postAuth(@RequestBody AuthDto.Login request);
+    @ResponseStatus(HttpStatus.CREATED)
+    ResponseDto.SingleResponseDto<AuthDto.Token> postAuth(@RequestBody AuthDto.Login request);
 
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.OK)

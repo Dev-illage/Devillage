@@ -14,9 +14,9 @@ public class AuthControllerImpl implements AuthController {
     private final AuthService authService;
 
     @Override
-    public ResponseDto.SingleResponseDto<AuthDto.Response> postAuth(@RequestBody AuthDto.Login request) {
-        AuthDto.Response response = authService.loginUser(request.toEntity());
-        return ResponseDto.SingleResponseDto.of(response);
+    public ResponseDto.SingleResponseDto<AuthDto.Token> postAuth(@RequestBody AuthDto.Login request) {
+        AuthDto.Token token = authService.loginUser(request.toEntity());
+        return ResponseDto.SingleResponseDto.of(token);
     }
 
     @Override

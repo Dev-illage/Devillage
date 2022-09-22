@@ -31,7 +31,7 @@ public class Post extends AuditingEntity {
     @EqualsAndHashCode.Include
     private Long clicks;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 

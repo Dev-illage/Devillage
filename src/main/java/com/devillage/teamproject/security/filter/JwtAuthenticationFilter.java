@@ -1,6 +1,7 @@
 package com.devillage.teamproject.security.filter;
 
 import com.devillage.teamproject.security.token.JwtAuthenticationToken;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,12 +27,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = request.getHeader(AUTHORIZATION_HEADER);
 
-        if (!StringUtils.hasLength(jwt) || !jwt.startsWith(BEARER_TYPE)) {
-            filterChain.doFilter(request,response);
-        } else {
-            Authentication authentication = new JwtAuthenticationToken(jwt);
-            authenticationManager.authenticate(authentication);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            checkJwt(request, response, filterChain, jwt);
+        } catch (ExpiredJwtException e) {
+            response.sendRedirect("/auth/refresh");
         }
+    }
+
+    private void checkJwt(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, String jwt) throws IOException, ServletException {
+        if (!StringUtils.hasLength(jwt) || !jwt.startsWith(BEARER_TYPE)) {
+            filterChain.doFilter(request, response);
+        } else {
+            getAuthentication(jwt);
+        }
+    }
+
+    private void getAuthentication(String jwt) {
+        Authentication authentication = new JwtAuthenticationToken(getToken(jwt));
+        authenticationManager.authenticate(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    public String getToken(String jwt) {
+        String[] splittedJwt = jwt.split(" ");
+        return splittedJwt[1];
     }
 }

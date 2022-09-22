@@ -20,6 +20,8 @@ public class Role extends AuditingEntity {
     @Column(name="role_id")
     private Long id;
 
+    @ToString.Include
+    @EqualsAndHashCode.Include
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 

@@ -1,4 +1,4 @@
-package com.devillage.teamproject.security;
+package com.devillage.teamproject.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

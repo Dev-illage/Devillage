@@ -28,4 +28,9 @@ public class ReportedPost extends AuditingEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    public ReportedPost(User user, Post post) {
+        this.user = user;
+        this.post = post;
+    }
 }

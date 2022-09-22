@@ -1,12 +1,13 @@
 package com.devillage.teamproject.controller.post;
 
 import com.devillage.teamproject.dto.PostDto;
+import com.devillage.teamproject.dto.SingleResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/posts")
+@RequestMapping("/posts")
 public interface PostController {
 
     @PostMapping
@@ -19,7 +20,7 @@ public interface PostController {
 
     @PostMapping("/{post-id}/bookmark")
     @ResponseStatus(HttpStatus.OK)
-    Long postBookmark(@PathVariable("post-id") Long id);
+    SingleResponseDto postBookmark(@PathVariable("post-id") Long postId);
 
     @PostMapping("/{post-id}/report")
     @ResponseStatus(HttpStatus.OK)

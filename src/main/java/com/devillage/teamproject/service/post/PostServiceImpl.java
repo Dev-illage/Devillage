@@ -52,8 +52,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public Bookmark postBookmark(Long postId) {
         Long userId = 1L; // Security 메서드 구현 필요
-        Optional<Post> post = postRepository.findById(postId);
-        Optional<User> user = userRepository.findById(userId);
+        Optional<Post> findPost = postRepository.findById(postId);
+        Optional<User> findUser = userRepository.findById(userId);
         List<Bookmark> findBookmark = bookmarkRepository.findByPostIdAndUserId(postId, userId);
 
         if (!findBookmark.isEmpty()) {
@@ -61,11 +61,15 @@ public class PostServiceImpl implements PostService {
             return findBookmark.get(0);
         }
 
-        if (post.isEmpty()) throw new BusinessLogicException(ExceptionCode.POST_NOT_FOUND);
-        if (user.isEmpty()) throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+        Post post = findPost.orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND)
+        );
+        User user = findUser.orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
+        );
 
-        Bookmark bookmark = new Bookmark(user.get(), post.get());
-        user.get().addBookmark(bookmark);
+        Bookmark bookmark = new Bookmark(user, post);
+        user.addBookmark(bookmark);
         return bookmark;
     }
 }

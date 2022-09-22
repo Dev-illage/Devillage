@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
 
+import static com.devillage.teamproject.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -45,11 +46,11 @@ class UserControllerTest implements Reflection {
     public void getProfile() throws Exception {
         // given
         User user = newInstance(User.class);
-        setField(user, "id", 1L);
-        setField(user, "email", "qwe@qwe.com");
-        setField(user, "nickName", "qwe");
-        setField(user, "statusMessage", "asd");
-        setField(user, "pwdLastModifiedAt", LocalDateTime.now().minusMonths(3));
+        setField(user, "id", ID1);
+        setField(user, "email", EMAIL1);
+        setField(user, "nickName", NICKNAME1);
+        setField(user, "statusMessage", STATUS_MESSAGE1);
+        setField(user, "pwdLastModifiedAt", PASSWORD_LAST_MODIFIED_AT1);
 
         given(userService.findUser(Mockito.anyLong())).willReturn(user);
 

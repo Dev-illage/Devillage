@@ -4,6 +4,7 @@ import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.entity.enums.UserStatus;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
+import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,8 +65,13 @@ class UserControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data.email").value(user.getEmail()))
                 .andExpect(jsonPath("$.data.nickname").value(user.getNickName()))
                 .andExpect(jsonPath("$.data.statusMessage").value(user.getStatusMessage()))
-                .andExpect(jsonPath("$.data.passwordModifiedAt").value(user.getPwdLastModifiedAt().toString()))
                 .andReturn();
+
+        String actualPasswordModifiedAt = JsonPath.parse(result.getResponse().getContentAsString())
+                .read("$.data.passwordModifiedAt").toString();
+
+        assertEquals(user.getPwdLastModifiedAt().toString().substring(0, 19),
+                actualPasswordModifiedAt.substring(0, 19));
 
         log.info(result.getResponse().getContentAsString());
     }

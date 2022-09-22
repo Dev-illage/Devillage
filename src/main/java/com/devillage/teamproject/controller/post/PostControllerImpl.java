@@ -26,10 +26,10 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public SingleResponseDto postBookmark(Long postId) {
+    public SingleResponseDto<PostDto.Response.BookmarkDto> postBookmark(Long postId) {
         Long userId = 1L; // Security 메서드 구현 필요
         Bookmark bookmark = postService.postBookmark(postId);
-        return new SingleResponseDto<>(
+        return SingleResponseDto.of(
                 PostDto.Response.BookmarkDto.of(userId, postId, bookmark.getId())
         );
     }

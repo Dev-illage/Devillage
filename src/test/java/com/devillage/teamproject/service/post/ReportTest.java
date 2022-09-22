@@ -1,10 +1,11 @@
 package com.devillage.teamproject.service.post;
 
-import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.Post;
+import com.devillage.teamproject.entity.ReportedPost;
 import com.devillage.teamproject.entity.User;
-import com.devillage.teamproject.repository.post.BookmarkRepository;
+import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.repository.post.PostRepository;
+import com.devillage.teamproject.repository.post.ReportedPostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.util.Reflection;
 import org.assertj.core.api.Assertions;
@@ -19,10 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class BookmarkTest implements Reflection {
+class ReportTest implements Reflection {
 
     @Mock
     private PostRepository postRepository;
@@ -31,7 +33,7 @@ class BookmarkTest implements Reflection {
     private UserRepository userRepository;
 
     @Mock
-    private BookmarkRepository bookmarkRepository;
+    private ReportedPostRepository reportRepository;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -41,48 +43,45 @@ class BookmarkTest implements Reflection {
     Long userId = 1L; // Security 메서드 구현 필요
     Long postId = 1L;
 
-    BookmarkTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-        setField(user, "bookmarks", new ArrayList<>());
+    ReportTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+        setField(user, "reportedPosts", new ArrayList<>());
     }
 
-    ;
-
     @Test
-    void createBookmark() {
+    void createReportedPost() {
         // given
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
-        given(bookmarkRepository.findByUserIdAndPostId(userId, postId))
+        given(reportRepository.findByUserIdAndPostId(userId, postId))
                 .willReturn(new ArrayList<>());
 
         // when
-        Bookmark findBookmark = postService.postBookmark(postId);
+        ReportedPost findReportedPost = postService.postReport(postId);
 
         // then
-        Assertions.assertThat(findBookmark.getPost()).isEqualTo(post);
-        Assertions.assertThat(findBookmark.getUser()).isEqualTo(user);
+        Assertions.assertThat(findReportedPost.getPost()).isEqualTo(post);
+        Assertions.assertThat(findReportedPost.getUser()).isEqualTo(user);
     }
 
     @Test
-    void deleteBookmark() {
+    void alreadyReportedPost() {
         // given
-        Bookmark bookmark = new Bookmark(user, post);
+        ReportedPost report = new ReportedPost(user, post);
+
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
-        given(bookmarkRepository.findByUserIdAndPostId(userId, postId))
-                .willReturn(List.of(bookmark));
+        given(reportRepository.findByUserIdAndPostId(userId, postId))
+                .willReturn(List.of(report));
 
-        // when
-        Bookmark findBookmark = postService.postBookmark(postId);
-
-        // then
-        Assertions.assertThat(findBookmark).isEqualTo(bookmark);
+        // when / then
+        assertThrows(BusinessLogicException.class,
+                () -> postService.postReport(postId));
     }
 
 }

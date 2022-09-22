@@ -116,4 +116,8 @@ public class User extends AuditingEntity {
     public void addRefreshToken(String token) {
         this.refreshToken = new RefreshToken(token, this);
     }
+
+    public void deleteUser() {
+        this.userStatus = UserStatus.RESIGNED;
+    }
 }

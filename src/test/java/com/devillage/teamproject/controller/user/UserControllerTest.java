@@ -1,6 +1,7 @@
 package com.devillage.teamproject.controller.user;
 
 import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.entity.enums.UserStatus;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
 import lombok.extern.slf4j.Slf4j;
@@ -67,5 +68,22 @@ class UserControllerTest implements Reflection {
                 .andReturn();
 
         log.info(result.getResponse().getContentAsString());
+    }
+
+    @Test
+    @DisplayName("deleteUser")
+    public void deleteUser() throws Exception {
+        // given
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/users/{user-id}", 1L)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions.andExpect(status().isNoContent());
+
     }
 }

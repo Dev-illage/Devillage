@@ -20,7 +20,7 @@ public interface PostController {
 
     @PostMapping("/{post-id}/bookmark")
     @ResponseStatus(HttpStatus.OK)
-    SingleResponseDto postBookmark(@PathVariable("post-id") Long postId);
+    SingleResponseDto<PostDto.Response.BookmarkDto> postBookmark(@PathVariable("post-id") Long postId);
 
     @PostMapping("/{post-id}/report")
     @ResponseStatus(HttpStatus.OK)

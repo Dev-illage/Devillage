@@ -67,7 +67,7 @@ class ReportTest implements Reflection {
     }
 
     @Test
-    void alreadyReportPost() {
+    void alreadyReportedPost() {
         // given
         ReportedPost report = new ReportedPost(user, post);
 

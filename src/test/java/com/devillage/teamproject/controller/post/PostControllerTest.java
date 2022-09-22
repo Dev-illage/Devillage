@@ -85,41 +85,6 @@ class PostControllerTest implements Reflection {
     }
 
     @Test
-    void postLike() throws Exception {
-        // given
-        Like like = new Like(user, post);
-        setField(like, "id", 3L);
-
-        given(postService.postLike(post.getId()))
-                .willReturn(like);
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                post("/posts/{post-id}/like", post.getId())
-        );
-
-        // then
-        actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.user").value(user.getId()))
-                .andExpect(jsonPath("$.data.post").value(post.getId()))
-                .andExpect(jsonPath("$.data.like").value(like.getId()))
-                .andDo(document("post-bookmark",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("post-id").description("게시글 식별자")
-                        ),
-                        responseFields(
-                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
-                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-                                fieldWithPath("data.like").type(JsonFieldType.NUMBER).description("좋아요 식별자")
-                        )
-                ));
-
-    }
-
-    @Test
     void postReport() throws Exception {
         // given
         ReportedPost report = new ReportedPost(user, post);
@@ -138,7 +103,7 @@ class PostControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data.user").value(user.getId()))
                 .andExpect(jsonPath("$.data.post").value(post.getId()))
                 .andExpect(jsonPath("$.data.report").value(report.getId()))
-                .andDo(document("post-bookmark",
+                .andDo(document("post-report",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -149,6 +114,41 @@ class PostControllerTest implements Reflection {
                                 fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                 fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
                                 fieldWithPath("data.report").type(JsonFieldType.NUMBER).description("신고글 식별자")
+                        )
+                ));
+
+    }
+
+    @Test
+    void postLike() throws Exception {
+        // given
+        Like like = new Like(user, post);
+        setField(like, "id", 3L);
+
+        given(postService.postLike(post.getId()))
+                .willReturn(like);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/posts/{post-id}/like", post.getId())
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.user").value(user.getId()))
+                .andExpect(jsonPath("$.data.post").value(post.getId()))
+                .andExpect(jsonPath("$.data.like").value(like.getId()))
+                .andDo(document("post-like",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
+                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("data.like").type(JsonFieldType.NUMBER).description("좋아요 식별자")
                         )
                 ));
 

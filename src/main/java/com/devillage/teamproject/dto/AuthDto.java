@@ -65,13 +65,13 @@ public class AuthDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @Builder(access = AccessLevel.PRIVATE)
-    public static class Response {
+    public static class Token {
         private String bearer;
         private String accessToken;
         private String refreshToken;
 
-        public static Response of(String bearer, String accessToken, String refreshToken) {
-            return Response.builder()
+        public static Token of(String bearer, String accessToken, String refreshToken) {
+            return Token.builder()
                     .bearer(bearer)
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)

@@ -31,8 +31,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             checkJwt(request, response, filterChain, jwt);
         } catch (ExpiredJwtException e) {
             response.sendRedirect("/auth/refresh");
-        } finally {
-            filterChain.doFilter(request,response);
         }
     }
 

@@ -44,11 +44,11 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    public String createRefreshToken(Long userSequence) {
+    public String createRefreshToken(String email) {
         return Jwts.builder()
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime()+REFRESH_TOKEN_EXPIRE_COUNT))
-                .setSubject(userSequence.toString())
+                .setSubject(email)
                 .signWith(getSigningKey(refreshByteKey), SignatureAlgorithm.HS256)
                 .compact();
     }

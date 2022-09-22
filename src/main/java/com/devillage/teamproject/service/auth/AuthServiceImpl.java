@@ -1,6 +1,7 @@
 package com.devillage.teamproject.service.auth;
 
 import com.devillage.teamproject.dto.AuthDto;
+import com.devillage.teamproject.entity.RefreshToken;
 import com.devillage.teamproject.entity.Role;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.entity.UserRoles;
@@ -8,6 +9,7 @@ import com.devillage.teamproject.entity.enums.RoleType;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.role.RoleRepository;
+import com.devillage.teamproject.repository.token.RefreshTokenRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.repository.user_roles.UserRolesRepository;
 import com.devillage.teamproject.security.util.JwtConstants;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AuthServiceImpl implements AuthService{
     private final UserRolesRepository userRolesRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -47,7 +50,7 @@ public class AuthServiceImpl implements AuthService{
 
 
     @Override
-    public AuthDto.Response loginUser(User user) {
+    public AuthDto.Token loginUser(User user) {
         User findUser = userRepository
                 .findUserByEmail(user.getEmail())
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
@@ -62,11 +65,16 @@ public class AuthServiceImpl implements AuthService{
                 .collect(Collectors.toList());
 
         String accessToken = jwtTokenUtil.createAccessToken(findUser.getEmail(), findUser.getId(), roles);
-        String refreshToken = jwtTokenUtil.createRefreshToken(findUser.getId());
+        String refreshToken = jwtTokenUtil.createRefreshToken(findUser.getEmail());
+
+        if (user.getRefreshToken()!=null) {
+            RefreshToken existingToken = user.getRefreshToken();
+            refreshTokenRepository.delete(existingToken);
+        }
 
         findUser.addRefreshToken(refreshToken);
 
-        return AuthDto.Response.of(JwtConstants.BEARER_TYPE,accessToken,refreshToken);
+        return AuthDto.Token.of(JwtConstants.BEARER_TYPE,accessToken,refreshToken);
     }
 
 

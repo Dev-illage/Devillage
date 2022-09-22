@@ -26,6 +26,30 @@ public class PostDto {
             }
         }
 
+        @Getter
+        @AllArgsConstructor(access = AccessLevel.PROTECTED)
+        public static class ReportDto {
+            private final Long user;
+            private final Long post;
+            private final Long report;
+
+            public static ReportDto of(Long userId, Long postId, Long reportedPostId) {
+                return new ReportDto(userId, postId, reportedPostId);
+            }
+        }
+
+        @Getter
+        @AllArgsConstructor(access = AccessLevel.PROTECTED)
+        public static class LikeDto {
+            private final Long user;
+            private final Long post;
+            private final Long like;
+
+            public static LikeDto of(Long userId, Long postId, Long likeId) {
+                return new LikeDto(userId, postId, likeId);
+            }
+        }
+
     }
 
     //TODO : Post DTO 임시 작성, 구현 시 주석 삭제

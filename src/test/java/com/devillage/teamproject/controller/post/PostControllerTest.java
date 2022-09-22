@@ -59,7 +59,7 @@ class PostControllerTest implements Reflection {
         );
 
         // then
-        actions.andExpect(status().isCreated())
+        actions.andExpect(status().isOk())
                 .andDo(document("post-bookmark",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),

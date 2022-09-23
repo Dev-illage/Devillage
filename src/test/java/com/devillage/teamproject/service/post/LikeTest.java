@@ -1,9 +1,9 @@
 package com.devillage.teamproject.service.post;
 
-import com.devillage.teamproject.entity.Bookmark;
+import com.devillage.teamproject.entity.Like;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.User;
-import com.devillage.teamproject.repository.post.BookmarkRepository;
+import com.devillage.teamproject.repository.post.LikeRepository;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.util.Reflection;
@@ -22,7 +22,7 @@ import java.util.Optional;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class BookmarkTest implements Reflection {
+class LikeTest implements Reflection {
 
     @Mock
     private PostRepository postRepository;
@@ -31,7 +31,7 @@ class BookmarkTest implements Reflection {
     private UserRepository userRepository;
 
     @Mock
-    private BookmarkRepository bookmarkRepository;
+    private LikeRepository likeRepository;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -41,48 +41,50 @@ class BookmarkTest implements Reflection {
     Long userId = 1L; // Security 메서드 구현 필요
     Long postId = 1L;
 
-    BookmarkTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-        setField(user, "bookmarks", new ArrayList<>());
+    LikeTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+        setField(user, "likes", new ArrayList<>());
     }
 
     ;
 
+
     @Test
-    void createBookmark() {
+    void createLike() {
         // given
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
-        given(bookmarkRepository.findByUserIdAndPostId(userId, postId))
+        given(likeRepository.findByUserIdAndPostId(userId, postId))
                 .willReturn(new ArrayList<>());
 
         // when
-        Bookmark findBookmark = postService.postBookmark(postId);
+        Like findLike = postService.postLike(postId);
 
         // then
-        Assertions.assertThat(findBookmark.getPost()).isEqualTo(post);
-        Assertions.assertThat(findBookmark.getUser()).isEqualTo(user);
+        Assertions.assertThat(findLike.getPost()).isEqualTo(post);
+        Assertions.assertThat(findLike.getUser()).isEqualTo(user);
     }
 
     @Test
-    void deleteBookmark() {
+    void deleteLike() {
         // given
-        Bookmark bookmark = new Bookmark(user, post);
+        Like like = new Like(user, post);
+
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
-        given(bookmarkRepository.findByUserIdAndPostId(userId, postId))
-                .willReturn(List.of(bookmark));
+        given(likeRepository.findByUserIdAndPostId(userId, postId))
+                .willReturn(List.of(like));
 
         // when
-        Bookmark findBookmark = postService.postBookmark(postId);
+        Like findLike = postService.postLike(postId);
 
         // then
-        Assertions.assertThat(findBookmark).isEqualTo(bookmark);
+        Assertions.assertThat(findLike).isEqualTo(like);
     }
 
 }

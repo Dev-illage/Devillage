@@ -3,6 +3,8 @@ package com.devillage.teamproject.controller.post;
 import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.entity.Bookmark;
+import com.devillage.teamproject.entity.Like;
+import com.devillage.teamproject.entity.ReportedPost;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,13 +37,21 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public Long postReport(Long id) {
-        return null;
+    public SingleResponseDto<PostDto.Response.ReportDto> postReport(Long postId) {
+        Long userId = 1L; // Security 메서드 구현 필요
+        ReportedPost reportedPost = postService.postReport(postId);
+        return SingleResponseDto.of(
+                PostDto.Response.ReportDto.of(userId, postId, reportedPost.getId())
+        );
     }
 
     @Override
-    public Long postLike(Long id) {
-        return null;
+    public SingleResponseDto<PostDto.Response.LikeDto> postLike(Long postId) {
+        Long userId = 1L; // Security 메서드 구현 필요
+        Like like = postService.postLike(postId);
+        return SingleResponseDto.of(
+                PostDto.Response.LikeDto.of(userId, postId, like.getId())
+        );
     }
 
     @Override

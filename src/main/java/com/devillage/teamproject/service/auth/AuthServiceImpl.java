@@ -68,12 +68,10 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public AuthDto.Token reIssue(String reqeust) {
-        String token = reqeust.substring(7);
+    public AuthDto.Token reIssueToken(String reqeust) {
+        String token = jwtTokenUtil.splitToken(reqeust);
 
-        RefreshToken existingToken = refreshTokenRepository
-                .findRefreshTokenByTokenValue(token)
-                .orElseThrow(() -> new MalformedJwtException("유효하지 않은 토큰"));
+        RefreshToken existingToken = checkIfTokenExists(token);
 
         Claims claims = jwtTokenUtil.parseRefreshToken(existingToken.getTokenValue());
         String email = claims.getSubject();
@@ -86,6 +84,13 @@ public class AuthServiceImpl implements AuthService{
         refreshTokenRepository.delete(existingToken);
 
         return AuthDto.Token.of(BEARER_TYPE, accessToken, refreshToken);
+    }
+
+    @Override
+    public void deleteToken(String request) {
+        String token = jwtTokenUtil.splitToken(request);
+        RefreshToken existingToken = checkIfTokenExists(token);
+        refreshTokenRepository.delete(existingToken);
     }
 
     private User findUserByEmail(String email) {
@@ -114,5 +119,12 @@ public class AuthServiceImpl implements AuthService{
         } else {
             throw new BusinessLogicException(ExceptionCode.EXISTING_USER);
         }
+    }
+
+    private RefreshToken checkIfTokenExists(String token) {
+
+        return refreshTokenRepository
+                .findRefreshTokenByTokenValue(token)
+                .orElseThrow(() -> new MalformedJwtException("유효하지 않은 토큰"));
     }
 }

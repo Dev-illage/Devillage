@@ -4,6 +4,7 @@ import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.Like;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface PostService {
 
     Post getPost();
 
-    List<Post> getPosts();
+    Page<Post> getPosts(String category, int page, int size);
 
     void deletePost();
 

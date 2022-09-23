@@ -1,14 +1,15 @@
 package com.devillage.teamproject.service.post;
 
 import com.devillage.teamproject.entity.*;
+import com.devillage.teamproject.entity.enums.CategoryType;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
-import com.devillage.teamproject.repository.post.BookmarkRepository;
-import com.devillage.teamproject.repository.post.LikeRepository;
-import com.devillage.teamproject.repository.post.PostRepository;
-import com.devillage.teamproject.repository.post.ReportedPostRepository;
+import com.devillage.teamproject.repository.post.*;
 import com.devillage.teamproject.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,8 +43,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getPosts() {
-        return null;
+    public Page<Post> getPosts(String category, int page, int size) {
+        try {
+            CategoryType.valueOf(category);
+        } catch (IllegalArgumentException e) {
+            throw new BusinessLogicException(ExceptionCode.CATEGORY_NOT_FOUND);
+        }
+
+        return postRepository.findByCategory_CategoryType(
+                CategoryType.valueOf(category),
+                PageRequest.of(page - 1, size, Sort.by("id").descending()));
     }
 
     @Override

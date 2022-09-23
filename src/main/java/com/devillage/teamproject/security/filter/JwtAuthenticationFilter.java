@@ -1,7 +1,11 @@
 package com.devillage.teamproject.security.filter;
 
+import com.devillage.teamproject.controller.exception.JwtAuthenticationException;
+import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.security.token.JwtAuthenticationToken;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -14,7 +18,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.SignatureException;
 
+import static com.devillage.teamproject.exception.ExceptionCode.*;
 import static com.devillage.teamproject.security.util.JwtConstants.*;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -31,9 +37,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             checkJwt(request, response, filterChain, jwt);
         } catch (ExpiredJwtException e) {
-            response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
-            response.setHeader("Location", "http://localhost:8080/auth/token/refresh");
-            filterChain.doFilter(request,response);
+            throw new JwtAuthenticationException(EXPIRED_JWT_EXCEPTION);
+        } catch (UnsupportedJwtException e) {
+            throw new JwtAuthenticationException(UNSUPPORTED_JWT_EXCEPTION);
+        } catch (MalformedJwtException e) {
+            throw new JwtAuthenticationException(MALFORMED_JWT_EXCEPTION);
         }
     }
 

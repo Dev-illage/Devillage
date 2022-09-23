@@ -17,14 +17,11 @@ public class RefreshToken extends AuditingEntity {
     @Column(name="refresh_token_id")
     private Long id;
 
+    @ToString.Include
+    @EqualsAndHashCode.Include
     private String tokenValue;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    public RefreshToken(String tokenValue, User user) {
+    public RefreshToken(String tokenValue) {
         this.tokenValue = tokenValue;
-        this.user = user;
     }
 }

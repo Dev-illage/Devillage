@@ -14,6 +14,8 @@ import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.repository.user_roles.UserRolesRepository;
 import com.devillage.teamproject.security.util.JwtConstants;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -23,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.devillage.teamproject.security.util.JwtConstants.*;
 
 @Service
 @Transactional
@@ -48,33 +52,59 @@ public class AuthServiceImpl implements AuthService{
         return savedUser;
     }
 
-
     @Override
     public AuthDto.Token loginUser(User user) {
-        User findUser = userRepository
-                .findUserByEmail(user.getEmail())
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        User findUser = findUserByEmail(user.getEmail());
 
+        passwordVerification(user, findUser);
+        List<String> roles = getRolesFromUser(findUser);
+
+        String accessToken = jwtTokenUtil.createAccessToken(findUser.getEmail(), findUser.getId(), roles);
+        String refreshToken = jwtTokenUtil.createRefreshToken(findUser.getEmail(), findUser.getId(), roles);
+
+        refreshTokenRepository.save(new RefreshToken(refreshToken));
+
+        return AuthDto.Token.of(JwtConstants.BEARER_TYPE,accessToken,refreshToken);
+    }
+
+    @Override
+    public AuthDto.Token reIssue(String reqeust) {
+        String token = reqeust.substring(7);
+
+        RefreshToken existingToken = refreshTokenRepository
+                .findRefreshTokenByTokenValue(token)
+                .orElseThrow(() -> new MalformedJwtException("유효하지 않은 토큰"));
+
+        Claims claims = jwtTokenUtil.parseRefreshToken(existingToken.getTokenValue());
+        String email = claims.getSubject();
+        List<String> roles = (List<String>)claims.get(ROLES);
+        Long userSequence = Long.valueOf((Integer)claims.get(SEQUENCE));
+
+        String accessToken = jwtTokenUtil.createAccessToken(email, userSequence, roles);
+        String refreshToken = jwtTokenUtil.createRefreshToken(email, userSequence, roles);
+
+        refreshTokenRepository.delete(existingToken);
+
+        return AuthDto.Token.of(BEARER_TYPE, accessToken, refreshToken);
+    }
+
+    private User findUserByEmail(String email) {
+        return userRepository
+                .findUserByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+    }
+
+    private void passwordVerification(User user, User findUser) {
         if ( !findUser.passwordVerification(passwordEncoder, user) ) {
             throw new AuthenticationCredentialsNotFoundException("Invalid input value");
         }
+    }
 
-        List<String> roles = findUser.getUserRoles()
+    private List<String> getRolesFromUser(User findUser) {
+        return findUser.getUserRoles()
                 .stream()
                 .map(m -> m.getRole().getRoleType().name())
                 .collect(Collectors.toList());
-
-        String accessToken = jwtTokenUtil.createAccessToken(findUser.getEmail(), findUser.getId(), roles);
-        String refreshToken = jwtTokenUtil.createRefreshToken(findUser.getEmail());
-
-        if (user.getRefreshToken()!=null) {
-            RefreshToken existingToken = user.getRefreshToken();
-            refreshTokenRepository.delete(existingToken);
-        }
-
-        findUser.addRefreshToken(refreshToken);
-
-        return AuthDto.Token.of(JwtConstants.BEARER_TYPE,accessToken,refreshToken);
     }
 
 

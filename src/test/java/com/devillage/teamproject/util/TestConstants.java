@@ -12,8 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class TestConstants {
-    public static String SECRET_KEY = "xptmxmdlsepeocndgkrpwhagownwldjfakskrlfrpTmfkrh";
-    public static String REFRESH_KEY = "dhkwlsWktlagkekdlfjgrpaksgdlTjdigksekrhwlsWkfhdlrpakwsi";
+    public static String SECRET_KEY = "jwt-tokens-that-should-be-changed-production";
+    public static String REFRESH_KEY = "jwt-refresh-tokens-that-should-be-changed-production";
     public final static String BEARER = "Bearer ";
     public final static Long SECRET_EXPIRE = 600000L;
     public final static Long REFRESH_EXPIRE = 604800000L;

@@ -11,32 +11,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 
-import static com.devillage.teamproject.security.util.JwtConstants.REFRESH_TOKEN_EXPIRE_COUNT;
+import static com.devillage.teamproject.security.util.JwtConstants.*;
 
 public class AuthTestUtils implements ReflectionForStatic {
-    public static String createToken(String email, List<String> roles, Long expire, String secretKey, Long sequence) {
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("sequence", sequence);
-        claims.put("roles", roles);
-
-        byte[] secretKeyBytes = secretKey.getBytes();
+    public static String createToken(String userEmail, Long userSequence, List<String> roles, byte[] token, Long expire) {
+        Claims claims = Jwts.claims()
+                .setSubject(userEmail);
+        claims.put(ROLES, roles);
 
         return Jwts.builder()
-                .addClaims(claims)
+                .setClaims(claims)
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime()+expire))
-                .signWith(Keys.hmacShaKeyFor(secretKeyBytes), SignatureAlgorithm.HS256)
+                .signWith(Keys.hmacShaKeyFor(token), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public static String createRefreshToken (String email, List<String> roles, Long expire, String secretKey) {
-        byte[] secretKeyBytes = secretKey.getBytes();
-
-        return Jwts.builder()
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime()+REFRESH_TOKEN_EXPIRE_COUNT))
-                .setSubject(email)
-                .signWith(Keys.hmacShaKeyFor(secretKeyBytes), SignatureAlgorithm.HS256)
-                .compact();
+    public static Claims parseToken(String token, byte[] keyByte) {
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(keyByte))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     public static User createTestUser(String email, String nickName, String password) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {

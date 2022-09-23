@@ -7,6 +7,7 @@ import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.auth.AuthService;
 import com.devillage.teamproject.util.ReflectionForStatic;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -38,6 +40,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -165,7 +168,7 @@ public class AuthControllerRestDocsTest implements ReflectionForStatic {
 
         AuthDto.Token response = AuthDto.Token.of(BEARER, accessToken, refreshToken);
 
-        when(authService.reIssue(request)).thenReturn(response);
+        when(authService.reIssueToken(request)).thenReturn(response);
 
         //when
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/token/refresh")
@@ -192,6 +195,29 @@ public class AuthControllerRestDocsTest implements ReflectionForStatic {
                                         )
                                 )
                                 )
+                );
+    }
+
+    @Test
+    @DisplayName("DELETE /auth/token 204 content")
+    public void test5() throws Exception {
+        //given
+        String request = jwtTokenUtil.createRefreshToken(EMAIL1, ID1, ROLES);
+
+
+        //when
+        mockMvc.perform(delete("/auth/token")
+                        .header("refreshToken", request))
+                .andExpect(status().isNoContent())
+                .andDo(
+                        document("delete-/auth/token",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("refreshToken").description("existing refresh Token")
+                        ),
+                        responseBody()
+                )
                 );
     }
 }

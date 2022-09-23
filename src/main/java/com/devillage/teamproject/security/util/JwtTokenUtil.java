@@ -81,7 +81,7 @@ public class JwtTokenUtil {
         return Long.valueOf((Integer) paresAccessToken(splitToken(token)).get(SEQUENCE));
     }
 
-    private String splitToken(String token) {
+    public String splitToken(String token) {
         return token.substring(7);
     }
 }

@@ -42,6 +42,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @Slf4j
 @Import({TestConfig.class})
@@ -127,7 +129,7 @@ public class AuthServiceTest implements ReflectionForStatic {
 
     @Test
     @DisplayName("tokenReissue success test")
-    public void test3() throws NoSuchFieldException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public void test3()  {
         // given
         String splitToken = createToken(EMAIL1,  ID1, ROLES, REFRESH_KEY.getBytes(), SECRET_EXPIRE);
         String request = BEARER + splitToken;
@@ -138,14 +140,15 @@ public class AuthServiceTest implements ReflectionForStatic {
         claims.put(SEQUENCE, ID1);
         claims.put(JwtConstants.ROLES, ROLES);
 
-        given(refreshTokenRepository.findRefreshTokenByTokenValue(anyString())).willReturn(Optional.of(existingToken));
+        given(refreshTokenRepository.findRefreshTokenByTokenValue(splitToken)).willReturn(Optional.of(existingToken));
         given(jwtTokenUtil.parseRefreshToken(splitToken)).willReturn(claims);
+        given(jwtTokenUtil.splitToken(request)).willReturn(splitToken);
         given(jwtTokenUtil.createAccessToken(EMAIL1, ID1, ROLES)).willReturn(createToken(EMAIL1, ID1, ROLES, SECRET_KEY.getBytes(), SECRET_EXPIRE));
         given(jwtTokenUtil.createRefreshToken(EMAIL1, ID1, ROLES)).willReturn(createToken(EMAIL1, ID1, ROLES, REFRESH_KEY.getBytes(), SECRET_EXPIRE));
 
 
         // when
-        AuthDto.Token token = authService.reIssue(request);
+        AuthDto.Token token = authService.reIssueToken(request);
 
         String accessTokenSubject = AuthTestUtils.parseToken(token.getAccessToken(), SECRET_KEY.getBytes()).getSubject();
         String refreshTokenSubject = AuthTestUtils.parseToken(token.getRefreshToken(), REFRESH_KEY.getBytes()).getSubject();
@@ -153,5 +156,23 @@ public class AuthServiceTest implements ReflectionForStatic {
         // then
         assertThat(accessTokenSubject).isEqualTo(EMAIL1);
         assertThat(refreshTokenSubject).isEqualTo(EMAIL1);
+    }
+
+    @Test
+    @DisplayName("deleteToken success token")
+    public void test4() {
+        // given
+        String request = BEARER + createToken(EMAIL1, ID1, ROLES, REFRESH_KEY.getBytes(), SECRET_EXPIRE);
+
+        String existingToken = request.substring(7);
+
+        given(jwtTokenUtil.splitToken(request)).willReturn(existingToken);
+        given(refreshTokenRepository.findRefreshTokenByTokenValue(existingToken)).willReturn(Optional.of(new RefreshToken(request)));
+
+        // when
+        authService.deleteToken(request);
+
+        // then
+        verify(refreshTokenRepository, times(1)).delete(new RefreshToken(request));
     }
 }

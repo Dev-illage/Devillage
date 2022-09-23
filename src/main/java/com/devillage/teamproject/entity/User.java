@@ -109,4 +109,8 @@ public class User extends AuditingEntity {
     public boolean passwordVerification(PasswordEncoder passwordEncoder, User user) {
         return passwordEncoder.matches(user.getPassword(), this.getPassword());
     }
+
+    public void deleteUser() {
+        this.userStatus = UserStatus.RESIGNED;
+    }
 }

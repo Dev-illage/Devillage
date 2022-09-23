@@ -4,6 +4,7 @@ import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.Like;
+import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,11 @@ public class PostControllerImpl implements PostController {
     private final PostService postService;
 
     @Override
-    public Long postPost(PostDto.Post request) {
-        return null;
+    public SingleResponseDto postPost(PostDto.Post request) {
+        Post post = PostDto.Post.toEntity(request);
+        Post savedPost = postService.savePost(post);
+
+        return SingleResponseDto.of((PostDto.Response.of(savedPost)));
     }
 
     @Override

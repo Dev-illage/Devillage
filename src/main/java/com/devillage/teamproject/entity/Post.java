@@ -57,4 +57,12 @@ public class Post extends AuditingEntity {
     public void addReportedPosts(ReportedPost reportedPost) {
         reportedPosts.add(reportedPost);
     }
+
+    //외부 접근용(PostDto.Response) 생성자 추가
+    public Post(Category category,String title,List<PostTag> tags,String content){
+        this.category = category;
+        this.title = title;
+        this.tags = tags;
+        this.content = content;
+    }
 }

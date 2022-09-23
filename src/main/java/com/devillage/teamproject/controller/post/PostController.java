@@ -24,11 +24,11 @@ public interface PostController {
 
     @PostMapping("/{post-id}/report")
     @ResponseStatus(HttpStatus.OK)
-    Long postReport(@PathVariable("post-id") Long id);
+    SingleResponseDto<PostDto.Response.ReportDto> postReport(@PathVariable("post-id") Long id);
 
     @PostMapping("/{post-id}/like")
     @ResponseStatus(HttpStatus.OK)
-    Long postLike(@PathVariable("post-id") Long id);
+    SingleResponseDto<PostDto.Response.LikeDto> postLike(@PathVariable("post-id") Long id);
 
     @PatchMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)

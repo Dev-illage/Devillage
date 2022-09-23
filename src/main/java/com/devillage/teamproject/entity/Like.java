@@ -25,4 +25,9 @@ public class Like extends AuditingEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    public Like(User user, Post post) {
+        this.user = user;
+        this.post = post;
+    }
 }

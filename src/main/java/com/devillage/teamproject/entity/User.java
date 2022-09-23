@@ -75,8 +75,12 @@ public class User extends AuditingEntity {
     @OneToMany(mappedBy = "user")
     private final List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private final List<Like> likes = new ArrayList<>();
+
+    public void addLike(Like like) {
+        likes.add(like);
+    }
 
     @OneToMany(mappedBy = "user")
     private final List<Comment> comments = new ArrayList<>();

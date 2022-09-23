@@ -41,12 +41,9 @@ class LikeTest implements Reflection {
     Long userId = 1L; // Security 메서드 구현 필요
     Long postId = 1L;
 
-    LikeTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+    LikeTest() throws Exception {
         setField(user, "likes", new ArrayList<>());
     }
-
-    ;
-
 
     @Test
     void createLike() {

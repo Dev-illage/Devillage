@@ -43,7 +43,7 @@ class ReportTest implements Reflection {
     Long userId = 1L; // Security 메서드 구현 필요
     Long postId = 1L;
 
-    ReportTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+    ReportTest() throws Exception {
         setField(user, "reportedPosts", new ArrayList<>());
     }
 

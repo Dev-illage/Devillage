@@ -14,7 +14,7 @@ public interface PostService {
 
     Post editPost();
 
-    Post getPost();
+    Post getPost(Long id);
 
     List<Post> getPosts();
 

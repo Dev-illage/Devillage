@@ -38,8 +38,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getPost() {
-        return null;
+    public Post getPost(Long id) {
+        return verifyPost(id);
     }
 
     @Override

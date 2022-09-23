@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.post;
 
+import com.devillage.teamproject.dto.MultiResponseDto;
 import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.entity.Bookmark;
@@ -8,9 +9,10 @@ import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -64,8 +66,14 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public List<PostDto.Response> getPosts(String category, Long page, Long size) {
-        return null;
+    public MultiResponseDto<PostDto.Response.SimplePostDto> getPosts(String category, int page, int size) {
+        Page<Post> posts = postService.getPosts(category, page, size);
+        return MultiResponseDto.of(
+                posts.stream()
+                        .map(PostDto.Response.SimplePostDto::of)
+                        .collect(Collectors.toList()),
+                posts
+        );
     }
 
     @Override

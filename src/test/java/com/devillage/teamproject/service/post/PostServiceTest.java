@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -38,7 +37,7 @@ public class PostServiceTest implements Reflection {
     Long postId = 1L;
     Long userId = 1L;
 
-    public PostServiceTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public PostServiceTest() throws Exception {
     }
 
     @Test

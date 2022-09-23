@@ -45,8 +45,6 @@ class BookmarkTest implements Reflection {
         setField(user, "bookmarks", new ArrayList<>());
     }
 
-    ;
-
     @Test
     void createBookmark() {
         // given

@@ -6,6 +6,8 @@ import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.devillage.teamproject.security.util.JwtConstants.REFRESH_HEADER;
+
 @RequestMapping("/auth")
 public interface AuthController {
 
@@ -19,7 +21,7 @@ public interface AuthController {
 
     @PostMapping("/token/refresh")
     @ResponseStatus(HttpStatus.OK)
-    Long postRefresh(@RequestHeader Authorization authorization);
+    ResponseDto.SingleResponseDto<AuthDto.Token> postRefresh(@RequestHeader(REFRESH_HEADER) String refreshToken);
 
     @DeleteMapping("/token")
     @ResponseStatus(HttpStatus.NO_CONTENT)

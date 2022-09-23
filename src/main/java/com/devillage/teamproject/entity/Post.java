@@ -3,6 +3,7 @@ package com.devillage.teamproject.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class Post extends AuditingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ToString.Include
     @EqualsAndHashCode.Include
-    @Column(name="post_id")
+    @Column(name = "post_id")
     private Long id;
 
     @ToString.Include
@@ -57,4 +58,7 @@ public class Post extends AuditingEntity {
     public void addReportedPosts(ReportedPost reportedPost) {
         reportedPosts.add(reportedPost);
     }
+
+    private LocalDateTime createdAt;
+    private LocalDateTime lastModifiedAt;
 }

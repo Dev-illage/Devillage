@@ -7,4 +7,8 @@ public interface AuthService {
     User joinUser(User user);
 
     AuthDto.Token loginUser(User user);
+
+    AuthDto.Token reIssueToken(String token);
+
+    void deleteToken(String token);
 }

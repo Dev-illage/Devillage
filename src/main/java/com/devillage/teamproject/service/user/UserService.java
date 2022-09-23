@@ -13,5 +13,5 @@ public interface UserService {
 
     List<User> findUsers(int page, int size);
 
-    void deleteUser(Long memberId);
+    void deleteUser(Long userId);
 }

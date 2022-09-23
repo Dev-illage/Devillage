@@ -1,10 +1,13 @@
 package com.devillage.teamproject.controller.post;
 
+import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.util.Reflection;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -14,8 +17,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
@@ -47,6 +52,9 @@ class PostControllerTest implements Reflection {
     @MockBean
     PostService postService;
 
+    @Autowired
+    ObjectMapper objectMapper = new ObjectMapper();
+
     User user = newInstance(User.class);
     Post post = newInstance(Post.class);
 
@@ -54,6 +62,36 @@ class PostControllerTest implements Reflection {
         setField(user, "id", 1L);
         setField(post, "id", 1L);
     }
+
+    @Test
+    public void postPost() throws Exception{
+        //given
+        PostDto.Post post = newInstance(PostDto.Post.class);
+        setField(post,"title","Mockito 관련 질문입니다.");
+        setField(post,"content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
+
+        Post convertEntity = PostDto.Post.toEntity(post);
+        given(postService.savePost(Mockito.any(Post.class))).willReturn(convertEntity);
+
+        String content = objectMapper.writeValueAsString(post);
+
+        //when
+        ResultActions actions =
+                mockMvc.perform(
+                        post("/posts")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content)
+                );
+
+        //then
+        MvcResult result = actions
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.title").value(post.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(post.getContent()))
+                .andReturn();
+    }
+
 
     @Test
     void postBookmark() throws Exception {

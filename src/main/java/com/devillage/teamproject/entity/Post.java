@@ -61,4 +61,12 @@ public class Post extends AuditingEntity {
 
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
+
+    //외부 접근용(PostDto.Response) 생성자 추가
+    public Post(Category category,String title,List<PostTag> tags,String content){
+        this.category = category;
+        this.title = title;
+        this.tags = tags;
+        this.content = content;
+    }
 }

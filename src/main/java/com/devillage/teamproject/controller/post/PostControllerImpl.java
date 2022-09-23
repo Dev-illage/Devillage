@@ -21,8 +21,11 @@ public class PostControllerImpl implements PostController {
     private final PostService postService;
 
     @Override
-    public Long postPost(PostDto.Post request) {
-        return null;
+    public SingleResponseDto postPost(PostDto.Post request) {
+        Post post = PostDto.Post.toEntity(request);
+        Post savedPost = postService.savePost(post);
+
+        return SingleResponseDto.of((PostDto.Response.of(savedPost)));
     }
 
     @Override

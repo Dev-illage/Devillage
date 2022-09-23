@@ -62,9 +62,6 @@ public class User extends AuditingEntity {
     @ToString.Include
     private String oauthProvider;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-    private RefreshToken refreshToken;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
@@ -105,10 +102,6 @@ public class User extends AuditingEntity {
         this.nickName = nickName;
     }
 
-    public void addPost(Post post) {
-        posts.add(post);
-    }
-
     public void passwordEncryption(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
     }
@@ -117,7 +110,7 @@ public class User extends AuditingEntity {
         return passwordEncoder.matches(user.getPassword(), this.getPassword());
     }
 
-    public void addRefreshToken(String token) {
-        this.refreshToken = new RefreshToken(token, this);
+    public void deleteUser() {
+        this.userStatus = UserStatus.RESIGNED;
     }
 }

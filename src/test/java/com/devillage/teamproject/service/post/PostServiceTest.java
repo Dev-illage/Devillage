@@ -1,5 +1,6 @@
 package com.devillage.teamproject.service.post;
 
+import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.repository.post.PostRepository;
@@ -9,10 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
@@ -29,10 +33,27 @@ public class PostServiceTest implements Reflection {
     private PostServiceImpl postService;
 
     User user = newInstance(User.class);
+    Post post = newInstance(Post.class);
     Long postId = 1L;
     Long userId = 1L;
 
     public PostServiceTest() throws Exception {
+    }
+
+    @Test
+    public void savePost() throws Exception{
+        //given
+        setField(post,"title","Mockito 관련 질문입니다.");
+        setField(post,"content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
+        setField(post,"tags",new ArrayList<>());
+
+        given(postRepository.save(Mockito.any(Post.class))).willReturn(post);
+
+        //when
+        Post savedPost = postService.savePost(post);
+
+        //then
+        assertThat(post.getTitle()).isEqualTo(savedPost.getTitle());
     }
 
     @Test

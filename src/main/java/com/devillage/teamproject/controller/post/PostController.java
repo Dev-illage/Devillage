@@ -11,7 +11,7 @@ public interface PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    Long postPost(PostDto.Post request);
+    SingleResponseDto postPost(PostDto.Post request);
 
     @GetMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)

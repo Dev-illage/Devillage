@@ -27,8 +27,9 @@ public class PostServiceImpl implements PostService {
     private final LikeRepository likeRepository;
 
     @Override
-    public Post savePost() {
-        return null;
+    public Post savePost(Post post) {
+        Post savedPost = postRepository.save(post);
+        return savedPost;
     }
 
     @Override

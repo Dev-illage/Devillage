@@ -47,4 +47,27 @@ public class UserServiceTest implements Reflection {
         // then
         assertEquals(expectedUser, actualUser);
     }
+
+    @Test
+    @DisplayName("deleteUser")
+    public void deleteUser() throws Exception {
+        // given
+        User user = newInstance(User.class);
+        setField(user, "id", 1L);
+        setField(user, "email", "qwe@qwe.com");
+        setField(user, "nickName", "qwe");
+        setField(user, "userStatus", UserStatus.ACTIVE);
+        setField(user, "point", 0L);
+        setField(user, "statusMessage", "asd");
+        setField(user, "pwdLastModifiedAt", LocalDateTime.now().minusMonths(3));
+
+        given(userRepository.findById(Mockito.anyLong())).willReturn(Optional.of(user));
+
+        // when
+        userService.deleteUser(user.getId());
+
+        // then
+        assertEquals(UserStatus.RESIGNED, user.getUserStatus());
+
+    }
 }

@@ -12,13 +12,12 @@ public class MultiResponseDto<T> {
     private List<T> data;
     private PageInfo pageInfo;
 
-    private MultiResponseDto(Page<T> page) {
-        this.data = page.getContent();
-        this.pageInfo = new PageInfo(page.getNumber() + 1,
-                page.getSize(), page.getTotalElements(), page.getTotalPages());
+    private <P> MultiResponseDto(List<T> data, Page<P> page) {
+        this.data = data;
+        this.pageInfo = PageInfo.of(page);
     }
 
-    public static <T> MultiResponseDto<T> of(Page<T> page) {
-        return new MultiResponseDto<>(page);
+    public static <T, P> MultiResponseDto<T> of(List<T> data, Page<P> page) {
+        return new MultiResponseDto<>(data, page);
     }
 }

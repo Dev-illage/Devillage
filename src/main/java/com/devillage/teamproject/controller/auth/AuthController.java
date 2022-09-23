@@ -25,5 +25,5 @@ public interface AuthController {
 
     @DeleteMapping("/token")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    Long deleteAuth();
+    String deleteAuth(String token);
 }

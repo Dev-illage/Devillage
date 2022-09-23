@@ -1,11 +1,10 @@
 package com.devillage.teamproject.controller.post;
 
+import com.devillage.teamproject.dto.MultiResponseDto;
 import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequestMapping("/posts")
 public interface PostController {
@@ -37,9 +36,9 @@ public interface PostController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    List<PostDto.Response> getPosts(@RequestParam String category,
-                                    @RequestParam Long page,
-                                    @RequestParam Long size);
+    MultiResponseDto<PostDto.Response.SimplePostDto> getPosts(@RequestParam String category,
+                                                              @RequestParam int page,
+                                                              @RequestParam int size);
 
     @DeleteMapping("/{post-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

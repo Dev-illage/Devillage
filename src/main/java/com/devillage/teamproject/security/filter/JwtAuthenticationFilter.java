@@ -2,6 +2,7 @@ package com.devillage.teamproject.security.filter;
 
 import com.devillage.teamproject.security.token.JwtAuthenticationToken;
 import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,7 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             checkJwt(request, response, filterChain, jwt);
         } catch (ExpiredJwtException e) {
-            response.sendRedirect("/auth/refresh");
+            response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
+            response.setHeader("Location", "http://localhost:8080/auth/token/refresh");
+            filterChain.doFilter(request,response);
         }
     }
 
@@ -39,6 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             getAuthentication(jwt);
+            filterChain.doFilter(request, response);
         }
     }
 
@@ -49,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     public String getToken(String jwt) {
-        String[] splittedJwt = jwt.split(" ");
-        return splittedJwt[1];
+        String[] splitJwt = jwt.split(" ");
+        return splitJwt[1];
     }
 }

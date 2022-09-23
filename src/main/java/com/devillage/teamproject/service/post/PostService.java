@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public interface PostService {
-    Post savePost();
+    Post savePost(Post post);
 
     Post editPost();
 

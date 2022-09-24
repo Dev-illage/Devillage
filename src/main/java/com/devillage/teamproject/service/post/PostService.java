@@ -21,9 +21,9 @@ public interface PostService {
 
     void deletePost();
 
-    Bookmark postBookmark(Long postId);
+    Bookmark postBookmark(String accessToken, Long postId);
 
-    ReportedPost postReport(Long postId);
+    ReportedPost postReport(String accessToken, Long postId);
 
-    Like postLike(Long postId);
+    Like postLike(String accessToken, Long postId);
 }

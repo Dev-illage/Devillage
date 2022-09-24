@@ -6,6 +6,7 @@ import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.repository.post.LikeRepository;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.util.Reflection;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,11 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +33,9 @@ class LikeTest implements Reflection {
 
     @Mock
     private LikeRepository likeRepository;
+
+    @Mock
+    private JwtTokenUtil jwtTokenUtil;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -48,6 +52,9 @@ class LikeTest implements Reflection {
     @Test
     void createLike() {
         // given
+        given(jwtTokenUtil.getUserId(anyString()))
+                .willReturn(1L);
+
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
@@ -57,7 +64,7 @@ class LikeTest implements Reflection {
                 .willReturn(new ArrayList<>());
 
         // when
-        Like findLike = postService.postLike(postId);
+        Like findLike = postService.postLike("", postId);
 
         // then
         Assertions.assertThat(findLike.getPost()).isEqualTo(post);
@@ -69,6 +76,9 @@ class LikeTest implements Reflection {
         // given
         Like like = new Like(user, post);
 
+        given(jwtTokenUtil.getUserId(anyString()))
+                .willReturn(1L);
+
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
@@ -78,7 +88,7 @@ class LikeTest implements Reflection {
                 .willReturn(List.of(like));
 
         // when
-        Like findLike = postService.postLike(postId);
+        Like findLike = postService.postLike("", postId);
 
         // then
         Assertions.assertThat(findLike).isEqualTo(like);

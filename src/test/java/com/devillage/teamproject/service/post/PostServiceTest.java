@@ -5,6 +5,7 @@ import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.util.Reflection;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,12 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.lang.reflect.InvocationTargetException;
+
 import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +30,9 @@ public class PostServiceTest implements Reflection {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private JwtTokenUtil jwtTokenUtil;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -41,11 +46,11 @@ public class PostServiceTest implements Reflection {
     }
 
     @Test
-    public void savePost() throws Exception{
+    public void savePost() throws Exception {
         //given
-        setField(post,"title","Mockito 관련 질문입니다.");
-        setField(post,"content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
-        setField(post,"tags",new ArrayList<>());
+        setField(post, "title", "Mockito 관련 질문입니다.");
+        setField(post, "content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
+        setField(post, "tags", new ArrayList<>());
 
         given(postRepository.save(Mockito.any(Post.class))).willReturn(post);
 
@@ -59,21 +64,27 @@ public class PostServiceTest implements Reflection {
     @Test
     public void userNotFound() {
         // given
+        given(jwtTokenUtil.getUserId(anyString()))
+                .willReturn(1L);
+
         given(userRepository.findById(userId))
                 .willReturn(Optional.empty());
 
         // when / then
         assertThrows(BusinessLogicException.class,
-                () -> postService.postBookmark(postId));
+                () -> postService.postBookmark("", postId));
         assertThrows(BusinessLogicException.class,
-                () -> postService.postReport(postId));
+                () -> postService.postReport("", postId));
         assertThrows(BusinessLogicException.class,
-                () -> postService.postLike(postId));
+                () -> postService.postLike("", postId));
     }
 
     @Test
     public void postNotFound() {
         // given
+        given(jwtTokenUtil.getUserId(anyString()))
+                .willReturn(1L);
+
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
@@ -81,10 +92,10 @@ public class PostServiceTest implements Reflection {
 
         // when / then
         assertThrows(BusinessLogicException.class,
-                () -> postService.postBookmark(postId));
+                () -> postService.postBookmark("", postId));
         assertThrows(BusinessLogicException.class,
-                () -> postService.postReport(postId));
+                () -> postService.postReport("", postId));
         assertThrows(BusinessLogicException.class,
-                () -> postService.postLike(postId));
+                () -> postService.postLike("", postId));
     }
 }

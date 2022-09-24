@@ -1,7 +1,7 @@
 package com.devillage.teamproject.controller.user;
 
+import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
-import com.devillage.teamproject.entity.enums.UserStatus;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
 import com.jayway.jsonpath.JsonPath;
@@ -20,12 +20,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
-
+import static com.devillage.teamproject.security.util.JwtConstants.*;
 import static com.devillage.teamproject.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -119,6 +120,51 @@ class UserControllerTest implements Reflection {
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("user-id").description("회원 식별자")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("blockUser")
+    public void blockUser() throws Exception {
+        // given
+        User srcUser = newInstance(User.class);
+        setField(srcUser, "id", ID1);
+        User targetUser = newInstance(User.class);
+        setField(targetUser, "id", ID2);
+        Block block = Block.builder().srcUser(srcUser).destUser(targetUser).id(ID1).build();
+
+        given(userService.blockUser(Mockito.anyLong(), Mockito.anyString())).willReturn(block);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/users/block/{target-user-id}", targetUser.getId())
+                        .header(AUTHORIZATION_HEADER, "some_token")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.blockId").value(block.getId()))
+                .andExpect(jsonPath("$.data.srcUserId").value(block.getSrcUser().getId()))
+                .andExpect(jsonPath("$.data.targetUserId").value(block.getDestUser().getId()))
+                .andDo(document(
+                        "block-user",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("target-user-id").description("블락할 회원 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("data").description("결과 데이터"),
+                                fieldWithPath("data.blockId").description("블락 식별자"),
+                                fieldWithPath("data.srcUserId").description("블락을 요청한 회원 식별자"),
+                                fieldWithPath("data.targetUserId").description("블락을 당하는 회원 식별자")
                         )
                 ));
 

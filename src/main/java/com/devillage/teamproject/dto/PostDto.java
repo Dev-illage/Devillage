@@ -1,10 +1,12 @@
 package com.devillage.teamproject.dto;
 
-import com.devillage.teamproject.entity.Category;
-import com.devillage.teamproject.entity.PostTag;
+import com.devillage.teamproject.entity.*;
+import com.devillage.teamproject.entity.enums.CategoryType;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,6 +29,38 @@ public class PostDto {
                     .tags(post.getTags())
                     .content(post.getContent())
                     .build();
+        }
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        public static class PostDetail{
+            private Long key;
+            private String title;
+            private String category;
+            private LocalDateTime createdAt;
+            private String content;
+            private boolean isModified;
+            private Long clicks;
+            private List<TagDto.Response> tag;
+            private UserDto.AuthorInfo author;
+            private List<Comment> commentList;
+
+            public static PostDetail of(com.devillage.teamproject.entity.Post post){
+                return PostDetail.builder()
+                        .key(post.getId())
+                        .title(post.getTitle())
+                        .category(String.valueOf(post.getCategory().getCategoryType()))
+                        .createdAt(post.getCreatedAt())
+                        .content(post.getContent())
+                        .isModified(post.getLastModifiedAt().isAfter(post.getCreatedAt()))
+                        .clicks(post.getClicks())
+                        .tag(TagDto.Response.of(post))
+                        .author(UserDto.AuthorInfo.of(post.getUser()))
+                        .commentList(post.getComments())
+                        .build();
+            }
+
         }
 
 

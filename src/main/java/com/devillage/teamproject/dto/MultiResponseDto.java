@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -11,6 +12,7 @@ import java.util.List;
 public class MultiResponseDto<T> {
     private List<T> data;
     private PageInfo pageInfo;
+    private PostDto.Response.PostDetail response;
 
     private MultiResponseDto(Page<T> page) {
         this.data = page.getContent();
@@ -18,7 +20,16 @@ public class MultiResponseDto<T> {
                 page.getSize(), page.getTotalElements(), page.getTotalPages());
     }
 
+    public MultiResponseDto(PostDto.Response.PostDetail response) {
+        this.response = response;
+    }
+
     public static <T> MultiResponseDto<T> of(Page<T> page) {
         return new MultiResponseDto<>(page);
     }
+
+    public static <T> MultiResponseDto<T> of(PostDto.Response.PostDetail response){
+        return new MultiResponseDto<>(response);
+    }
+
 }

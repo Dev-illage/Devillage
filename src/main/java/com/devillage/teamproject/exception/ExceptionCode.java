@@ -11,7 +11,8 @@ public enum ExceptionCode {
     MALFORMED_JWT_EXCEPTION(401, "Malformed Jwt Exception"),
     UNSUPPORTED_JWT_EXCEPTION(401, "Unsupported Jwt Exception"),
     SIGNATURE_EXCEPTION(401, "Signature Exception"),
-    EXPIRED_JWT_EXCEPTION(401, "Expired Jwt Exception")
+    EXPIRED_JWT_EXCEPTION(401, "Expired Jwt Exception"),
+    CATEGORY_NOT_FOUND(404, "Category not found")
     ;
     private final int status;
     private final String message;

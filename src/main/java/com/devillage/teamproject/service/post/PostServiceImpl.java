@@ -6,6 +6,7 @@ import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.post.*;
 import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ public class PostServiceImpl implements PostService {
     private final BookmarkRepository bookmarkRepository;
     private final ReportedPostRepository reportedPostRepository;
     private final LikeRepository likeRepository;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Override
     public Post savePost(Post post) {
@@ -62,8 +64,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Bookmark postBookmark(Long postId) {
-        Long userId = 1L; // Security 메서드 구현 필요
+    public Bookmark postBookmark(String accessToken, Long postId) {
+        Long userId = jwtTokenUtil.getUserId(accessToken);
         User user = verifyUser(userId);
         Post post = verifyPost(postId);
 
@@ -81,8 +83,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ReportedPost postReport(Long postId) {
-        Long userId = 1L; // Security 메서드 구현 필요
+    public ReportedPost postReport(String accessToken, Long postId) {
+        Long userId = jwtTokenUtil.getUserId(accessToken);
         User user = verifyUser(userId);
         Post post = verifyPost(postId);
 
@@ -98,8 +100,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Like postLike(Long postId) {
-        Long userId = 1L; // Security 메서드 구현 필요
+    public Like postLike(String accessToken, Long postId) {
+        Long userId = jwtTokenUtil.getUserId(accessToken);
         User user = verifyUser(userId);
         Post post = verifyPost(postId);
 

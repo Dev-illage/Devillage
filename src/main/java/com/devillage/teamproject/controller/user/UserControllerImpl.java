@@ -2,6 +2,7 @@ package com.devillage.teamproject.controller.user;
 
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.dto.UserDto;
+import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.service.user.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,8 +15,10 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public Long postBlock(Long id) {
-        return null;
+    public SingleResponseDto postBlock(Long targetId, String token) {
+        Long srcUserId = 1L; // jwt 적용전
+        Block block = userService.blockUser(srcUserId, targetId);
+        return SingleResponseDto.of(UserDto.BlockUserDto.of(block));
     }
 
     @Override

@@ -16,5 +16,5 @@ public interface UserService {
 
     void deleteUser(Long userId);
 
-    Block blockUser(Long srcUserId, Long destUserId);
+    Block blockUser(Long destUserId, String token);
 }

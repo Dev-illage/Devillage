@@ -5,6 +5,7 @@ import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.entity.enums.UserStatus;
 import com.devillage.teamproject.repository.user.BlockRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.util.Reflection;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.devillage.teamproject.util.TestConstants.*;
@@ -28,6 +28,9 @@ public class UserServiceTest implements Reflection {
 
     @Mock
     private BlockRepository blockRepository;
+
+    @Mock
+    private JwtTokenUtil jwtTokenUtil;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -90,9 +93,10 @@ public class UserServiceTest implements Reflection {
                 .willReturn(Optional.empty());
         given(userRepository.findById(srcUser.getId())).willReturn(Optional.of(srcUser));
         given(userRepository.findById(destUser.getId())).willReturn(Optional.of(destUser));
+        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(srcUser.getId());
 
         // when
-        Block actualBlock = userService.blockUser(srcUser.getId(), destUser.getId());
+        Block actualBlock = userService.blockUser(destUser.getId(), "someToken");
 
         // then
         assertEquals(srcUser, actualBlock.getSrcUser());
@@ -108,9 +112,10 @@ public class UserServiceTest implements Reflection {
 
         given(blockRepository.findBySrcUserIdAndDestUserId(Mockito.anyLong(), Mockito.anyLong()))
                 .willReturn(Optional.of(block));
+        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(ID1);
 
         // when
-        Block actualBlock = userService.blockUser(ID1, ID2);
+        Block actualBlock = userService.blockUser(ID2, "someToken");
 
         // then
         assertEquals(block, actualBlock);

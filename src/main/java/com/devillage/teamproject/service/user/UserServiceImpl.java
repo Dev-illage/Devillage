@@ -6,6 +6,7 @@ import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.user.BlockRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +18,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BlockRepository blockRepository;
 
-    public UserServiceImpl(UserRepository userRepository, BlockRepository blockRepository) {
+    private final JwtTokenUtil jwtTokenUtil;
+
+    public UserServiceImpl(UserRepository userRepository, BlockRepository blockRepository, JwtTokenUtil jwtTokenUtil) {
         this.userRepository = userRepository;
         this.blockRepository = blockRepository;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @Override
@@ -50,7 +54,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Block blockUser(Long srcUserId, Long destUserId) {
+    public Block blockUser(Long destUserId, String token) {
+        Long srcUserId = jwtTokenUtil.getUserId(token);
         Optional<Block> optionalBlock = blockRepository.findBySrcUserIdAndDestUserId(srcUserId, destUserId);
         if (optionalBlock.isPresent()) {
             Block block = optionalBlock.get();

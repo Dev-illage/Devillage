@@ -135,7 +135,7 @@ class UserControllerTest implements Reflection {
         setField(targetUser, "id", ID2);
         Block block = Block.builder().srcUser(srcUser).destUser(targetUser).id(ID1).build();
 
-        given(userService.blockUser(Mockito.anyLong(), Mockito.anyLong())).willReturn(block);
+        given(userService.blockUser(Mockito.anyLong(), Mockito.anyString())).willReturn(block);
 
         // when
         ResultActions actions = mockMvc.perform(

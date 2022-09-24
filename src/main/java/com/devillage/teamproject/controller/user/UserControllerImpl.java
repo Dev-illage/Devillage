@@ -17,7 +17,7 @@ public class UserControllerImpl implements UserController {
     @Override
     public SingleResponseDto postBlock(Long targetId, String token) {
         Long srcUserId = 1L; // jwt 적용전
-        Block block = userService.blockUser(srcUserId, targetId);
+        Block block = userService.blockUser(targetId, token);
         return SingleResponseDto.of(UserDto.BlockUserDto.of(block));
     }
 

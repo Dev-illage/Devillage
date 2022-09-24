@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.devillage.teamproject.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
@@ -31,13 +32,13 @@ public class UserServiceTest implements Reflection {
     public void findUser() throws Exception {
         // given
         User expectedUser = newInstance(User.class);
-        setField(expectedUser, "id", 1L);
-        setField(expectedUser, "email", "qwe@qwe.com");
-        setField(expectedUser, "nickName", "qwe");
+        setField(expectedUser, "id", ID1);
+        setField(expectedUser, "email", EMAIL1);
+        setField(expectedUser, "nickName", NICKNAME1);
         setField(expectedUser, "userStatus", UserStatus.ACTIVE);
         setField(expectedUser, "point", 0L);
-        setField(expectedUser, "statusMessage", "asd");
-        setField(expectedUser, "pwdLastModifiedAt", LocalDateTime.now().minusMonths(3));
+        setField(expectedUser, "statusMessage", STATUS_MESSAGE1);
+        setField(expectedUser, "pwdLastModifiedAt", PASSWORD_LAST_MODIFIED_AT1);
 
         given(userRepository.findById(Mockito.anyLong())).willReturn(Optional.of(expectedUser));
 
@@ -53,13 +54,13 @@ public class UserServiceTest implements Reflection {
     public void deleteUser() throws Exception {
         // given
         User user = newInstance(User.class);
-        setField(user, "id", 1L);
-        setField(user, "email", "qwe@qwe.com");
-        setField(user, "nickName", "qwe");
+        setField(user, "id", ID1);
+        setField(user, "email", EMAIL1);
+        setField(user, "nickName", NICKNAME1);
         setField(user, "userStatus", UserStatus.ACTIVE);
         setField(user, "point", 0L);
-        setField(user, "statusMessage", "asd");
-        setField(user, "pwdLastModifiedAt", LocalDateTime.now().minusMonths(3));
+        setField(user, "statusMessage", STATUS_MESSAGE1);
+        setField(user, "pwdLastModifiedAt", PASSWORD_LAST_MODIFIED_AT1);
 
         given(userRepository.findById(Mockito.anyLong())).willReturn(Optional.of(user));
 

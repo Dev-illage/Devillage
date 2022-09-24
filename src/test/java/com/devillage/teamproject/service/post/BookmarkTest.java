@@ -6,6 +6,7 @@ import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.repository.post.BookmarkRepository;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.util.Reflection;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +34,9 @@ class BookmarkTest implements Reflection {
 
     @Mock
     private BookmarkRepository bookmarkRepository;
+
+    @Mock
+    private JwtTokenUtil jwtTokenUtil;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -48,6 +53,9 @@ class BookmarkTest implements Reflection {
     @Test
     void createBookmark() {
         // given
+        given(jwtTokenUtil.getUserId(anyString()))
+                .willReturn(1L);
+
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
@@ -57,7 +65,7 @@ class BookmarkTest implements Reflection {
                 .willReturn(new ArrayList<>());
 
         // when
-        Bookmark findBookmark = postService.postBookmark(postId);
+        Bookmark findBookmark = postService.postBookmark("", postId);
 
         // then
         Assertions.assertThat(findBookmark.getPost()).isEqualTo(post);
@@ -68,6 +76,10 @@ class BookmarkTest implements Reflection {
     void deleteBookmark() {
         // given
         Bookmark bookmark = new Bookmark(user, post);
+
+        given(jwtTokenUtil.getUserId(anyString()))
+                .willReturn(1L);
+
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
@@ -77,7 +89,7 @@ class BookmarkTest implements Reflection {
                 .willReturn(List.of(bookmark));
 
         // when
-        Bookmark findBookmark = postService.postBookmark(postId);
+        Bookmark findBookmark = postService.postBookmark("", postId);
 
         // then
         Assertions.assertThat(findBookmark).isEqualTo(bookmark);

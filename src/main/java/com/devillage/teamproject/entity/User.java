@@ -85,8 +85,12 @@ public class User extends AuditingEntity {
     @OneToMany(mappedBy = "user")
     private final List<ReComment> reComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "srcUser")
+    @OneToMany(mappedBy = "srcUser", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private final List<Block> blockedUsers = new ArrayList<>();
+
+    public void addBlock(Block block) {
+        this.blockedUsers.add(block);
+    }
 
     @OneToMany(mappedBy = "user")
     private final List<ReportedPost> reportedPosts = new ArrayList<>();

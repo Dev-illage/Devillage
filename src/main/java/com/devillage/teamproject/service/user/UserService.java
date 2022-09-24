@@ -1,5 +1,6 @@
 package com.devillage.teamproject.service.user;
 
+import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface UserService {
     List<User> findUsers(int page, int size);
 
     void deleteUser(Long userId);
+
+    Block blockUser(Long srcUserId, Long destUserId);
 }

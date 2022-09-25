@@ -36,4 +36,21 @@ public class UserDto {
     public static class PatchProfile {
 
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Builder(access = AccessLevel.PRIVATE)
+    public static class AuthorInfo {
+        private long authorId;
+        private String authorName;
+
+        public static AuthorInfo of(User user) {
+            return AuthorInfo.builder()
+                    .authorId(user.getId())
+                    .authorName(user.getNickName())
+                    .build();
+        }
+    }
+
 }

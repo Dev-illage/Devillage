@@ -16,7 +16,7 @@ public interface PostController {
 
     @GetMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
-    PostDto.Response getPost(@PathVariable("post-id") Long id);
+    MultiResponseDto<PostDto.Response.PostDetail> getPost(@PathVariable("post-id") Long id);
 
     @PostMapping("/{post-id}/bookmark")
     @ResponseStatus(HttpStatus.OK)

@@ -15,7 +15,7 @@ public interface PostService {
 
     Post editPost();
 
-    Post getPost();
+    Post getPost(Long id);
 
     Page<Post> getPosts(String category, int page, int size);
 

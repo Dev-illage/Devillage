@@ -2,6 +2,7 @@ package com.devillage.teamproject.controller.user;
 
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.dto.UserDto;
+import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,8 @@ public interface UserController {
 
     @PostMapping("/block/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    Long postBlock(@PathVariable("user-id") Long id);
+    SingleResponseDto postBlock(@PathVariable("user-id") Long targetId,
+                                @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @PatchMapping("/profile/{user-id}")
     @ResponseStatus(HttpStatus.OK)

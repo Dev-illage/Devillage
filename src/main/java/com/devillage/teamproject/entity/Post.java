@@ -36,8 +36,8 @@ public class Post extends AuditingEntity {
     @EqualsAndHashCode.Include
     private Long likeCount;
 
-    public void addLikeCount(int num) {
-        likeCount += num;
+    public void setLikeCount(Long num) {
+        likeCount = num;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)

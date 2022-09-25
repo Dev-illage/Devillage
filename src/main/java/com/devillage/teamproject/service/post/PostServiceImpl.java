@@ -107,18 +107,18 @@ public class PostServiceImpl implements PostService {
         User user = verifyUser(userId);
         Post post = verifyPost(postId);
 
-        List<Like> findLike = likeRepository.findByUserIdAndPostId(userId, postId);
+        List<Like> findLikes = likeRepository.findByUserIdAndPostId(userId, postId);
+        Long count = likeRepository.countByPostId(postId);
 
-        if (!findLike.isEmpty()) {
-            Like like = findLike.get(0);
-            likeRepository.delete(like);
-            post.addLikeCount(-1);
+        if (!findLikes.isEmpty()) {
+            likeRepository.deleteAll(findLikes);
+            post.setLikeCount(count - 1L);
             return post;
         }
 
         Like like = new Like(user, post);
         user.addLike(like);
-        post.addLikeCount(1);
+        post.setLikeCount(count + 1L);
         return post;
     }
 

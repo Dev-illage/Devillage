@@ -44,7 +44,7 @@ class ReportTest implements Reflection {
 
     User user = newInstance(User.class);
     Post post = newInstance(Post.class);
-    Long userId = 1L; // Security 메서드 구현 필요
+    Long userId = 1L;
     Long postId = 1L;
 
     ReportTest() throws Exception {
@@ -55,7 +55,7 @@ class ReportTest implements Reflection {
     void createReportedPost() {
         // given
         given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(1L);
+                .willReturn(userId);
 
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
@@ -79,7 +79,7 @@ class ReportTest implements Reflection {
         ReportedPost report = new ReportedPost(user, post);
 
         given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(1L);
+                .willReturn(userId);
 
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));

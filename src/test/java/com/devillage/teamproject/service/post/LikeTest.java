@@ -42,18 +42,20 @@ class LikeTest implements Reflection {
 
     User user = newInstance(User.class);
     Post post = newInstance(Post.class);
-    Long userId = 1L; // Security 메서드 구현 필요
+    Long userId = 1L;
     Long postId = 1L;
 
     LikeTest() throws Exception {
         setField(user, "likes", new ArrayList<>());
+        setField(post, "user", user);
+        setField(post, "likeCount", 1L);
     }
 
     @Test
     void createLike() {
         // given
         given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(1L);
+                .willReturn(userId);
 
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
@@ -64,20 +66,21 @@ class LikeTest implements Reflection {
                 .willReturn(new ArrayList<>());
 
         // when
-        Like findLike = postService.postLike("", postId);
+        Post findPost = postService.postLike("", postId);
 
         // then
-        Assertions.assertThat(findLike.getPost()).isEqualTo(post);
-        Assertions.assertThat(findLike.getUser()).isEqualTo(user);
+        Assertions.assertThat(findPost).isEqualTo(post);
+        Assertions.assertThat(findPost.getUser()).isEqualTo(user);
+        Assertions.assertThat(findPost.getLikeCount()).isEqualTo(2L);
     }
 
     @Test
-    void deleteLike() {
+    void deleteLike() throws Exception {
         // given
         Like like = new Like(user, post);
 
         given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(1L);
+                .willReturn(userId);
 
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
@@ -88,10 +91,12 @@ class LikeTest implements Reflection {
                 .willReturn(List.of(like));
 
         // when
-        Like findLike = postService.postLike("", postId);
+        Post findPost = postService.postLike("", postId);
 
         // then
-        Assertions.assertThat(findLike).isEqualTo(like);
+        Assertions.assertThat(findPost).isEqualTo(post);
+        Assertions.assertThat(findPost.getUser()).isEqualTo(user);
+        Assertions.assertThat(findPost.getLikeCount()).isEqualTo(0L);
     }
 
 }

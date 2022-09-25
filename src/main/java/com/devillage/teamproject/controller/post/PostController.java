@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.post;
 
+import com.devillage.teamproject.dto.DoubleResponseDto;
 import com.devillage.teamproject.dto.MultiResponseDto;
 import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.security.util.JwtConstants;
@@ -42,9 +43,9 @@ public interface PostController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    MultiResponseDto<PostDto.Response.SimplePostDto> getPosts(@RequestParam String category,
-                                                              @RequestParam int page,
-                                                              @RequestParam int size);
+    DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByCategory(@RequestParam String category,
+                                                               @RequestParam int page,
+                                                               @RequestParam int size);
 
     @DeleteMapping("/{post-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

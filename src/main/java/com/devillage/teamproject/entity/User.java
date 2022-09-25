@@ -100,6 +100,7 @@ public class User extends AuditingEntity {
         this.email = email;
         this.password = password;
         this.nickName = nickName;
+        this.pwdLastModifiedAt = LocalDateTime.now();
     }
 
     public void passwordEncryption(PasswordEncoder passwordEncoder) {

@@ -5,9 +5,12 @@ import com.devillage.teamproject.dto.ResponseDto;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.http.parser.Authorization;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import static com.devillage.teamproject.security.util.JwtConstants.*;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthControllerImpl implements AuthController {
@@ -26,17 +29,14 @@ public class AuthControllerImpl implements AuthController {
     }
 
     @Override
-    public Long postRefresh(@RequestHeader Authorization authorization) {
-        return null;
+    public ResponseDto.SingleResponseDto<AuthDto.Token> postRefresh(@RequestHeader(REFRESH_HEADER) String refreshToken) {
+        AuthDto.Token token = authService.reIssueToken(refreshToken);
+        return ResponseDto.SingleResponseDto.of(token);
     }
 
     @Override
-    public Long deleteAuth() {
-        return null;
-    }
-
-    @GetMapping("/1")
-    public Long returnNum() {
-        return 1L;
+    public String deleteAuth(@RequestHeader(REFRESH_HEADER) String token) {
+        authService.deleteToken(token);
+        return "OK";
     }
 }

@@ -5,6 +5,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -22,14 +23,14 @@ public class JwtTokenUtil {
     private final byte[] secretByteKey;
     private final byte[] refreshByteKey;
 
+
     public JwtTokenUtil(@Value("${jwt.secretKey}") String secretKey,
                         @Value("${jwt.refreshKey}") String refreshKey) {
         this.secretByteKey = secretKey.getBytes();
         this.refreshByteKey = refreshKey.getBytes();
     }
 
-
-    public String createAccessToken(String userEmail, Long userSequence, List<String> roles) {
+    public String createToken(String userEmail, Long userSequence, List<String> roles, byte[] token, Long expire) {
         Claims claims = Jwts.claims()
                 .setSubject(userEmail);
         claims.put(ROLES, roles);
@@ -39,29 +40,48 @@ public class JwtTokenUtil {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime()+ACCESS_TOKEN_EXPIRE_COUNT))
-                .signWith(getSigningKey(secretByteKey), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(new Date().getTime()+expire))
+                .signWith(getSigningKey(token), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String createRefreshToken(String email) {
-        return Jwts.builder()
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime()+REFRESH_TOKEN_EXPIRE_COUNT))
-                .setSubject(email)
-                .signWith(getSigningKey(refreshByteKey), SignatureAlgorithm.HS256)
-                .compact();
+    private Claims parseToken(String token, byte[] keyByte) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey(keyByte))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public String createAccessToken(String userEmail, Long userSequence, List<String> roles) {
+        return createToken(userEmail, userSequence, roles, secretByteKey, ACCESS_TOKEN_EXPIRE_COUNT);
+    }
+
+    public String createRefreshToken(String userEmail, Long userSequence, List<String> roles) {
+        return createToken(userEmail, userSequence, roles, refreshByteKey, REFRESH_TOKEN_EXPIRE_COUNT);
     }
 
     public Claims parseRefreshToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey(refreshByteKey))
-                .build()
-                .parseClaimsJwt(token)
-                .getBody();
+        return parseToken(token, refreshByteKey);
+    }
+
+    public Claims paresAccessToken(String token) {
+        return parseToken(token, secretByteKey);
     }
 
     public Key getSigningKey(byte[] byteKey) {
         return Keys.hmacShaKeyFor(byteKey);
+    }
+
+    public String getUserEmail(String token) {
+        return paresAccessToken(splitToken(token)).getSubject();
+    }
+
+    public Long getUserId(String token) {
+        return Long.valueOf((Integer) paresAccessToken(splitToken(token)).get(SEQUENCE));
+    }
+
+    public String splitToken(String token) {
+        return token.substring(7);
     }
 }

@@ -7,6 +7,7 @@ import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.post.ReportedPostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.util.Reflection;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,12 +16,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,6 +36,9 @@ class ReportTest implements Reflection {
     @Mock
     private ReportedPostRepository reportRepository;
 
+    @Mock
+    private JwtTokenUtil jwtTokenUtil;
+
     @InjectMocks
     private PostServiceImpl postService;
 
@@ -43,13 +47,16 @@ class ReportTest implements Reflection {
     Long userId = 1L; // Security 메서드 구현 필요
     Long postId = 1L;
 
-    ReportTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+    ReportTest() throws Exception {
         setField(user, "reportedPosts", new ArrayList<>());
     }
 
     @Test
     void createReportedPost() {
         // given
+        given(jwtTokenUtil.getUserId(anyString()))
+                .willReturn(1L);
+
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
@@ -59,7 +66,7 @@ class ReportTest implements Reflection {
                 .willReturn(new ArrayList<>());
 
         // when
-        ReportedPost findReportedPost = postService.postReport(postId);
+        ReportedPost findReportedPost = postService.postReport("", postId);
 
         // then
         Assertions.assertThat(findReportedPost.getPost()).isEqualTo(post);
@@ -71,6 +78,9 @@ class ReportTest implements Reflection {
         // given
         ReportedPost report = new ReportedPost(user, post);
 
+        given(jwtTokenUtil.getUserId(anyString()))
+                .willReturn(1L);
+
         given(userRepository.findById(userId))
                 .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
@@ -81,7 +91,7 @@ class ReportTest implements Reflection {
 
         // when / then
         assertThrows(BusinessLogicException.class,
-                () -> postService.postReport(postId));
+                () -> postService.postReport("", postId));
     }
 
 }

@@ -1,6 +1,5 @@
 package com.devillage.teamproject.controller.post;
 
-import com.devillage.teamproject.dto.MultiResponseDto;
 import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.entity.Bookmark;
@@ -9,10 +8,8 @@ import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +19,7 @@ public class PostControllerImpl implements PostController {
     private final PostService postService;
 
     @Override
-    public SingleResponseDto postPost(@Valid @RequestBody PostDto.Post request) {
+    public SingleResponseDto postPost(PostDto.Post request) {
         Post post = PostDto.Post.toEntity(request);
         Post savedPost = postService.savePost(post);
 
@@ -30,9 +27,8 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public MultiResponseDto<PostDto.Response.PostDetail> getPost(Long id) {
-        Post post = postService.getPost(id);
-        return MultiResponseDto.PostDetail.of(PostDto.Response.PostDetail.of(post));
+    public PostDto.Response getPost(Long id) {
+        return null;
     }
 
     @Override

@@ -1,19 +1,23 @@
 package com.devillage.teamproject.dto;
 
+import com.devillage.teamproject.entity.Post;
+import com.devillage.teamproject.entity.PostTag;
 import com.devillage.teamproject.entity.Tag;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TagDto {
 
     @Getter
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @Builder
+    @AllArgsConstructor
+//    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
-        private Long id;
+        private long tagId;
         private String name;
 
         public static Response of(Tag tag) {

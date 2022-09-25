@@ -11,13 +11,24 @@ import java.util.List;
 public class MultiResponseDto<T> {
     private List<T> data;
     private PageInfo pageInfo;
+    private PostDto.Response.PostDetail response;
 
-    private <P> MultiResponseDto(List<T> data, Page<P> page) {
-        this.data = data;
-        this.pageInfo = PageInfo.of(page);
+    private MultiResponseDto(Page<T> page) {
+        this.data = page.getContent();
+        this.pageInfo = new PageInfo(page.getNumber() + 1,
+                page.getSize(), page.getTotalElements(), page.getTotalPages());
     }
 
-    public static <T, P> MultiResponseDto<T> of(List<T> data, Page<P> page) {
-        return new MultiResponseDto<>(data, page);
+    public MultiResponseDto(PostDto.Response.PostDetail response) {
+        this.response = response;
     }
+
+    public static <T> MultiResponseDto<T> of(Page<T> page) {
+        return new MultiResponseDto<>(page);
+    }
+
+    public static <T> MultiResponseDto<T> of(PostDto.Response.PostDetail response){
+        return new MultiResponseDto<>(response);
+    }
+
 }

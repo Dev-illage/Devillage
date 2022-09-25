@@ -71,13 +71,14 @@ public class UserServiceTest implements Reflection {
         setField(user, "pwdLastModifiedAt", PASSWORD_LAST_MODIFIED_AT1);
 
         given(userRepository.findById(Mockito.anyLong())).willReturn(Optional.of(user));
+        String originalEmail = user.getEmail();
 
         // when
         userService.deleteUser(user.getId());
 
         // then
         assertEquals(UserStatus.RESIGNED, user.getUserStatus());
-
+        assertNotEquals(originalEmail, user.getEmail());
     }
 
     @Test

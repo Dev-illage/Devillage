@@ -13,15 +13,15 @@ public interface AuthController {
 
     @PostMapping("/token")
     @ResponseStatus(HttpStatus.CREATED)
-    ResponseDto.SingleResponseDto<AuthDto.Token> postAuth(@RequestBody AuthDto.Login request);
+    AuthDto.Token postAuth(@RequestBody AuthDto.Login request);
 
     @PostMapping("/new")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     Long postJoin(AuthDto.JOIN request);
 
     @PostMapping("/token/refresh")
     @ResponseStatus(HttpStatus.OK)
-    ResponseDto.SingleResponseDto<AuthDto.Token> postRefresh(@RequestHeader(REFRESH_HEADER) String refreshToken);
+    AuthDto.Token postRefresh(@RequestHeader(REFRESH_HEADER) String refreshToken);
 
     @DeleteMapping("/token")
     @ResponseStatus(HttpStatus.NO_CONTENT)

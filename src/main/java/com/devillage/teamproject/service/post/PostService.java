@@ -1,4 +1,4 @@
-package com.devillage.teamproject.service.file.post;
+package com.devillage.teamproject.service.post;
 
 import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.Like;

@@ -1,4 +1,4 @@
-package com.devillage.teamproject.service.file.post;
+package com.devillage.teamproject.service.post;
 
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;

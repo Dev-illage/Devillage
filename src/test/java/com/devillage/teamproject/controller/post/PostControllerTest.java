@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -26,6 +27,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -65,7 +68,7 @@ class PostControllerTest implements Reflection {
 
     @WithMockUser
     @Test
-    public void postPost() throws Exception{
+    public void postPost() throws Exception {
         //given
         PostDto.Post postDto = newInstance(PostDto.Post.class);
         Category category = newInstance(Category.class);
@@ -151,109 +154,113 @@ class PostControllerTest implements Reflection {
 
 
 
-//    @Test
-//    void postBookmark() throws Exception {
-//        // given
-//        Bookmark bookmark = new Bookmark(user, post);
-//        setField(bookmark, "id", 3L);
-//
-//        given(postService.postBookmark(post.getId()))
-//                .willReturn(bookmark);
-//
-//        // when
-//        ResultActions actions = mockMvc.perform(
-//                post("/posts/{post-id}/bookmark", post.getId())
-//        );
-//
-//        // then
-//        actions.andExpect(status().isOk())
-//                .andExpect(jsonPath("$.data.user").value(user.getId()))
-//                .andExpect(jsonPath("$.data.post").value(post.getId()))
-//                .andExpect(jsonPath("$.data.bookmark").value(bookmark.getId()))
-//                .andDo(document("post-bookmark",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        pathParameters(
-//                                parameterWithName("post-id").description("게시글 식별자")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-//                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
-//                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-//                                fieldWithPath("data.bookmark").type(JsonFieldType.NUMBER).description("북마크 식별자")
-//                        )
-//                ));
-//
-//    }
 
-//    @Test
-//    void postReport() throws Exception {
-//        // given
-//        ReportedPost report = new ReportedPost(user, post);
-//        setField(report, "id", 3L);
-//
-//        given(postService.postReport(post.getId()))
-//                .willReturn(report);
-//
-//        // when
-//        ResultActions actions = mockMvc.perform(
-//                post("/posts/{post-id}/report", post.getId())
-//        );
-//
-//        // then
-//        actions.andExpect(status().isOk())
-//                .andExpect(jsonPath("$.data.user").value(user.getId()))
-//                .andExpect(jsonPath("$.data.post").value(post.getId()))
-//                .andExpect(jsonPath("$.data.report").value(report.getId()))
-//                .andDo(document("post-report",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        pathParameters(
-//                                parameterWithName("post-id").description("게시글 식별자")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-//                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
-//                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-//                                fieldWithPath("data.report").type(JsonFieldType.NUMBER).description("신고글 식별자")
-//                        )
-//                ));
-//
-//    }
+    @Test
+    void postBookmark() throws Exception {
+        // given
+        Bookmark bookmark = new Bookmark(user, post);
+        setField(bookmark, "id", 3L);
 
-//    @Test
-//    void postLike() throws Exception {
-//        // given
-//        Like like = new Like(user, post);
-//        setField(like, "id", 3L);
-//
-//        given(postService.postLike(post.getId()))
-//                .willReturn(like);
-//
-//        // when
-//        ResultActions actions = mockMvc.perform(
-//                post("/posts/{post-id}/like", post.getId())
-//        );
-//
-//        // then
-//        actions.andExpect(status().isOk())
-//                .andExpect(jsonPath("$.data.user").value(user.getId()))
-//                .andExpect(jsonPath("$.data.post").value(post.getId()))
-//                .andExpect(jsonPath("$.data.like").value(like.getId()))
-//                .andDo(document("post-like",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        pathParameters(
-//                                parameterWithName("post-id").description("게시글 식별자")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-//                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
-//                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-//                                fieldWithPath("data.like").type(JsonFieldType.NUMBER).description("좋아요 식별자")
-//                        )
-//                ));
-//
-//    }
+        given(postService.postBookmark(anyString(), anyLong()))
+                .willReturn(bookmark);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/posts/{post-id}/bookmark", post.getId())
+                        .header(HttpHeaders.AUTHORIZATION, "")
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.user").value(user.getId()))
+                .andExpect(jsonPath("$.data.post").value(post.getId()))
+                .andExpect(jsonPath("$.data.bookmark").value(bookmark.getId()))
+                .andDo(document("post-bookmark",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
+                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("data.bookmark").type(JsonFieldType.NUMBER).description("북마크 식별자")
+                        )
+                ));
+
+    }
+
+    @Test
+    void postReport() throws Exception {
+        // given
+        ReportedPost report = new ReportedPost(user, post);
+        setField(report, "id", 3L);
+
+        given(postService.postReport(anyString(), anyLong()))
+                .willReturn(report);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/posts/{post-id}/report", post.getId())
+                        .header(HttpHeaders.AUTHORIZATION, "")
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.user").value(user.getId()))
+                .andExpect(jsonPath("$.data.post").value(post.getId()))
+                .andExpect(jsonPath("$.data.report").value(report.getId()))
+                .andDo(document("post-report",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
+                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("data.report").type(JsonFieldType.NUMBER).description("신고글 식별자")
+                        )
+                ));
+
+    }
+
+    @Test
+    void postLike() throws Exception {
+        // given
+        Like like = new Like(user, post);
+        setField(like, "id", 3L);
+
+        given(postService.postLike(anyString(), anyLong()))
+                .willReturn(like);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/posts/{post-id}/like", post.getId())
+                        .header(HttpHeaders.AUTHORIZATION, "")
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.user").value(user.getId()))
+                .andExpect(jsonPath("$.data.post").value(post.getId()))
+                .andExpect(jsonPath("$.data.like").value(like.getId()))
+                .andDo(document("post-like",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
+                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("data.like").type(JsonFieldType.NUMBER).description("좋아요 식별자")
+                        )
+                ));
+
+    }
 
 }

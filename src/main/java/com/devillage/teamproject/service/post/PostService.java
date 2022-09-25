@@ -1,13 +1,10 @@
 package com.devillage.teamproject.service.post;
 
 import com.devillage.teamproject.entity.Bookmark;
-import com.devillage.teamproject.entity.Like;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public interface PostService {
@@ -17,7 +14,7 @@ public interface PostService {
 
     Post getPost(Long id);
 
-    Page<Post> getPosts(String category, int page, int size);
+    Page<Post> getPostsByCategory(String category, int page, int size);
 
     void deletePost();
 
@@ -25,5 +22,5 @@ public interface PostService {
 
     ReportedPost postReport(String accessToken, Long postId);
 
-    Like postLike(String accessToken, Long postId);
+    Post postLike(String accessToken, Long postId);
 }

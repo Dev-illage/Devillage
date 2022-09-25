@@ -48,7 +48,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> getPosts(String category, int page, int size) {
+    public Page<Post> getPostsByCategory(String category, int page, int size) {
         try {
             CategoryType.valueOf(category.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -102,7 +102,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Like postLike(String accessToken, Long postId) {
+    public Post postLike(String accessToken, Long postId) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
         User user = verifyUser(userId);
         Post post = verifyPost(postId);
@@ -112,13 +112,14 @@ public class PostServiceImpl implements PostService {
         if (!findLike.isEmpty()) {
             Like like = findLike.get(0);
             likeRepository.delete(like);
-            return like;
+            post.addLikeCount(-1);
+            return post;
         }
-
 
         Like like = new Like(user, post);
         user.addLike(like);
-        return like;
+        post.addLikeCount(1);
+        return post;
     }
 
     private Post verifyPost(Long postId) {

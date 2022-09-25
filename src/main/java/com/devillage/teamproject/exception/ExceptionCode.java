@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ExceptionCode {
     USER_NOT_FOUND(404, "User not found"),
-    EXISTING_USER(400, "Existing User"),
+    EXISTING_USER(409, "Existing User"),
     POST_NOT_FOUND(404, "Post not found"),
     ALREADY_REPORTED(400, "Already report"),
     MALFORMED_JWT_EXCEPTION(401, "Malformed Jwt Exception"),

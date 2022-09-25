@@ -10,10 +10,9 @@ import com.devillage.teamproject.entity.ReportedPost;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,15 +23,16 @@ public class PostControllerImpl implements PostController {
 
     @Override
     public SingleResponseDto postPost(PostDto.Post request) {
-        Post post = PostDto.Post.toEntity(request);
+        Post post = request.toEntity();
         Post savedPost = postService.savePost(post);
 
         return SingleResponseDto.of((PostDto.Response.of(savedPost)));
     }
 
     @Override
-    public PostDto.Response getPost(Long id) {
-        return null;
+    public MultiResponseDto<PostDto.Response.PostDetail> getPost(Long id) {
+        Post post = postService.getPost(id);
+        return MultiResponseDto.of(PostDto.Response.PostDetail.of(post));
     }
 
     @Override
@@ -72,14 +72,9 @@ public class PostControllerImpl implements PostController {
 
     @Override
     public MultiResponseDto<PostDto.Response.SimplePostDto> getPosts(String category, int page, int size) {
-        Page<Post> posts = postService.getPosts(category, page, size);
-        return MultiResponseDto.of(
-                posts.stream()
-                        .map(PostDto.Response.SimplePostDto::of)
-                        .collect(Collectors.toList()),
-                posts
-        );
+        return null;
     }
+
 
     @Override
     public void deletePost(Long id) {

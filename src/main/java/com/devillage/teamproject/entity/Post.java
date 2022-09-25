@@ -70,4 +70,13 @@ public class Post extends AuditingEntity {
 //        this.tags = tags;
         this.content = content;
     }
+
+    public void edit(Post post){
+        this.category = post.getCategory();
+        this.content = post.getContent();
+        this.title = post.getTitle();
+        this.tags = post.getTags();
+    }
+
+
 }

@@ -19,7 +19,6 @@ import java.util.List;
 public class PostControllerImpl implements PostController {
 
     private final PostService postService;
-    private final JwtTokenUtil jwtTokenUtil;
 
     @Override
     public PostDto.Response postPost(PostDto.Post request) {
@@ -36,37 +35,45 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
+    public PostDto.Response patchPost(Long id, PostDto.Patch request) {
+        Post post = request.toEntity();
+        Post updatedPost = postService.editPost(id,post);
+        return PostDto.Response.of(updatedPost);
+    }
+
+    @Override
     public SingleResponseDto<PostDto.Response.BookmarkDto> postBookmark(String accessToken, Long postId) {
 
-        Long userId = jwtTokenUtil.getUserId(accessToken);
         Bookmark bookmark = postService.postBookmark(accessToken, postId);
         return SingleResponseDto.of(
-                PostDto.Response.BookmarkDto.of(userId, postId, bookmark.getId())
+                PostDto.Response.BookmarkDto.of(
+                        bookmark.getUser().getId(),
+                        bookmark.getPost().getId(),
+                        bookmark.getId())
         );
     }
 
     @Override
     public SingleResponseDto<PostDto.Response.ReportDto> postReport(String accessToken, Long postId) {
 
-        Long userId = jwtTokenUtil.getUserId(accessToken);
         ReportedPost reportedPost = postService.postReport(accessToken, postId);
         return SingleResponseDto.of(
-                PostDto.Response.ReportDto.of(userId, postId, reportedPost.getId())
+                PostDto.Response.ReportDto.of(
+                        reportedPost.getUser().getId(),
+                        reportedPost.getPost().getId(),
+                        reportedPost.getId())
         );
     }
 
     @Override
     public PostDto.Response.LikeDto postLike(String accessToken, Long postId) {
 
-        Long userId = jwtTokenUtil.getUserId(accessToken);
         Like like = postService.postLike(accessToken, postId);
         return PostDto.Response.LikeDto.of(userId, postId, like.getId());
+
     }
 
-    @Override
-    public Long patchPost(Long id, PostDto.Patch request) {
-        return null;
-    }
+
 
     @Override
     public MultiResponseDto<PostDto.Response.SimplePostDto> getPosts(String category, int page, int size) {

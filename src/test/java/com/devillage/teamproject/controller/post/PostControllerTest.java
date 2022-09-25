@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +28,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -64,11 +67,11 @@ class PostControllerTest implements Reflection {
     }
 
     @Test
-    public void postPost() throws Exception{
+    public void postPost() throws Exception {
         //given
         PostDto.Post post = newInstance(PostDto.Post.class);
-        setField(post,"title","Mockito 관련 질문입니다.");
-        setField(post,"content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
+        setField(post, "title", "Mockito 관련 질문입니다.");
+        setField(post, "content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
 
         Post convertEntity = PostDto.Post.toEntity(post);
         given(postService.savePost(Mockito.any(Post.class))).willReturn(convertEntity);
@@ -99,12 +102,13 @@ class PostControllerTest implements Reflection {
         Bookmark bookmark = new Bookmark(user, post);
         setField(bookmark, "id", 3L);
 
-        given(postService.postBookmark(post.getId()))
+        given(postService.postBookmark(anyString(), anyLong()))
                 .willReturn(bookmark);
 
         // when
         ResultActions actions = mockMvc.perform(
                 post("/posts/{post-id}/bookmark", post.getId())
+                        .header(HttpHeaders.AUTHORIZATION, "")
         );
 
         // then
@@ -134,12 +138,13 @@ class PostControllerTest implements Reflection {
         ReportedPost report = new ReportedPost(user, post);
         setField(report, "id", 3L);
 
-        given(postService.postReport(post.getId()))
+        given(postService.postReport(anyString(), anyLong()))
                 .willReturn(report);
 
         // when
         ResultActions actions = mockMvc.perform(
                 post("/posts/{post-id}/report", post.getId())
+                        .header(HttpHeaders.AUTHORIZATION, "")
         );
 
         // then
@@ -169,12 +174,13 @@ class PostControllerTest implements Reflection {
         Like like = new Like(user, post);
         setField(like, "id", 3L);
 
-        given(postService.postLike(post.getId()))
+        given(postService.postLike(anyString(), anyLong()))
                 .willReturn(like);
 
         // when
         ResultActions actions = mockMvc.perform(
                 post("/posts/{post-id}/like", post.getId())
+                        .header(HttpHeaders.AUTHORIZATION, "")
         );
 
         // then

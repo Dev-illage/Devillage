@@ -24,4 +24,8 @@ public class Tag extends AuditingEntity {
 
     @OneToMany(mappedBy = "tag")
     private List<PostTag> postTag;
+
+    public Tag(String name) {
+        this.name = name;
+    }
 }

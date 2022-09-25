@@ -12,7 +12,7 @@ public interface PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    SingleResponseDto postPost(PostDto.Post request);
+    PostDto.Response postPost(@RequestBody PostDto.Post request);
 
     @GetMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
@@ -32,7 +32,7 @@ public interface PostController {
 
     @PostMapping("/{post-id}/like")
     @ResponseStatus(HttpStatus.OK)
-    SingleResponseDto<PostDto.Response.LikeDto> postLike(
+    PostDto.Response.LikeDto postLike(
             @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,
             @PathVariable("post-id") Long id);
 

@@ -21,11 +21,11 @@ public class PostControllerImpl implements PostController {
     private final PostService postService;
 
     @Override
-    public SingleResponseDto postPost(PostDto.Post request) {
+    public PostDto.Response postPost(PostDto.Post request) {
         Post post = request.toEntity();
         Post savedPost = postService.savePost(post);
 
-        return SingleResponseDto.of((PostDto.Response.of(savedPost)));
+        return PostDto.Response.of(savedPost);
     }
 
     @Override
@@ -66,15 +66,11 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public SingleResponseDto<PostDto.Response.LikeDto> postLike(String accessToken, Long postId) {
+    public PostDto.Response.LikeDto postLike(String accessToken, Long postId) {
 
         Like like = postService.postLike(accessToken, postId);
-        return SingleResponseDto.of(
-                PostDto.Response.LikeDto.of(
-                        like.getUser().getId(),
-                        like.getPost().getId(),
-                        like.getId())
-        );
+        return PostDto.Response.LikeDto.of(userId, postId, like.getId());
+
     }
 
 

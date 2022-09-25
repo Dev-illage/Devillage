@@ -176,17 +176,15 @@ public class PostDto {
         @NotBlank
         private String content;
 
-        public static com.devillage.teamproject.entity.Post toEntity(PostDto.Patch request) {
-            if (request == null) return null;
+        public com.devillage.teamproject.entity.Post toEntity() {
 
-
-            com.devillage.teamproject.entity.Post patch = new com.devillage.teamproject.entity.Post(
-                    request.getCategory(),
-                    request.getTitle(),
-                    request.getTags(),
-                    request.getContent()
+            com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
+                    this.getCategory(),
+                    this.getTitle(),
+                    this.getTags(),
+                    this.getContent()
             );
-            return patch;
+            return post;
         }
 
     }

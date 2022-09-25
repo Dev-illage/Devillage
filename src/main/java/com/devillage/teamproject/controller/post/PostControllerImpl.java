@@ -36,6 +36,13 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
+    public PostDto.Response patchPost(Long id, PostDto.Patch request) {
+        Post post = request.toEntity();
+        Post updatedPost = postService.editPost(id,post);
+        return PostDto.Response.of(updatedPost);
+    }
+
+    @Override
     public SingleResponseDto<PostDto.Response.BookmarkDto> postBookmark(String accessToken, Long postId) {
 
         Long userId = jwtTokenUtil.getUserId(accessToken);
@@ -65,10 +72,7 @@ public class PostControllerImpl implements PostController {
         );
     }
 
-    @Override
-    public Long patchPost(Long id, PostDto.Patch request) {
-        return null;
-    }
+
 
     @Override
     public MultiResponseDto<PostDto.Response.SimplePostDto> getPosts(String category, int page, int size) {

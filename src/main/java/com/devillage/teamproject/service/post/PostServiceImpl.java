@@ -36,8 +36,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post editPost() {
-        return null;
+    public Post editPost(Long id,Post post) {
+        Post getPost = verifyPost(post.getId());
+        getPost.edit(post);
+        return getPost;
     }
 
     @Override

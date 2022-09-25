@@ -13,7 +13,7 @@ import java.util.List;
 public interface PostService {
     Post savePost(Post post);
 
-    Post editPost();
+    Post editPost(Long id, Post post);
 
     Post getPost(Long id);
 

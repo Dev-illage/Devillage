@@ -1,6 +1,5 @@
 package com.devillage.teamproject.entity;
 
-import com.devillage.teamproject.entity.enums.CategoryType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,6 +31,14 @@ public class Post extends AuditingEntity {
     @ToString.Include
     @EqualsAndHashCode.Include
     private Long clicks;
+
+    @ToString.Include
+    @EqualsAndHashCode.Include
+    private Long likeCount;
+
+    public void addLikeCount(int num) {
+        likeCount += num;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -77,6 +84,5 @@ public class Post extends AuditingEntity {
         this.title = post.getTitle();
         this.tags = post.getTags();
     }
-
 
 }

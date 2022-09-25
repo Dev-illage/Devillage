@@ -78,14 +78,14 @@ class PostControllerTest implements Reflection {
         PostTag postTag = newInstance(PostTag.class);
         Tag tag = newInstance(Tag.class);
 
-        setField(postDto,"category",category);
-        setField(postDto,"title","Mockito 관련 질문입니다.");
-        setField(postDto,"tags", List.of(postTag));
-        setField(postDto,"content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
-        setField(category,"categoryType", CategoryType.NOTICE);
+        setField(postDto, "category", CategoryType.NOTICE);
+        setField(postDto, "title", "Mockito 관련 질문입니다.");
+        setField(postDto, "tags", List.of(postTag));
+        setField(postDto, "content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
+        setField(category, "categoryType", CategoryType.NOTICE);
         setField(postTag, "tag", tag);
         setField(tag, "id", 1L);
-        setField(tag,"name", "mvcTest");
+        setField(tag, "name", "mvcTest");
 
         given(postService.savePost(Mockito.any(Post.class))).willReturn(post);
 
@@ -103,14 +103,14 @@ class PostControllerTest implements Reflection {
         //then
         MvcResult result = actions
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.title").value(post.getTitle()))
-                .andExpect(jsonPath("$.data.content").value(post.getContent()))
+                .andExpect(jsonPath("$.title").value(post.getTitle()))
+                .andExpect(jsonPath("$.content").value(post.getContent()))
                 .andReturn();
     }
 
     @WithMockUser
     @Test
-    void getPost() throws Exception{
+    void getPost() throws Exception {
         //given
         UserDto.AuthorInfo authorInfo = newInstance(UserDto.AuthorInfo.class);
         Category category = newInstance(Category.class);
@@ -118,22 +118,22 @@ class PostControllerTest implements Reflection {
         Tag tag = newInstance(Tag.class);
         Comment comment = newInstance(Comment.class);
 
-        setField(post,"category",category);
-        setField(post,"id",1L);
-        setField(post,"title","Mockito 관련 질문입니다.");
-        setField(post,"tags",List.of(postTag));
-        setField(post,"content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
+        setField(post, "category", category);
+        setField(post, "id", 1L);
+        setField(post, "title", "Mockito 관련 질문입니다.");
+        setField(post, "tags", List.of(postTag));
+        setField(post, "content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
         setField(post, "clicks", 1L);
         setField(post, "createdAt", LocalDateTime.now());
         setField(post, "lastModifiedAt", LocalDateTime.now());
-        setField(category,"categoryType",CategoryType.NOTICE);
+        setField(category, "categoryType", CategoryType.NOTICE);
         setField(postTag, "tag", tag);
         setField(tag, "id", 1L);
-        setField(tag,"name", "mvcTest");
-        setField(comment,"id",1L);
-        setField(comment,"content","잘 봤습니다.");
-        setField(authorInfo,"authorId",1L);
-        setField(authorInfo,"authorName","강지");
+        setField(tag, "name", "mvcTest");
+        setField(comment, "id", 1L);
+        setField(comment, "content", "잘 봤습니다.");
+        setField(authorInfo, "authorId", 1L);
+        setField(authorInfo, "authorName", "강지");
         Long id = post.getId();
 
         given(postService.getPost(Mockito.any(long.class))).willReturn(post);
@@ -141,7 +141,7 @@ class PostControllerTest implements Reflection {
         //when
         ResultActions actions =
                 mockMvc.perform(
-                        get("/posts/{post-id}",id)
+                        get("/posts/{post-id}", id)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                 );
@@ -154,8 +154,6 @@ class PostControllerTest implements Reflection {
                 .andExpect(jsonPath("$.response.content").value(post.getContent()))
                 .andReturn();
     }
-
-
 
 
     @Test
@@ -175,9 +173,9 @@ class PostControllerTest implements Reflection {
 
         // then
         actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.user").value(user.getId()))
-                .andExpect(jsonPath("$.data.post").value(post.getId()))
-                .andExpect(jsonPath("$.data.bookmark").value(bookmark.getId()))
+                .andExpect(jsonPath("$.user").value(user.getId()))
+                .andExpect(jsonPath("$.post").value(post.getId()))
+                .andExpect(jsonPath("$.bookmark").value(bookmark.getId()))
                 .andDo(document("post-bookmark",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -185,10 +183,9 @@ class PostControllerTest implements Reflection {
                                 parameterWithName("post-id").description("게시글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
-                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-                                fieldWithPath("data.bookmark").type(JsonFieldType.NUMBER).description("북마크 식별자")
+                                fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("bookmark").type(JsonFieldType.NUMBER).description("북마크 식별자")
                         )
                 ));
 
@@ -211,9 +208,9 @@ class PostControllerTest implements Reflection {
 
         // then
         actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.user").value(user.getId()))
-                .andExpect(jsonPath("$.data.post").value(post.getId()))
-                .andExpect(jsonPath("$.data.report").value(report.getId()))
+                .andExpect(jsonPath("$.user").value(user.getId()))
+                .andExpect(jsonPath("$.post").value(post.getId()))
+                .andExpect(jsonPath("$.report").value(report.getId()))
                 .andDo(document("post-report",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -221,10 +218,9 @@ class PostControllerTest implements Reflection {
                                 parameterWithName("post-id").description("게시글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
-                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-                                fieldWithPath("data.report").type(JsonFieldType.NUMBER).description("신고글 식별자")
+                                fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("report").type(JsonFieldType.NUMBER).description("신고글 식별자")
                         )
                 ));
 
@@ -235,6 +231,8 @@ class PostControllerTest implements Reflection {
         // given
         Like like = new Like(user, post);
         setField(like, "id", 3L);
+        setField(post, "user", user);
+        setField(post, "likeCount", 1L);
 
         given(postService.postLike(anyString(), anyLong()))
                 .willReturn(post);
@@ -247,9 +245,9 @@ class PostControllerTest implements Reflection {
 
         // then
         actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.user").value(user.getId()))
-                .andExpect(jsonPath("$.data.post").value(post.getId()))
-                .andExpect(jsonPath("$.data.like").value(like.getId()))
+                .andExpect(jsonPath("$.user").value(user.getId()))
+                .andExpect(jsonPath("$.post").value(post.getId()))
+                .andExpect(jsonPath("$.like").value(post.getLikeCount()))
                 .andDo(document("post-like",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -257,10 +255,9 @@ class PostControllerTest implements Reflection {
                                 parameterWithName("post-id").description("게시글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-                                fieldWithPath("data.user").type(JsonFieldType.NUMBER).description("회원 식별자"),
-                                fieldWithPath("data.post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-                                fieldWithPath("data.like").type(JsonFieldType.NUMBER).description("좋아요 식별자")
+                                fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("like").type(JsonFieldType.NUMBER).description("좋아요 개수")
                         )
                 ));
 
@@ -323,7 +320,7 @@ class PostControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].content").value(post.getContent()))
                 .andExpect(jsonPath("$.data[0].clicks").value(post.getClicks()))
                 .andExpect(jsonPath("$.data[0].category").value(post.getCategory().getCategoryType().name()))
-                .andExpect(jsonPath("$.data[0].tags[0].id").value(tag.getId()))
+                .andExpect(jsonPath("$.data[0].tags[0].tagId").value(tag.getId()))
                 .andExpect(jsonPath("$.data[0].tags[0].name").value(tag.getName()))
                 .andExpect(jsonPath("$.data[0].files[0].id").value(file.getId()))
                 .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFileName()))
@@ -350,7 +347,7 @@ class PostControllerTest implements Reflection {
                                 fieldWithPath("data[].clicks").type(JsonFieldType.NUMBER).description("게시글 조회수"),
                                 fieldWithPath("data[].category").type(JsonFieldType.STRING).description("게시글 카테고리"),
                                 fieldWithPath("data[].tags").type(JsonFieldType.ARRAY).description("게시글 태그"),
-                                fieldWithPath("data[].tags[].id").type(JsonFieldType.NUMBER).description("태그 식별자"),
+                                fieldWithPath("data[].tags[].tagId").type(JsonFieldType.NUMBER).description("태그 식별자"),
                                 fieldWithPath("data[].tags[].name").type(JsonFieldType.STRING).description("태그 이름"),
                                 fieldWithPath("data[].files").type(JsonFieldType.ARRAY).description("게시글 파일"),
                                 fieldWithPath("data[].files[].id").type(JsonFieldType.NUMBER).description("파일 식별자"),

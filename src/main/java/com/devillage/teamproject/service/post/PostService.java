@@ -13,9 +13,9 @@ import java.util.List;
 public interface PostService {
     Post savePost(Post post);
 
-    Post editPost();
+    Post editPost(Long id, Post post);
 
-    Post getPost();
+    Post getPost(Long id);
 
     Page<Post> getPosts(String category, int page, int size);
 

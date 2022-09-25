@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.devillage.teamproject.security.util.JwtConstants.*;
@@ -82,6 +83,7 @@ public class AuthServiceImpl implements AuthService{
         String refreshToken = jwtTokenUtil.createRefreshToken(email, userSequence, roles);
 
         refreshTokenRepository.delete(existingToken);
+        refreshTokenRepository.save(new RefreshToken(refreshToken));
 
         return AuthDto.Token.of(BEARER_TYPE, accessToken, refreshToken);
     }

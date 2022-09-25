@@ -1,22 +1,19 @@
 package com.devillage.teamproject.security.config;
 
-import com.devillage.teamproject.security.exception.CustomAuthenticationEntryPoint;
-import com.devillage.teamproject.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.SecurityConfigurer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFilter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @EnableGlobalAuthentication
 @RequiredArgsConstructor
@@ -31,18 +28,29 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .csrf().disable()
-                .cors(Customizer.withDefaults())
+                .cors().disable()
+//                .configurationSource(corsConfigurationSource())
                 .apply(authenticationConfig)
                 .and()
                 .authorizeRequests()
-                .mvcMatchers(HttpMethod.GET,"/auth/1").hasRole("USER")
-                .mvcMatchers(HttpMethod.POST,"/auth/**").permitAll()
-                .mvcMatchers(HttpMethod.DELETE,"/auth/**").permitAll()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .mvcMatchers("/auth/**").permitAll()
                 .mvcMatchers(HttpMethod.POST,"/posts/**").hasAnyRole("USER","MANAGER","ADMIN")
-                .anyRequest().permitAll()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+                .anyRequest().permitAll();
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedHeader("*");
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(List.of("GET","POST","DELETE","PATCH","OPTION","PUT"));
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 }

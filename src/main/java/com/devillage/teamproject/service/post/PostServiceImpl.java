@@ -36,25 +36,27 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post editPost() {
-        return null;
+    public Post editPost(Long id,Post post) {
+        Post getPost = verifyPost(post.getId());
+        getPost.edit(post);
+        return getPost;
     }
 
     @Override
-    public Post getPost() {
-        return null;
+    public Post getPost(Long id) {
+        return verifyPost(id);
     }
 
     @Override
     public Page<Post> getPosts(String category, int page, int size) {
         try {
-            CategoryType.valueOf(category);
+            CategoryType.valueOf(category.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new BusinessLogicException(ExceptionCode.CATEGORY_NOT_FOUND);
         }
 
         return postRepository.findByCategory_CategoryType(
-                CategoryType.valueOf(category),
+                CategoryType.valueOf(category.toUpperCase()),
                 PageRequest.of(page - 1, size, Sort.by("id").descending()));
     }
 

@@ -1,11 +1,14 @@
 package com.devillage.teamproject.dto;
 
-import com.devillage.teamproject.entity.Category;
-import com.devillage.teamproject.entity.PostTag;
+import com.devillage.teamproject.entity.*;
+import com.devillage.teamproject.entity.enums.CategoryType;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +34,40 @@ public class PostDto {
                     .tags(post.getTags())
                     .content(post.getContent())
                     .build();
+        }
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        public static class PostDetail{
+            private Long key;
+            private String title;
+            private String category;
+            private LocalDateTime createdAt;
+            private String content;
+            private boolean isModified;
+            private Long clicks;
+            private List<TagDto.Response> tag;
+            private UserDto.AuthorInfo author;
+            private List<Comment> commentList;
+
+            public static PostDetail of(com.devillage.teamproject.entity.Post post){
+                return PostDetail.builder()
+                        .key(post.getId())
+                        .title(post.getTitle())
+                        .category(post.getCategory().getCategoryType().name())
+                        .createdAt(post.getCreatedAt())
+                        .content(post.getContent())
+//                        .isModified(post.getLastModifiedAt().isAfter(post.getCreatedAt()))
+                        .clicks(post.getClicks())
+                        .tag(post.getTags().stream()
+                                .map(postTag -> TagDto.Response.of(postTag.getTag()))
+                                .collect(Collectors.toList()))
+//                        .author(UserDto.AuthorInfo.of(post.getUser()))
+                        .commentList(post.getComments())
+                        .build();
+            }
+
         }
 
 
@@ -108,21 +145,17 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Post {
         private Category category;
-        @NotBlank
         private String title;
         private List<PostTag> tags;
-        @NotBlank
         private String content;
 
-        public static com.devillage.teamproject.entity.Post toEntity(PostDto.Post request) {
-            //builder 사용 불가. 원인 알 수 없어 추후 리팩토링 예정
-            if (request == null) return null;
+        public com.devillage.teamproject.entity.Post toEntity() {
 
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
-                    request.getCategory(),
-                    request.getTitle(),
-                    request.getTags(),
-                    request.getContent()
+                    this.getCategory(),
+                    this.getTitle(),
+                    this.getTags(),
+                    this.getContent()
             );
             return post;
         }
@@ -132,8 +165,27 @@ public class PostDto {
 
     //TODO : Patch DTO 임시 작성, 구현 시 주석 삭제
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
+//    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Patch {
+        private Category category;
+        @NotBlank
+        private String title;
+        private List<PostTag> tags;
+        @NotBlank
+        private String content;
+
+        public com.devillage.teamproject.entity.Post toEntity() {
+
+            com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
+                    this.getCategory(),
+                    this.getTitle(),
+                    this.getTags(),
+                    this.getContent()
+            );
+            return post;
+        }
 
     }
 }

@@ -144,18 +144,18 @@ public class PostDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Post {
-        private Category category;
+        private CategoryType category;
         private String title;
-        private List<PostTag> tags;
+        private List<String> tags;
         private String content;
 
         public com.devillage.teamproject.entity.Post toEntity() {
-
+            System.out.println(category);
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
-                    this.getCategory(),
-                    this.getTitle(),
-                    this.getTags(),
-                    this.getContent()
+                    null,
+                    this.title,
+                    null,
+                    this.content
             );
             return post;
         }

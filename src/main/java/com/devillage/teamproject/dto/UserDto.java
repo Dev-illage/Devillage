@@ -1,5 +1,6 @@
 package com.devillage.teamproject.dto;
 
+import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
 import lombok.*;
 
@@ -35,6 +36,33 @@ public class UserDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class PatchProfile {
 
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class BlockUserDto {
+        @Getter
+        @AllArgsConstructor
+        @Builder
+        public static class Response {
+            private Long blockId;
+            private Long srcUserId;
+            private Long targetUserId;
+        }
+
+        public static Response of(Block block) {
+            return Response.builder()
+                    .blockId(block.getId())
+                    .srcUserId(block.getSrcUser().getId())
+                    .targetUserId(block.getDestUser().getId())
+                    .build();
+        }
+
+        public static Response of(Long blockId, Long srcUserId, Long targetUserId) {
+            return Response.builder()
+                    .blockId(blockId).srcUserId(srcUserId).targetUserId(targetUserId)
+                    .build();
+        }
     }
 
     @Getter

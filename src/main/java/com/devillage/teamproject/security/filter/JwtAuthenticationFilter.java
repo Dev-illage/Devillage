@@ -1,6 +1,7 @@
 package com.devillage.teamproject.security.filter;
 
 import com.devillage.teamproject.exception.JwtAuthenticationException;
+import com.devillage.teamproject.security.exception.FilterErrorManager;
 import com.devillage.teamproject.security.token.JwtAuthenticationToken;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -22,9 +23,11 @@ import static com.devillage.teamproject.security.util.JwtConstants.*;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AuthenticationManager authenticationManager;
+    private final FilterErrorManager filterErrorManager;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, FilterErrorManager filterErrorManager) {
         this.authenticationManager = authenticationManager;
+        this.filterErrorManager = filterErrorManager;
     }
 
     @Override
@@ -34,11 +37,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             checkJwt(request, response, filterChain, jwt);
         } catch (ExpiredJwtException e) {
-            throw new JwtAuthenticationException(EXPIRED_JWT_EXCEPTION);
+            filterErrorManager.sendErrorResponse(response, EXPIRED_JWT_EXCEPTION);
         } catch (UnsupportedJwtException e) {
-            throw new JwtAuthenticationException(UNSUPPORTED_JWT_EXCEPTION);
+            filterErrorManager.sendErrorResponse(response, UNSUPPORTED_JWT_EXCEPTION);
         } catch (MalformedJwtException e) {
-            throw new JwtAuthenticationException(MALFORMED_JWT_EXCEPTION);
+            filterErrorManager.sendErrorResponse(response, MALFORMED_JWT_EXCEPTION);
         }
     }
 

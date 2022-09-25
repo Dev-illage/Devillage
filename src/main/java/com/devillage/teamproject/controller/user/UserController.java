@@ -28,7 +28,7 @@ public interface UserController {
     @ResponseStatus(HttpStatus.OK)
     UserDto.Response getProfile(@PathVariable("user-id") Long id);
 
-    @DeleteMapping("/{user-id}")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteUser(@PathVariable("user-id") Long id);
+    void deleteUser(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 }

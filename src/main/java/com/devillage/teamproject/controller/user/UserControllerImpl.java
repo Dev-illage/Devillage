@@ -37,7 +37,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void deleteUser(Long id) {
-        userService.deleteUser(id);
+    public void deleteUser(String token) {
+        userService.deleteUser(token);
     }
 }

@@ -14,7 +14,7 @@ public interface UserService {
 
     List<User> findUsers(int page, int size);
 
-    void deleteUser(Long userId);
+    void deleteUser(String token);
 
     Block blockUser(Long destUserId, String token);
 }

@@ -107,9 +107,10 @@ class UserControllerTest implements Reflection {
 
         // when
         ResultActions actions = mockMvc.perform(
-                delete("/users/{user-id}", 1L)
+                delete("/users")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, "some-token")
         );
 
         // then
@@ -118,8 +119,8 @@ class UserControllerTest implements Reflection {
                         "delete-user",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("user-id").description("회원 식별자")
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
                         )
                 ));
 

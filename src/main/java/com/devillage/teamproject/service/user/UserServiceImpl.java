@@ -17,7 +17,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BlockRepository blockRepository;
-
     private final JwtTokenUtil jwtTokenUtil;
 
     public UserServiceImpl(UserRepository userRepository, BlockRepository blockRepository, JwtTokenUtil jwtTokenUtil) {
@@ -48,8 +47,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        User findUser = findUser(userId);
+    public void deleteUser(String token) {
+        User findUser = findUser(jwtTokenUtil.getUserId(token));
         findUser.deleteUser();
     }
 

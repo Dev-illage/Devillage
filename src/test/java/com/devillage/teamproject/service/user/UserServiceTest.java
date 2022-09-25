@@ -72,9 +72,10 @@ public class UserServiceTest implements Reflection {
 
         given(userRepository.findById(Mockito.anyLong())).willReturn(Optional.of(user));
         String originalEmail = user.getEmail();
+        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(user.getId());
 
         // when
-        userService.deleteUser(user.getId());
+        userService.deleteUser("someToken");
 
         // then
         assertEquals(UserStatus.RESIGNED, user.getUserStatus());

@@ -72,15 +72,16 @@ public class PostServiceImpl implements PostService {
         Post post = verifyPost(postId);
 
         List<Bookmark> findBookmark = bookmarkRepository.findByUserIdAndPostId(userId, postId);
+        Bookmark bookmark;
 
         if (!findBookmark.isEmpty()) {
-            Bookmark bookmark = findBookmark.get(0);
-            bookmarkRepository.delete(bookmark);
-            return bookmark;
+            bookmark = findBookmark.get(0);
+            bookmarkRepository.deleteAll(findBookmark);
+        } else {
+            bookmark = new Bookmark(user, post);
+            user.addBookmark(bookmark);
         }
 
-        Bookmark bookmark = new Bookmark(user, post);
-        user.addBookmark(bookmark);
         return bookmark;
     }
 
@@ -112,13 +113,14 @@ public class PostServiceImpl implements PostService {
 
         if (!findLikes.isEmpty()) {
             likeRepository.deleteAll(findLikes);
-            post.setLikeCount(count - 1L);
-            return post;
+            count -= 1L;
+        } else {
+            Like like = new Like(user, post);
+            user.addLike(like);
+            count += 1L;
         }
 
-        Like like = new Like(user, post);
-        user.addLike(like);
-        post.setLikeCount(count + 1L);
+        post.setLikeCount(count);
         return post;
     }
 

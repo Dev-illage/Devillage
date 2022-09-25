@@ -26,7 +26,7 @@ public interface UserController {
 
     @GetMapping("/profile/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    SingleResponseDto<UserDto.Response> getProfile(@PathVariable("user-id") Long id);
+    UserDto.Response getProfile(@PathVariable("user-id") Long id);
 
     @DeleteMapping("/{user-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

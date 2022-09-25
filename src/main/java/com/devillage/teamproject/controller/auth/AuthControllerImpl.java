@@ -17,9 +17,8 @@ public class AuthControllerImpl implements AuthController {
     private final AuthService authService;
 
     @Override
-    public ResponseDto.SingleResponseDto<AuthDto.Token> postAuth(@RequestBody AuthDto.Login request) {
-        AuthDto.Token token = authService.loginUser(request.toEntity());
-        return ResponseDto.SingleResponseDto.of(token);
+    public AuthDto.Token postAuth(@RequestBody AuthDto.Login request) {
+        return authService.loginUser(request.toEntity());
     }
 
     @Override
@@ -29,9 +28,8 @@ public class AuthControllerImpl implements AuthController {
     }
 
     @Override
-    public ResponseDto.SingleResponseDto<AuthDto.Token> postRefresh(@RequestHeader(REFRESH_HEADER) String refreshToken) {
-        AuthDto.Token token = authService.reIssueToken(refreshToken);
-        return ResponseDto.SingleResponseDto.of(token);
+    public AuthDto.Token postRefresh(@RequestHeader(REFRESH_HEADER) String refreshToken) {
+        return authService.reIssueToken(refreshToken);
     }
 
     @Override

@@ -4,7 +4,7 @@ public class JwtConstants {
     public final static String SECRET_KEY = "antmsEmtdlswlrndrmagkrpTsyd";
     public final static String REFRESH_SECRET_KEY = "dlrjsejejdnrrndrmagkrpTshd";
     public final static Long ACCESS_TOKEN_EXPIRE_COUNT = 60000L*10; // 10 minutes
-    public final static Long REFRESH_TOKEN_EXPIRE_COUNT = 604800L*10; // 7 days
+    public final static Long REFRESH_TOKEN_EXPIRE_COUNT = 7 * 24 * 60 * 60 * 1000L; // 7 days
     public final static String BEARER_TYPE = "Bearer ";
     public final static String AUTHORITIES_KEY = "auth";
     public final static String AUTHORIZATION_HEADER = "Authorization";

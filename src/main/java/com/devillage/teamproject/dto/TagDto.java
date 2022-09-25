@@ -2,6 +2,7 @@ package com.devillage.teamproject.dto;
 
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.PostTag;
+import com.devillage.teamproject.entity.Tag;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -19,19 +20,23 @@ public class TagDto {
         private long tagId;
         private String name;
 
-        public static List<Response> of(Post post){
-            List<PostTag> all = post.getTags();
-            List<Response> tags = new ArrayList<>();
-
-            for(PostTag tag : all){
-                Response dto = Response.builder()
-                        .tagId(tag.getTag().getId())
-                        .name(tag.getTag().getName())
-                        .build();
-
-                tags.add(dto);
-            }
-            return tags;
+        public static Response of(Tag tag) {
+            return new Response(tag.getId(), tag.getName());
         }
+
+//        public static List<Response> of(Post post){
+//            List<PostTag> all = post.getTags();
+//            List<Response> tags = new ArrayList<>();
+//
+//            for(PostTag tag : all){
+//                Response dto = Response.builder()
+//                        .tagId(tag.getTag().getId())
+//                        .name(tag.getTag().getName())
+//                        .build();
+//
+//                tags.add(dto);
+//            }
+//            return tags;
+//        }
     }
 }

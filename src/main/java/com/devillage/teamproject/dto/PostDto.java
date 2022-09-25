@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -50,13 +51,15 @@ public class PostDto {
                 return PostDetail.builder()
                         .key(post.getId())
                         .title(post.getTitle())
-                        .category(String.valueOf(post.getCategory().getCategoryType()))
+                        .category(post.getCategory().getCategoryType().name())
                         .createdAt(post.getCreatedAt())
                         .content(post.getContent())
-                        .isModified(post.getLastModifiedAt().isAfter(post.getCreatedAt()))
+//                        .isModified(post.getLastModifiedAt().isAfter(post.getCreatedAt()))
                         .clicks(post.getClicks())
-                        .tag(TagDto.Response.of(post))
-                        .author(UserDto.AuthorInfo.of(post.getUser()))
+                        .tag(post.getTags().stream()
+                                .map(postTag -> TagDto.Response.of(postTag.getTag()))
+                                .collect(Collectors.toList()))
+//                        .author(UserDto.AuthorInfo.of(post.getUser()))
                         .commentList(post.getComments())
                         .build();
             }
@@ -106,21 +109,17 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Post {
         private Category category;
-        @NotBlank
         private String title;
         private List<PostTag> tags;
-        @NotBlank
         private String content;
 
-        public static com.devillage.teamproject.entity.Post toEntity(PostDto.Post request) {
-            //builder 사용 불가. 원인 알 수 없어 추후 리팩토링 예정
-            if (request == null) return null;
+        public com.devillage.teamproject.entity.Post toEntity() {
 
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
-                    request.getCategory(),
-                    request.getTitle(),
-                    request.getTags(),
-                    request.getContent()
+                    this.getCategory(),
+                    this.getTitle(),
+                    this.getTags(),
+                    this.getContent()
             );
             return post;
         }
@@ -130,8 +129,29 @@ public class PostDto {
 
     //TODO : Patch DTO 임시 작성, 구현 시 주석 삭제
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
+//    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Patch {
+        private Category category;
+        @NotBlank
+        private String title;
+        private List<PostTag> tags;
+        @NotBlank
+        private String content;
+
+        public static com.devillage.teamproject.entity.Post toEntity(PostDto.Patch request) {
+            if (request == null) return null;
+
+
+            com.devillage.teamproject.entity.Post patch = new com.devillage.teamproject.entity.Post(
+                    request.getCategory(),
+                    request.getTitle(),
+                    request.getTags(),
+                    request.getContent()
+            );
+            return patch;
+        }
 
     }
 }

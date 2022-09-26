@@ -42,7 +42,7 @@ class CommentServiceTest {
     public void createComment() throws Exception {
         // given
         User user = User.builder().id(ID1).build();
-        Post post = Post.builder().id(ID1).comments(new ArrayList<>()).build();
+        Post post = Post.builder().id(ID1).build();
         Comment comment = Comment.builder().content(COMMENT_CONTENT).post(post).build();
 
         given(userService.findVerifiedUser(Mockito.anyLong())).willReturn(user);

@@ -12,8 +12,8 @@ public class CommentControllerImpl implements CommentController {
     private final CommentService commentService;
 
     @Override
-    public Long postComment(CommentDto.Post request) {
-        return null;
+    public CommentDto.Response postComment(CommentDto.Post request, Long postId, String token) {
+        return CommentDto.Response.of(commentService.createComment(request.toEntity(postId), token));
     }
 
     @Override

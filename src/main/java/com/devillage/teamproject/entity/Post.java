@@ -67,9 +67,6 @@ public class Post extends AuditingEntity {
         reportedPosts.add(reportedPost);
     }
 
-    private LocalDateTime createdAt;
-    private LocalDateTime lastModifiedAt;
-
     //외부 접근용(PostDto.Response) 생성자 추가
     public Post(Category category, String title, List<PostTag> tags, String content){
 //        this.category = category;
@@ -83,6 +80,12 @@ public class Post extends AuditingEntity {
         this.content = post.getContent();
         this.title = post.getTitle();
         this.tags = post.getTags();
+    }
+
+    @Deprecated
+    public void setDate() {
+        setCreatedAt(LocalDateTime.now());
+        setLastModifiedAt(LocalDateTime.now());
     }
 
 }

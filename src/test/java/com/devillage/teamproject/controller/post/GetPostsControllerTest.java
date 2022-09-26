@@ -95,8 +95,7 @@ public class GetPostsControllerTest implements Reflection {
         setField(post, "category", category);
         setField(post, "tags", List.of(postTag));
         setField(post, "postsFile", List.of(postsFile));
-        setField(post, "createdAt", LocalDateTime.now());
-        setField(post, "lastModifiedAt", LocalDateTime.now());
+        post.setDate();
 
         posts.add(post);
 

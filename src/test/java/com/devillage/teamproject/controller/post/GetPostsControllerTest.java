@@ -172,6 +172,77 @@ public class GetPostsControllerTest implements Reflection {
                         )
                 ));
     }
+
+    @Test
+    public void getPostsBySearch() throws Exception {
+        // given
+        String word = "내용";
+
+        given(postService.getPostsBySearch(word, page, size))
+                .willReturn(pagePosts);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/posts/search?q={word}&page={page}&size={size}", word, page, size)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].id").value(post.getId()))
+                .andExpect(jsonPath("$.data[0].title").value(post.getTitle()))
+                .andExpect(jsonPath("$.data[0].content").value(post.getContent()))
+                .andExpect(jsonPath("$.data[0].clicks").value(post.getClicks()))
+                .andExpect(jsonPath("$.data[0].category").value(post.getCategory().getCategoryType().name()))
+                .andExpect(jsonPath("$.data[0].tags[0].tagId").value(tag.getId()))
+                .andExpect(jsonPath("$.data[0].tags[0].name").value(tag.getName()))
+                .andExpect(jsonPath("$.data[0].files[0].id").value(file.getId()))
+                .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFileName()))
+                .andExpect(jsonPath("$.data[0].files[0].fileSize").value(file.getFileSize()))
+                .andExpect(jsonPath("$.data[0].files[0].localPath").value(file.getLocalPath()))
+                .andExpect(jsonPath("$.data[0].files[0].remotePath").value(file.getRemotePath()))
+                .andExpect(jsonPath("$.data[0].files[0].type").value(file.getType()))
+                .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getUser().getId()))
+                .andExpect(jsonPath("$.pageInfo.page").value(page))
+                .andExpect(jsonPath("$.pageInfo.size").value(size))
+                .andDo(document("posts/getPostsBySearch",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestParameters(
+                                parameterWithName("q").description("검색어"),
+                                parameterWithName("page").description("페이지"),
+                                parameterWithName("size").description("사이즈")
+                        ),
+                        responseFields(
+                                fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
+                                fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("data[].title").type(JsonFieldType.STRING).description("게시글 제목"),
+                                fieldWithPath("data[].content").type(JsonFieldType.STRING).description("게시글 내용"),
+                                fieldWithPath("data[].clicks").type(JsonFieldType.NUMBER).description("게시글 조회수"),
+                                fieldWithPath("data[].category").type(JsonFieldType.STRING).description("게시글 카테고리"),
+                                fieldWithPath("data[].tags").type(JsonFieldType.ARRAY).description("게시글 태그"),
+                                fieldWithPath("data[].tags[].tagId").type(JsonFieldType.NUMBER).description("태그 식별자"),
+                                fieldWithPath("data[].tags[].name").type(JsonFieldType.STRING).description("태그 이름"),
+                                fieldWithPath("data[].files").type(JsonFieldType.ARRAY).description("게시글 파일"),
+                                fieldWithPath("data[].files[].id").type(JsonFieldType.NUMBER).description("파일 식별자"),
+                                fieldWithPath("data[].files[].originalFileName").type(JsonFieldType.STRING).description("파일 이름"),
+                                fieldWithPath("data[].files[].fileSize").type(JsonFieldType.NUMBER).description("파일 이름"),
+                                fieldWithPath("data[].files[].localPath").type(JsonFieldType.STRING).description("파일 로컬 경로"),
+                                fieldWithPath("data[].files[].remotePath").type(JsonFieldType.STRING).description("파일 리모트 경로"),
+                                fieldWithPath("data[].files[].type").type(JsonFieldType.STRING).description("파일 타입"),
+                                fieldWithPath("data[].files[].userId").type(JsonFieldType.NUMBER).description("파일 생성자"),
+                                fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 생성일시"),
+                                fieldWithPath("data[].lastModifiedAt").type(JsonFieldType.STRING).description("게시글 수정일시"),
+
+                                fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("페이지"),
+                                fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("사이즈"),
+                                fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("총 갯수"),
+                                fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수")
+                        )
+                ));
+    }
+
     @Test
     public void getPostsByBookmark() throws Exception {
         // given

@@ -27,5 +27,5 @@ public class ReComment extends AuditingEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Comment post;
+    private Comment comment;
 }

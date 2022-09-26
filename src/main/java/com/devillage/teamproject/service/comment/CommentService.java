@@ -1,13 +1,10 @@
 package com.devillage.teamproject.service.comment;
 
-import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.ReComment;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface CommentService {
     Comment createComment();
 
@@ -27,5 +24,5 @@ public interface CommentService {
 
     List<ReComment> findReComments();
 
-    void deleteReComment();
+    void deleteReComment(Long postId, Long commentId, Long reCommentId);
 }

@@ -25,7 +25,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -132,7 +135,7 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getUser().getId()))
                 .andExpect(jsonPath("$.pageInfo.page").value(page))
                 .andExpect(jsonPath("$.pageInfo.size").value(size))
-                .andDo(document("post-getPostsByCategory",
+                .andDo(document("posts/getPostsByCategory",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestParameters(
@@ -200,9 +203,12 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getUser().getId()))
                 .andExpect(jsonPath("$.pageInfo.page").value(page))
                 .andExpect(jsonPath("$.pageInfo.size").value(size))
-                .andDo(document("post-getPostsByBookmark",
+                .andDo(document("posts/getPostsByBookmark",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
+                        ),
                         requestParameters(
                                 parameterWithName("page").description("페이지"),
                                 parameterWithName("size").description("사이즈")

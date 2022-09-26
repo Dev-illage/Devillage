@@ -8,6 +8,7 @@ import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,10 +32,10 @@ public class GetPostsServiceTest implements Reflection {
     private PostRepository postRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Mock
-    private JwtTokenUtil jwtTokenUtil;
+    private UserService userService;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -95,8 +96,9 @@ public class GetPostsServiceTest implements Reflection {
 
         given(jwtTokenUtil.getUserId(anyString()))
                 .willReturn(user.getId());
-        given(userRepository.findById(user.getId()))
-                .willReturn(Optional.of(user));
+
+        given(userService.findVerifiedUser(user.getId()))
+                .willReturn(user);
 
         // when
         Page<Post> findPosts1 = postService.getPostsByBookmark("", page, size1);

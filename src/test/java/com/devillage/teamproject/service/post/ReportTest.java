@@ -8,6 +8,7 @@ import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.post.ReportedPostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,13 +32,13 @@ class ReportTest implements Reflection {
     private PostRepository postRepository;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private ReportedPostRepository reportRepository;
 
     @Mock
     private JwtTokenUtil jwtTokenUtil;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -57,13 +58,14 @@ class ReportTest implements Reflection {
         given(jwtTokenUtil.getUserId(anyString()))
                 .willReturn(userId);
 
-        given(userRepository.findById(userId))
-                .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
         given(reportRepository.findByUserIdAndPostId(userId, postId))
                 .willReturn(new ArrayList<>());
+
+        given(userService.findVerifiedUser(userId))
+                .willReturn(user);
 
         // when
         ReportedPost findReportedPost = postService.postReport("", postId);
@@ -81,13 +83,14 @@ class ReportTest implements Reflection {
         given(jwtTokenUtil.getUserId(anyString()))
                 .willReturn(userId);
 
-        given(userRepository.findById(userId))
-                .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
         given(reportRepository.findByUserIdAndPostId(userId, postId))
                 .willReturn(List.of(report));
+
+        given(userService.findVerifiedUser(userId))
+                .willReturn(user);
 
         // when / then
         assertThrows(BusinessLogicException.class,

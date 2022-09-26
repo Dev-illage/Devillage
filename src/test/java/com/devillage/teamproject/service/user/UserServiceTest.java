@@ -81,6 +81,7 @@ public class UserServiceTest implements Reflection {
         // then
         assertEquals(UserStatus.RESIGNED, user.getUserStatus());
         assertNotEquals(originalEmail, user.getEmail());
+        assertEquals(0, user.getUserRoles().size());
     }
 
     @Test

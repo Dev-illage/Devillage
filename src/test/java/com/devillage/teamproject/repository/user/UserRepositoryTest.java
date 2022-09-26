@@ -1,10 +1,9 @@
 package com.devillage.teamproject.repository.user;
 
 import com.devillage.teamproject.entity.Block;
+import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.User;
-import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.util.Reflection;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -37,7 +37,7 @@ class UserRepositoryTest implements Reflection {
         User findUser = userRepository.findById(user.getId()).get();
 
         // then
-        Assertions.assertThat(findUser).isEqualTo(user);
+        assertThat(findUser).isEqualTo(user);
     }
 
     @Test
@@ -73,6 +73,29 @@ class UserRepositoryTest implements Reflection {
 
         // when then
         assertThrows(DataIntegrityViolationException.class, () -> blockRepository.save(block2));
+    }
+
+    @Test
+    public void findByIdIncludeBookmarks() throws Exception {
+        // given
+        User user = newInstance(User.class);
+        Bookmark bookmark1 = newInstance(Bookmark.class);
+        Bookmark bookmark2 = newInstance(Bookmark.class);
+        Bookmark bookmark3 = newInstance(Bookmark.class);
+        user.addBookmark(bookmark1);
+        user.addBookmark(bookmark2);
+        user.addBookmark(bookmark3);
+
+        User savedUser = userRepository.save(user);
+
+        // when
+        Optional<User> optionalUser = userRepository.findById(savedUser.getId());
+        User user1 = optionalUser.get();
+
+        // then
+        assertThat(user1.getBookmarks().size()).isEqualTo(3);
+        assertThat(user1.getBookmarks().size()).isEqualTo(savedUser.getBookmarks().size());
+
     }
 
 }

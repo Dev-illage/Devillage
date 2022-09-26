@@ -7,6 +7,8 @@ import com.devillage.teamproject.repository.post.BookmarkRepository;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.service.user.UserService;
+import com.devillage.teamproject.service.user.UserServiceImpl;
 import com.devillage.teamproject.util.Reflection;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,13 +32,13 @@ class BookmarkTest implements Reflection {
     private PostRepository postRepository;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private BookmarkRepository bookmarkRepository;
 
     @Mock
     private JwtTokenUtil jwtTokenUtil;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -46,7 +48,7 @@ class BookmarkTest implements Reflection {
     Long userId = 1L;
     Long postId = 1L;
 
-    BookmarkTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+    BookmarkTest() throws Exception {
         setField(user, "bookmarks", new ArrayList<>());
     }
 
@@ -56,10 +58,10 @@ class BookmarkTest implements Reflection {
         given(jwtTokenUtil.getUserId(anyString()))
                 .willReturn(userId);
 
-        given(userRepository.findById(userId))
-                .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
+        given(userService.findVerifiedUser(userId))
+                .willReturn(user);
 
         given(bookmarkRepository.findByUserIdAndPostId(userId, postId))
                 .willReturn(new ArrayList<>());
@@ -80,10 +82,10 @@ class BookmarkTest implements Reflection {
         given(jwtTokenUtil.getUserId(anyString()))
                 .willReturn(userId);
 
-        given(userRepository.findById(userId))
-                .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
+        given(userService.findVerifiedUser(userId))
+                .willReturn(user);
 
         given(bookmarkRepository.findByUserIdAndPostId(userId, postId))
                 .willReturn(List.of(bookmark));

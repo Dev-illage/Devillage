@@ -6,6 +6,7 @@ import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,10 +30,10 @@ public class PostServiceTest implements Reflection {
     private PostRepository postRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Mock
-    private JwtTokenUtil jwtTokenUtil;
+    private UserService userService;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -67,8 +68,8 @@ public class PostServiceTest implements Reflection {
         given(jwtTokenUtil.getUserId(anyString()))
                 .willReturn(1L);
 
-        given(userRepository.findById(userId))
-                .willReturn(Optional.empty());
+        given(userService.findVerifiedUser(userId))
+                .willReturn(null);
 
         // when / then
         assertThrows(BusinessLogicException.class,
@@ -85,10 +86,11 @@ public class PostServiceTest implements Reflection {
         given(jwtTokenUtil.getUserId(anyString()))
                 .willReturn(1L);
 
-        given(userRepository.findById(userId))
-                .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.empty());
+
+        given(userService.findVerifiedUser(userId))
+                .willReturn(user);
 
         // when / then
         assertThrows(BusinessLogicException.class,

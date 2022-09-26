@@ -7,6 +7,7 @@ import com.devillage.teamproject.repository.post.LikeRepository;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -29,13 +30,13 @@ class LikeTest implements Reflection {
     private PostRepository postRepository;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private LikeRepository likeRepository;
 
     @Mock
     private JwtTokenUtil jwtTokenUtil;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -57,8 +58,6 @@ class LikeTest implements Reflection {
         given(jwtTokenUtil.getUserId(anyString()))
                 .willReturn(userId);
 
-        given(userRepository.findById(userId))
-                .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
@@ -66,6 +65,9 @@ class LikeTest implements Reflection {
                 .willReturn(new ArrayList<>());
         given(likeRepository.countByPostId(postId))
                 .willReturn(1L);
+
+        given(userService.findVerifiedUser(userId))
+                .willReturn(user);
 
         // when
         Post findPost = postService.postLike("", postId);
@@ -84,8 +86,6 @@ class LikeTest implements Reflection {
         given(jwtTokenUtil.getUserId(anyString()))
                 .willReturn(userId);
 
-        given(userRepository.findById(userId))
-                .willReturn(Optional.of(user));
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
@@ -93,6 +93,9 @@ class LikeTest implements Reflection {
                 .willReturn(List.of(like));
         given(likeRepository.countByPostId(postId))
                 .willReturn(1L);
+
+        given(userService.findVerifiedUser(userId))
+                .willReturn(user);
 
         // when
         Post findPost = postService.postLike("", postId);

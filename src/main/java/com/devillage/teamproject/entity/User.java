@@ -115,5 +115,6 @@ public class User extends AuditingEntity {
     public void deleteUser() {
         this.email = this.email + "resignedUser" + UUID.randomUUID() + ".com";
         this.userStatus = UserStatus.RESIGNED;
+        this.userRoles = List.of();
     }
 }

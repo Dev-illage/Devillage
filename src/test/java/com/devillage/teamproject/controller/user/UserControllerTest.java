@@ -60,39 +60,39 @@ class UserControllerTest implements Reflection {
         setField(user, "statusMessage", STATUS_MESSAGE1);
         setField(user, "pwdLastModifiedAt", PASSWORD_LAST_MODIFIED_AT1);
 
-        given(userService.findUser(Mockito.anyLong())).willReturn(user);
+        given(userService.findUser(Mockito.anyString())).willReturn(user);
 
         // when
         ResultActions actions = mockMvc.perform(
-                get("/users/profile/{user-id}", user.getId())
+                get("/users/profile")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, "some-token")
         );
 
         // then
         MvcResult result = actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.email").value(user.getEmail()))
-                .andExpect(jsonPath("$.data.nickname").value(user.getNickName()))
-                .andExpect(jsonPath("$.data.statusMessage").value(user.getStatusMessage()))
+                .andExpect(jsonPath("$.email").value(user.getEmail()))
+                .andExpect(jsonPath("$.nickname").value(user.getNickName()))
+                .andExpect(jsonPath("$.statusMessage").value(user.getStatusMessage()))
                 .andDo(document(
                         "get-user-profile",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("user-id").description("회원 식별자")
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
                         ),
                         responseFields(
-                                fieldWithPath("data").description("결과 데이터"),
-                                fieldWithPath("data.email").description("이메일"),
-                                fieldWithPath("data.nickname").description("닉네임"),
-                                fieldWithPath("data.statusMessage").description("상태메시지"),
-                                fieldWithPath("data.passwordModifiedAt").description("최근 암호 수정날짜")
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("nickname").description("닉네임"),
+                                fieldWithPath("statusMessage").description("상태메시지"),
+                                fieldWithPath("passwordModifiedAt").description("최근 암호 수정날짜")
                         )
                 ))
                 .andReturn();
 
         String actualPasswordModifiedAt = JsonPath.parse(result.getResponse().getContentAsString())
-                .read("$.data.passwordModifiedAt").toString();
+                .read("$.passwordModifiedAt").toString();
 
         assertEquals(user.getPwdLastModifiedAt().toString().substring(0, 19),
                 actualPasswordModifiedAt.substring(0, 19));

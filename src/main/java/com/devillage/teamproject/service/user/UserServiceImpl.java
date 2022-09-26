@@ -35,8 +35,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUser(Long userId) {
-        return findVerifiedUser(userId);
+    public User findUser(String token) {
+        return findVerifiedUser(jwtTokenUtil.getUserId(token));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(String token) {
-        User findUser = findUser(jwtTokenUtil.getUserId(token));
+        User findUser = findVerifiedUser(jwtTokenUtil.getUserId(token));
         findUser.deleteUser();
     }
 
@@ -68,8 +68,8 @@ public class UserServiceImpl implements UserService {
             return block;
         }
 
-        User srcUser = findUser(srcUserId);
-        User destUser = findUser(destUserId);
+        User srcUser = findVerifiedUser(srcUserId);
+        User destUser = findVerifiedUser(destUserId);
         Block block = Block.builder().srcUser(srcUser).destUser(destUser).build();
         srcUser.addBlock(block);
         return block;

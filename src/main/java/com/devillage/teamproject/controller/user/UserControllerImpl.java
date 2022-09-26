@@ -32,8 +32,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public UserDto.Response getProfile(Long id) {
-        return UserDto.Response.of(userService.findUser(id));
+    public UserDto.Response getProfile(String token) {
+        return UserDto.Response.of(userService.findUser(token));
     }
 
     @Override

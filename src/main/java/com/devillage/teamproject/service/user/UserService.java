@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
     User joinUser(User user);
 
-    User findUser(Long userId);
+    User findUser(String token);
 
     User editUser(User user);
 

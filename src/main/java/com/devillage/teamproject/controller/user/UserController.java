@@ -24,9 +24,9 @@ public interface UserController {
     Long postPassword(@PathVariable("user-id") Long id,
                       String password);
 
-    @GetMapping("/profile/{user-id}")
+    @GetMapping("/profile")
     @ResponseStatus(HttpStatus.OK)
-    UserDto.Response getProfile(@PathVariable("user-id") Long id);
+    UserDto.Response getProfile(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)

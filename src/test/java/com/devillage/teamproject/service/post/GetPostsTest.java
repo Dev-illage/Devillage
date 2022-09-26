@@ -28,7 +28,7 @@ public class GetPostsTest implements Reflection {
     private PostServiceImpl postService;
 
     @Test
-    public void getPosts() throws Exception {
+    public void getPostsByCategory() throws Exception {
         // given
         String existCategory = "FREE";
         String notExistCategory = "CATEGORY";
@@ -43,12 +43,12 @@ public class GetPostsTest implements Reflection {
                 .willReturn(posts);
 
         // when
-        Page<Post> findPosts = postService.getPosts(existCategory, page, size);
+        Page<Post> findPosts = postService.getPostsByCategory(existCategory, page, size);
 
         // then
         Assertions.assertThat(findPosts).isEqualTo(posts);
         assertThrows(BusinessLogicException.class,
-                () -> postService.getPosts(notExistCategory, page, size));
+                () -> postService.getPostsByCategory(notExistCategory, page, size));
     }
 
 }

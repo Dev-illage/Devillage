@@ -48,7 +48,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> getPosts(String category, int page, int size) {
+    public Page<Post> getPostsByCategory(String category, int page, int size) {
         try {
             CategoryType.valueOf(category.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -72,15 +72,16 @@ public class PostServiceImpl implements PostService {
         Post post = verifyPost(postId);
 
         List<Bookmark> findBookmark = bookmarkRepository.findByUserIdAndPostId(userId, postId);
+        Bookmark bookmark;
 
         if (!findBookmark.isEmpty()) {
-            Bookmark bookmark = findBookmark.get(0);
-            bookmarkRepository.delete(bookmark);
-            return bookmark;
+            bookmark = findBookmark.get(0);
+            bookmarkRepository.deleteAll(findBookmark);
+        } else {
+            bookmark = new Bookmark(user, post);
+            user.addBookmark(bookmark);
         }
 
-        Bookmark bookmark = new Bookmark(user, post);
-        user.addBookmark(bookmark);
         return bookmark;
     }
 
@@ -102,23 +103,25 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Like postLike(String accessToken, Long postId) {
+    public Post postLike(String accessToken, Long postId) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
         User user = verifyUser(userId);
         Post post = verifyPost(postId);
 
-        List<Like> findLike = likeRepository.findByUserIdAndPostId(userId, postId);
+        List<Like> findLikes = likeRepository.findByUserIdAndPostId(userId, postId);
+        Long count = likeRepository.countByPostId(postId);
 
-        if (!findLike.isEmpty()) {
-            Like like = findLike.get(0);
-            likeRepository.delete(like);
-            return like;
+        if (!findLikes.isEmpty()) {
+            likeRepository.deleteAll(findLikes);
+            count -= 1L;
+        } else {
+            Like like = new Like(user, post);
+            user.addLike(like);
+            count += 1L;
         }
 
-
-        Like like = new Like(user, post);
-        user.addLike(like);
-        return like;
+        post.setLikeCount(count);
+        return post;
     }
 
     private Post verifyPost(Long postId) {

@@ -1,18 +1,32 @@
 package com.devillage.teamproject.service.comment;
 
 import com.devillage.teamproject.entity.Comment;
+import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReComment;
+import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.repository.comment.CommentRepository;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.service.post.PostService;
+import com.devillage.teamproject.service.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
+    private final CommentRepository commentRepository;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final PostService postService;
+    private final UserService userService;
 
     @Override
     @Transactional
-    public Comment createComment() {
-        return null;
+    public Comment createComment(Comment comment, String token) {
+        User user = userService.findVerifiedUser(jwtTokenUtil.getUserId(token));
+        Post post = postService.getPost(comment.getPost().getId());
+        return commentRepository.save(Comment.createComment(comment, user, post));
     }
 
     @Override

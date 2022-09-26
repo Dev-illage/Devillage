@@ -50,6 +50,10 @@ public class Post extends AuditingEntity {
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
 
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
+
     @OneToMany(mappedBy = "post")
     private List<Bookmark> bookmarks = new ArrayList<>();
 

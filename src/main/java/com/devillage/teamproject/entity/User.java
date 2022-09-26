@@ -18,6 +18,8 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@AllArgsConstructor
+@Builder
 public class User extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,6 +84,10 @@ public class User extends AuditingEntity {
 
     @OneToMany(mappedBy = "user")
     private final List<Comment> comments = new ArrayList<>();
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
 
     @OneToMany(mappedBy = "user")
     private final List<ReComment> reComments = new ArrayList<>();

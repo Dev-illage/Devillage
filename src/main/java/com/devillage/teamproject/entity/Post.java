@@ -13,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@AllArgsConstructor
+@Builder
 public class Post extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

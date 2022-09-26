@@ -27,9 +27,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -173,9 +176,12 @@ class PostControllerTest implements Reflection {
                 .andExpect(jsonPath("$.user").value(user.getId()))
                 .andExpect(jsonPath("$.post").value(post.getId()))
                 .andExpect(jsonPath("$.bookmark").value(bookmark.getId()))
-                .andDo(document("post-bookmark",
+                .andDo(document("posts/bookmark",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
+                        ),
                         pathParameters(
                                 parameterWithName("post-id").description("게시글 식별자")
                         ),
@@ -208,9 +214,12 @@ class PostControllerTest implements Reflection {
                 .andExpect(jsonPath("$.user").value(user.getId()))
                 .andExpect(jsonPath("$.post").value(post.getId()))
                 .andExpect(jsonPath("$.report").value(report.getId()))
-                .andDo(document("post-report",
+                .andDo(document("posts/report",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
+                        ),
                         pathParameters(
                                 parameterWithName("post-id").description("게시글 식별자")
                         ),
@@ -245,9 +254,12 @@ class PostControllerTest implements Reflection {
                 .andExpect(jsonPath("$.user").value(user.getId()))
                 .andExpect(jsonPath("$.post").value(post.getId()))
                 .andExpect(jsonPath("$.like").value(post.getLikeCount()))
-                .andDo(document("post-like",
+                .andDo(document("posts/like",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
+                        ),
                         pathParameters(
                                 parameterWithName("post-id").description("게시글 식별자")
                         ),

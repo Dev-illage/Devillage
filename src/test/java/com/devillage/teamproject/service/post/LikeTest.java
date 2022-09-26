@@ -64,6 +64,8 @@ class LikeTest implements Reflection {
 
         given(likeRepository.findByUserIdAndPostId(userId, postId))
                 .willReturn(new ArrayList<>());
+        given(likeRepository.countByPostId(postId))
+                .willReturn(1L);
 
         // when
         Post findPost = postService.postLike("", postId);
@@ -89,6 +91,8 @@ class LikeTest implements Reflection {
 
         given(likeRepository.findByUserIdAndPostId(userId, postId))
                 .willReturn(List.of(like));
+        given(likeRepository.countByPostId(postId))
+                .willReturn(1L);
 
         // when
         Post findPost = postService.postLike("", postId);

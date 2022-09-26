@@ -4,9 +4,12 @@ import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
-import com.devillage.teamproject.repository.post.*;
-import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.repository.post.BookmarkRepository;
+import com.devillage.teamproject.repository.post.LikeRepository;
+import com.devillage.teamproject.repository.post.PostRepository;
+import com.devillage.teamproject.repository.post.ReportedPostRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,11 +29,11 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final BookmarkRepository bookmarkRepository;
     private final ReportedPostRepository reportedPostRepository;
     private final LikeRepository likeRepository;
     private final JwtTokenUtil jwtTokenUtil;
+    private final UserService userService;
 
     @Override
     public Post savePost(Post post) {
@@ -39,7 +42,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post editPost(Long id,Post post) {
+    public Post editPost(Long id, Post post) {
         Post getPost = findVerifyPost(post.getId());
         getPost.edit(post);
         return getPost;
@@ -66,7 +69,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<Post> getPostsByBookmark(String accessToken, int page, int size) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
-        User user = findVerifyUser(userId);
+        User user = userService.findVerifiedUser(userId);
 
         List<Post> postsList = user.getBookmarks()
                 .stream()
@@ -90,7 +93,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Bookmark postBookmark(String accessToken, Long postId) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
-        User user = findVerifyUser(userId);
+        User user = userService.findVerifiedUser(userId);
         Post post = findVerifyPost(postId);
 
         List<Bookmark> findBookmark = bookmarkRepository.findByUserIdAndPostId(userId, postId);
@@ -110,7 +113,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public ReportedPost postReport(String accessToken, Long postId) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
-        User user = findVerifyUser(userId);
+        User user = userService.findVerifiedUser(userId);
         Post post = findVerifyPost(postId);
 
         List<ReportedPost> findReport = reportedPostRepository.findByUserIdAndPostId(userId, postId);
@@ -127,7 +130,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post postLike(String accessToken, Long postId) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
-        User user = findVerifyUser(userId);
+        User user = userService.findVerifiedUser(userId);
         Post post = findVerifyPost(postId);
 
         List<Like> findLikes = likeRepository.findByUserIdAndPostId(userId, postId);
@@ -154,11 +157,4 @@ public class PostServiceImpl implements PostService {
         );
     }
 
-    private User findVerifyUser(Long userId) {
-        Optional<User> findUser = userRepository.findById(userId);
-
-        return findUser.orElseThrow(
-                () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
-        );
-    }
 }

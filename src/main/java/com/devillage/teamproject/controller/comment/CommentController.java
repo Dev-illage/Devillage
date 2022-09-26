@@ -2,15 +2,17 @@ package com.devillage.teamproject.controller.comment;
 
 import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.dto.PostDto;
+import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("posts")
+@RequestMapping("/posts")
 public interface CommentController {
 
     @PostMapping("/{post-id}/comments")
     @ResponseStatus(HttpStatus.CREATED)
-    Long postComment(CommentDto.Post request);
+    Long postComment(CommentDto.Post request, @RequestParam("post-id") Long postId,
+                     @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @PostMapping("/{post-id}/comments/{comment-id}")
     @ResponseStatus(HttpStatus.CREATED)

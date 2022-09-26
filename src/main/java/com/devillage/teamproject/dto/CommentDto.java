@@ -1,10 +1,7 @@
 package com.devillage.teamproject.dto;
 
 import com.devillage.teamproject.entity.Comment;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,11 +14,12 @@ public class CommentDto {
 
     }
 
-    //TODO : Post 임시 작성, 구현 시 주석 삭제
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
     public static class Post {
-
+        private String content;
     }
 
     //TODO : ReComment Post 임시 작성, 구현 시 주석 삭제

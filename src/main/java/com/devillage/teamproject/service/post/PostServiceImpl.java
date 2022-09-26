@@ -40,14 +40,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post editPost(Long id,Post post) {
-        Post getPost = verifyPost(post.getId());
+        Post getPost = findVerifyPost(post.getId());
         getPost.edit(post);
         return getPost;
     }
 
     @Override
     public Post getPost(Long id) {
-        return verifyPost(id);
+        return findVerifyPost(id);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<Post> getPostsByBookmark(String accessToken, int page, int size) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
-        User user = verifyUser(userId);
+        User user = findVerifyUser(userId);
 
         List<Post> postsList = user.getBookmarks()
                 .stream()
@@ -90,8 +90,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public Bookmark postBookmark(String accessToken, Long postId) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
-        User user = verifyUser(userId);
-        Post post = verifyPost(postId);
+        User user = findVerifyUser(userId);
+        Post post = findVerifyPost(postId);
 
         List<Bookmark> findBookmark = bookmarkRepository.findByUserIdAndPostId(userId, postId);
         Bookmark bookmark;
@@ -110,8 +110,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public ReportedPost postReport(String accessToken, Long postId) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
-        User user = verifyUser(userId);
-        Post post = verifyPost(postId);
+        User user = findVerifyUser(userId);
+        Post post = findVerifyPost(postId);
 
         List<ReportedPost> findReport = reportedPostRepository.findByUserIdAndPostId(userId, postId);
 
@@ -127,8 +127,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post postLike(String accessToken, Long postId) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
-        User user = verifyUser(userId);
-        Post post = verifyPost(postId);
+        User user = findVerifyUser(userId);
+        Post post = findVerifyPost(postId);
 
         List<Like> findLikes = likeRepository.findByUserIdAndPostId(userId, postId);
         Long count = likeRepository.countByPostId(postId);
@@ -146,7 +146,7 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
-    private Post verifyPost(Long postId) {
+    private Post findVerifyPost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
 
         return findPost.orElseThrow(
@@ -154,7 +154,7 @@ public class PostServiceImpl implements PostService {
         );
     }
 
-    private User verifyUser(Long userId) {
+    private User findVerifyUser(Long userId) {
         Optional<User> findUser = userRepository.findById(userId);
 
         return findUser.orElseThrow(

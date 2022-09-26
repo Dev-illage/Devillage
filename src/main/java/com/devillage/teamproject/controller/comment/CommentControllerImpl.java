@@ -1,13 +1,20 @@
 package com.devillage.teamproject.controller.comment;
 
 import com.devillage.teamproject.dto.CommentDto;
+import com.devillage.teamproject.service.comment.CommentService;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CommentControllerImpl implements CommentController{
+    private final CommentService commentService;
+
+    public CommentControllerImpl(CommentService commentService) {
+        this.commentService = commentService;
+    }
+
     @Override
-    public Long postComment(CommentDto.Post request, Long postId, String token) {
-        return null;
+    public CommentDto.Response postComment(CommentDto.Post request, Long postId, String token) {
+        return CommentDto.Response.of(commentService.createComment(request.toEntity(postId), token));
     }
 
     @Override
@@ -22,6 +29,7 @@ public class CommentControllerImpl implements CommentController{
 
     @Override
     public CommentDto.Response getComment(Long postId, Long commentId, Long page, Long size) {
+
         return null;
     }
 

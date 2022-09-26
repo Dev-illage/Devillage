@@ -82,6 +82,17 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
+    public DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByBookmark(String accessToken, int page, int size) {
+        Page<Post> posts = postService.getPostsByBookmark(accessToken, page, size);
+        return DoubleResponseDto.of(
+                posts.stream()
+                        .map(PostDto.Response.SimplePostDto::of)
+                        .collect(Collectors.toList()),
+                posts
+        );
+    }
+
+    @Override
     public void deletePost(Long id) {
 
     }

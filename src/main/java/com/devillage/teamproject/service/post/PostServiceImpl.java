@@ -9,13 +9,16 @@ import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +61,25 @@ public class PostServiceImpl implements PostService {
         return postRepository.findByCategory_CategoryType(
                 CategoryType.valueOf(category.toUpperCase()),
                 PageRequest.of(page - 1, size, Sort.by("id").descending()));
+    }
+
+    @Override
+    public Page<Post> getPostsByBookmark(String accessToken, int page, int size) {
+        Long userId = jwtTokenUtil.getUserId(accessToken);
+        User user = verifyUser(userId);
+
+        List<Post> postsList = user.getBookmarks()
+                .stream()
+                .sorted(Comparator.comparing(bookmark -> -bookmark.getId()))
+                .map(Bookmark::getPost)
+                .collect(Collectors.toList());
+
+        int start = (page - 1) * size;
+        int end = Math.min(start + size, postsList.size());
+
+        return new PageImpl<>(postsList.subList(start, end),
+                PageRequest.of(page - 1, size),
+                postsList.size());
     }
 
     @Override

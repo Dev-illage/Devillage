@@ -47,6 +47,13 @@ public interface PostController {
                                                                @RequestParam int page,
                                                                @RequestParam int size);
 
+    @GetMapping("/bookmark")
+    @ResponseStatus(HttpStatus.OK)
+    DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByBookmark(
+            @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,
+            @RequestParam int page,
+            @RequestParam int size);
+
     @DeleteMapping("/{post-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deletePost(@PathVariable("post-id") Long id);

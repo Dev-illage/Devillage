@@ -14,13 +14,15 @@ public interface PostService {
 
     Post getPost(Long id);
 
-    Page<Post> getPostsByCategory(String category, int page, int size);
-
-    void deletePost();
-
     Bookmark postBookmark(String accessToken, Long postId);
 
     ReportedPost postReport(String accessToken, Long postId);
 
     Post postLike(String accessToken, Long postId);
+
+    Page<Post> getPostsByCategory(String category, int page, int size);
+
+    Page<Post> getPostsByBookmark(String accessToken, int page, int size);
+
+    void deletePost();
 }

@@ -17,4 +17,6 @@ public interface UserService {
     void deleteUser(String token);
 
     Block blockUser(Long destUserId, String token);
+
+    User findVerifiedUser(Long userId);
 }

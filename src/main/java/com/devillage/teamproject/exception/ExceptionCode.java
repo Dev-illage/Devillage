@@ -12,7 +12,8 @@ public enum ExceptionCode {
     UNSUPPORTED_JWT_EXCEPTION(401, "Unsupported Jwt Exception"),
     SIGNATURE_EXCEPTION(401, "Signature Exception"),
     EXPIRED_JWT_EXCEPTION(401, "Expired Jwt Exception"),
-    CATEGORY_NOT_FOUND(404, "Category not found")
+    CATEGORY_NOT_FOUND(404, "Category not found"),
+    USER_RESIGNED(422, "Resigned User"),
     ;
     private final int status;
     private final String message;

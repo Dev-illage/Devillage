@@ -2,6 +2,7 @@ package com.devillage.teamproject.service.user;
 
 import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.entity.enums.UserStatus;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.user.BlockRepository;
@@ -35,8 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUser(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        return optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        return findVerifiedUser(userId);
     }
 
     @Override
@@ -73,5 +73,15 @@ public class UserServiceImpl implements UserService {
         Block block = Block.builder().srcUser(srcUser).destUser(destUser).build();
         srcUser.addBlock(block);
         return block;
+    }
+
+    @Override
+    public User findVerifiedUser(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User findUser = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        if (findUser.getUserStatus() == UserStatus.RESIGNED) {
+            throw new BusinessLogicException(ExceptionCode.USER_RESIGNED);
+        }
+        return findUser;
     }
 }

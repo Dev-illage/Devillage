@@ -49,9 +49,10 @@ public class UserServiceTest implements Reflection {
         setField(expectedUser, "pwdLastModifiedAt", PASSWORD_LAST_MODIFIED_AT1);
 
         given(userRepository.findById(Mockito.anyLong())).willReturn(Optional.of(expectedUser));
+        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(expectedUser.getId());
 
         // when
-        User actualUser = userService.findUser(1L);
+        User actualUser = userService.findUser("someToken");
 
         // then
         assertEquals(expectedUser, actualUser);
@@ -71,13 +72,15 @@ public class UserServiceTest implements Reflection {
         setField(user, "pwdLastModifiedAt", PASSWORD_LAST_MODIFIED_AT1);
 
         given(userRepository.findById(Mockito.anyLong())).willReturn(Optional.of(user));
+        String originalEmail = user.getEmail();
+        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(user.getId());
 
         // when
-        userService.deleteUser(user.getId());
+        userService.deleteUser("someToken");
 
         // then
         assertEquals(UserStatus.RESIGNED, user.getUserStatus());
-
+        assertNotEquals(originalEmail, user.getEmail());
     }
 
     @Test

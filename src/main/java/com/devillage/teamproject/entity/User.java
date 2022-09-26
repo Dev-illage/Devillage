@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -112,6 +113,7 @@ public class User extends AuditingEntity {
     }
 
     public void deleteUser() {
+        this.email = this.email + "resignedUser" + UUID.randomUUID() + ".com";
         this.userStatus = UserStatus.RESIGNED;
     }
 }

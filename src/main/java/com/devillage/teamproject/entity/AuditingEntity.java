@@ -1,8 +1,10 @@
 package com.devillage.teamproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EqualsAndHashCode
 @Getter
+@Setter(AccessLevel.PROTECTED)
 public abstract class AuditingEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

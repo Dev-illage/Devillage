@@ -1,27 +1,52 @@
 package com.devillage.teamproject.dto;
 
 import com.devillage.teamproject.entity.Comment;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.devillage.teamproject.entity.Post;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentDto {
 
-    //TODO : Response 임시 작성, 구현 시 주석 삭제
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
     public static class Response {
+        private Long commentId;
+        private String content;
+        private Long userId;
+        private Long postId;
 
+        public static Response of(Comment comment) {
+            return Response.builder()
+                    .commentId(comment.getId())
+                    .content(comment.getContent())
+                    .userId(comment.getUser().getId())
+                    .postId(comment.getPost().getId())
+                    .build();
+        }
     }
 
-    //TODO : Post 임시 작성, 구현 시 주석 삭제
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
     public static class Post {
+        private String content;
 
+        public Comment toEntity() {
+            return Comment.builder()
+                    .content(this.content)
+                    .build();
+        }
+
+        public Comment toEntity(Long postId) {
+            return Comment.builder()
+                    .content(this.content)
+                    .post(com.devillage.teamproject.entity.Post.builder().id(postId).build())
+                    .build();
+        }
     }
 
     //TODO : ReComment Post 임시 작성, 구현 시 주석 삭제

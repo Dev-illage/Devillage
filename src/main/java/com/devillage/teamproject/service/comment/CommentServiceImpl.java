@@ -62,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public ReComment createReComment(ReComment reComment, String token) {
-        Comment comment = findVerifiedComment(reComment.getId());
+        Comment comment = findVerifiedComment(reComment.getComment().getId());
         User user = userService.findVerifiedUser(jwtTokenUtil.getUserId(token));
         return reCommentRepository.save(ReComment.createReComment(user, comment, reComment.getContent()));
     }

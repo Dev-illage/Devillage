@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.comment;
 
+import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.service.comment.CommentService;
 import org.junit.jupiter.api.Test;
 import com.devillage.teamproject.dto.CommentDto;
@@ -18,6 +19,8 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.time.LocalDateTime;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.COMMENT_CONTENT;
@@ -125,5 +128,55 @@ class CommentControllerTest {
                                 fieldWithPath("postId").description("댓글이 작성된 게시글 식별자")
                         )
                 ));
+    }
+
+    @Test
+    @DisplayName("createReComment")
+    public void createReComment() throws Exception {
+        // given
+        User user = User.builder().id(ID1).build();
+        Comment comment = Comment.builder().id(ID1).build();
+        CommentDto.ReCommentPost postDto = CommentDto.ReCommentPost.builder().content(COMMENT_CONTENT).build();
+        ReComment reComment = ReComment.createReComment(user, comment, postDto.getContent());
+        String content = gson.toJson(postDto);
+
+        given(commentService.createReComment(Mockito.any(ReComment.class), Mockito.anyString()))
+                .willReturn(reComment);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/posts/{post-id}/comments/{comment-id}", ID1, comment.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .header(AUTHORIZATION_HEADER, "some-token")
+        );
+
+        // then
+        actions.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.userId").value(user.getId()))
+                .andExpect(jsonPath("$.commentId").value(comment.getId()))
+                .andExpect(jsonPath("$.content").value(postDto.getContent()))
+                .andDo(document(
+                        "post-recomment",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자"),
+                                parameterWithName("comment-id").description("댓글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("reCommentId").description("대댓글 식별자"),
+                                fieldWithPath("userId").description("댓글 쓴 사람 식별자"),
+                                fieldWithPath("commentId").description("댓글 식별자"),
+                                fieldWithPath("content").description("대댓글 내용"),
+                                fieldWithPath("createdAt").description("대댓글 쓴 날짜"),
+                                fieldWithPath("lastModifiedAt").description("대댓글을 마지막으로 수정한 날짜")
+                        )
+                ));
+
     }
 }

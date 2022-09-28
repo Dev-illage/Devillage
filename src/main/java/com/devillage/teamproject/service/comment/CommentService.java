@@ -6,7 +6,7 @@ import com.devillage.teamproject.entity.ReComment;
 import java.util.List;
 
 public interface CommentService {
-    Comment createComment();
+    Comment createComment(Comment comment, String token);
 
     Comment findComment();
 

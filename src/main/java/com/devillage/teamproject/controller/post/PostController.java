@@ -47,6 +47,12 @@ public interface PostController {
                                                                @RequestParam int page,
                                                                @RequestParam int size);
 
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsBySearch(@RequestParam String q,
+                                                                         @RequestParam int page,
+                                                                         @RequestParam int size);
+
     @GetMapping("/bookmark")
     @ResponseStatus(HttpStatus.OK)
     DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByBookmark(

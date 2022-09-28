@@ -12,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@AllArgsConstructor
+@Builder
 public class Post extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,19 +58,23 @@ public class Post extends AuditingEntity {
     private User user;
 
     @OneToMany(mappedBy = "post")
-    private List<PostsFile> postsFile = new ArrayList<>();
+    private final List<PostsFile> postsFile = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<PostTag> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
-    private List<Comment> comments = new ArrayList<>();
+    private final List<Comment> comments = new ArrayList<>();
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
 
     @OneToMany(mappedBy = "post")
-    private List<Bookmark> bookmarks = new ArrayList<>();
+    private final List<Bookmark> bookmarks = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<ReportedPost> reportedPosts = new ArrayList<>();
+    private final List<ReportedPost> reportedPosts = new ArrayList<>();
 
     public void addReportedPosts(ReportedPost reportedPost) {
         reportedPosts.add(reportedPost);
@@ -99,5 +105,11 @@ public class Post extends AuditingEntity {
 
     public void addUser(User user) {
         this.user = user;
+    }
+
+    @Deprecated
+    public void setDate() {
+        setCreatedAt(LocalDateTime.now());
+        setLastModifiedAt(LocalDateTime.now());
     }
 }

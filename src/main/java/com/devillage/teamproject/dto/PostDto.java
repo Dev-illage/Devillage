@@ -150,17 +150,12 @@ public class PostDto {
         private String content;
 
         public com.devillage.teamproject.entity.Post toEntity() {
-            System.out.println(category);
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
-                    null,
                     this.title,
-                    null,
                     this.content
             );
             return post;
         }
-
-
     }
 
     //TODO : Patch DTO 임시 작성, 구현 시 주석 삭제

@@ -25,6 +25,8 @@ public interface PostService {
 
     Page<Post> getPostsByCategory(String category, int page, int size);
 
+    Page<Post> getPostsBySearch(String word, int page, int size);
+
     Page<Post> getPostsByBookmark(String accessToken, int page, int size);
 
     void deletePost();

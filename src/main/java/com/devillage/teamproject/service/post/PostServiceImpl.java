@@ -114,6 +114,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Page<Post> getPostsBySearch(String word, int page, int size) {
+        return postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
+                word, word, PageRequest.of(page - 1, size, Sort.by("id").descending()));
+    }
+
+    @Override
     public Page<Post> getPostsByBookmark(String accessToken, int page, int size) {
         Long userId = jwtTokenUtil.getUserId(accessToken);
         User user = userService.findVerifiedUser(userId);

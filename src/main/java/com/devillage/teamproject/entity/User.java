@@ -39,8 +39,7 @@ public class User extends AuditingEntity {
     @OneToMany(mappedBy = "user")
     private List<UserRoles> userRoles = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_id")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST)
     private File avatar;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -66,11 +65,24 @@ public class User extends AuditingEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
+    public User(String email, String password, String nickName, String avatar, String oauthProvider) {
+        this.email = email;
+        this.password = password;
+        this.nickName = nickName;
+        this.avatar = File.ofOauth2UserPicture(avatar);
+        this.oauthProvider = oauthProvider;
+        this.pwdLastModifiedAt = LocalDateTime.now();
+        this.userStatus = UserStatus.ACTIVE;
+        this.authenticatedMail = true;
+
+        this.avatar.addUser(this);
+    }
+
     public void addBookmark(Bookmark bookmark) {
         bookmarks.add(bookmark);
     }
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private final List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -116,5 +128,9 @@ public class User extends AuditingEntity {
         this.email = this.email + "resignedUser" + UUID.randomUUID() + ".com";
         this.userStatus = UserStatus.RESIGNED;
         this.userRoles = List.of();
+    }
+
+    public void addPost(Post post) {
+        this.posts.add(post);
     }
 }

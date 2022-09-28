@@ -54,6 +54,8 @@ public class CommentDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
     public static class ReCommentPost {
         private String content;
 

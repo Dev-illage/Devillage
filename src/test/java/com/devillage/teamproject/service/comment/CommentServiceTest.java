@@ -80,7 +80,7 @@ class CommentServiceTest {
         given(commentRepository.findById(Mockito.anyLong())).willReturn(Optional.of(comment));
         given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(user.getId());
         given(userService.findVerifiedUser(user.getId())).willReturn(user);
-        when(reCommentRepository.save(Mockito.any(ReComment.class))).then(AdditionalAnswers.returnsFirstArg());
+        given(reCommentRepository.save(Mockito.any(ReComment.class))).willAnswer(AdditionalAnswers.returnsFirstArg());
 
         // when
         ReComment actualReComment = commentService.createReComment(reCommentDto, "someToken");

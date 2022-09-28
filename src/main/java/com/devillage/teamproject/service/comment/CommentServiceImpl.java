@@ -55,7 +55,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void deleteComment() {
+    public void deleteComment(Long commentId, String token) {
 
     }
 

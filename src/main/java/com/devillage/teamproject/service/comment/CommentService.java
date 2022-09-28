@@ -14,7 +14,7 @@ public interface CommentService {
 
     List<Comment> findComments();
 
-    void deleteComment();
+    void deleteComment(Long commentId, String token);
 
     ReComment createReComment(ReComment reComment, String token);
 

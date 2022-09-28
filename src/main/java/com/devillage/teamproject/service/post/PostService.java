@@ -3,12 +3,15 @@ package com.devillage.teamproject.service.post;
 import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
+import com.devillage.teamproject.entity.enums.CategoryType;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface PostService {
-    Post savePost(Post post);
+    Post savePost(Post post, CategoryType categoryType, List<String> tags, String token);
 
     Post editPost(Long id, Post post);
 

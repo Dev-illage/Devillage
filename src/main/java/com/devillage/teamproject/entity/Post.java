@@ -36,6 +36,13 @@ public class Post extends AuditingEntity {
     @EqualsAndHashCode.Include
     private Long likeCount;
 
+    public Post(String title, String content) {
+        this.title = title;
+        this.content = content;
+        this.clicks = 0L;
+        this.likeCount = 0L;
+    }
+
     public void setLikeCount(Long num) {
         likeCount = num;
     }
@@ -51,7 +58,7 @@ public class Post extends AuditingEntity {
     @OneToMany(mappedBy = "post")
     private List<PostsFile> postsFile = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<PostTag> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
@@ -66,9 +73,6 @@ public class Post extends AuditingEntity {
     public void addReportedPosts(ReportedPost reportedPost) {
         reportedPosts.add(reportedPost);
     }
-
-    private LocalDateTime createdAt;
-    private LocalDateTime lastModifiedAt;
 
     //외부 접근용(PostDto.Response) 생성자 추가
     public Post(Category category, String title, List<PostTag> tags, String content){
@@ -85,4 +89,15 @@ public class Post extends AuditingEntity {
         this.tags = post.getTags();
     }
 
+    public void addPostTag(PostTag postTag) {
+        this.tags.add(postTag);
+    }
+
+    public void addCategory(Category category) {
+        this.category = category;
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+    }
 }

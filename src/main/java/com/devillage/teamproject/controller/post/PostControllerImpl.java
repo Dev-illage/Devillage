@@ -6,9 +6,11 @@ import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
+import com.devillage.teamproject.security.util.JwtConstants;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.stream.Collectors;
@@ -20,10 +22,8 @@ public class PostControllerImpl implements PostController {
     private final PostService postService;
 
     @Override
-    public PostDto.Response postPost(PostDto.Post request) {
-        Post post = request.toEntity();
-        Post savedPost = postService.savePost(post);
-
+    public PostDto.Response postPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER)String token, PostDto.Post request) {
+        Post savedPost = postService.savePost(request.toEntity(), request.getCategory(), request.getTags(), token);
         return PostDto.Response.of(savedPost);
     }
 

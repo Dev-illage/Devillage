@@ -13,6 +13,8 @@ spring:
         show_sql: true
     database: mysql
     open-in-view: false
+  profiles:
+    include: oauth
 
 logging:
   level:

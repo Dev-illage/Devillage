@@ -4,10 +4,14 @@ import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
+import com.devillage.teamproject.repository.category.CategoryRepository;
 import com.devillage.teamproject.repository.post.BookmarkRepository;
 import com.devillage.teamproject.repository.post.LikeRepository;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.post.ReportedPostRepository;
+import com.devillage.teamproject.repository.posttag.PostTagRepository;
+import com.devillage.teamproject.repository.tag.TagRepository;
+import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +38,54 @@ public class PostServiceImpl implements PostService {
     private final LikeRepository likeRepository;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
+    private final CategoryRepository categoryRepository;
+    private final TagRepository tagRepository;
+    private final PostTagRepository postTagRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public Post savePost(Post post) {
-        Post savedPost = postRepository.save(post);
-        return savedPost;
+    public Post savePost(Post post, CategoryType categoryType, List<String> tagValue, String token) {
+        // 1. 카테고리 엔티티 찾아오기 ( => 포스트 안에 저장해줘야 하니까)
+        // 2. 태그 가져오기
+        // 2-1. 해당 태그가 기존에 존재한다면 걔를 가져와서 포스트에 넣어줘야하고
+        // 2-2. 존재하지 않는다면 -> 새롭게 저장해야된다. -> 포스트 리스트
+        // 3. List<포스트> -> 반복문 저장을
+
+        // 문제 : 포스트 태그 하나는 저장 똑바로 안됨
+        // 문제 : post에 날짜 시간 저장 안됨
+        //
+
+        // 할일 추가 -> 유저도 저장해야됨
+        Long userId = jwtTokenUtil.getUserId(token);
+        User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+
+        Category category = categoryRepository.findCategoriesByCategoryType(categoryType);
+
+        tagValue.forEach(
+                e -> {
+                    if (tagRepository.findTagByName(e).isEmpty()) {
+                        Tag tag = tagRepository.save(new Tag(e));
+                        PostTag postTag = new PostTag(post, tag);
+                        postTagRepository.save(postTag);
+                        post.addPostTag(postTag);
+                        post.addCategory(category);
+                        postRepository.save(post);
+                        findUser.addPost(post);
+                        post.addUser(findUser);
+                    } else {
+                        Tag tag = tagRepository.findTagByName(e).orElseThrow(IllegalArgumentException::new);
+                        PostTag postTag = new PostTag(post, tag);
+                        postTagRepository.save(postTag);
+                        post.addPostTag(postTag);
+                        post.addCategory(category);
+                        postRepository.save(post);
+                        findUser.addPost(post);
+                        post.addUser(findUser);
+                    }
+                }
+        );
+
+        return post;
     }
 
     @Override

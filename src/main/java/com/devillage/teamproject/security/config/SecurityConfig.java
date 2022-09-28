@@ -1,5 +1,7 @@
 package com.devillage.teamproject.security.config;
 
+import com.devillage.teamproject.security.oauth.CustomOauth2Service;
+import com.devillage.teamproject.security.oauth.CustomSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -19,6 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfig authenticationConfig;
+    private final CustomSuccessHandler customSuccessHandler;
+    private final CustomOauth2Service customOauth2Service;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -28,15 +32,23 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .csrf().disable()
-                .cors().disable()
+                .cors().configurationSource(corsConfigurationSource())
+//                .cors().disable()
 //                .configurationSource(corsConfigurationSource())
+                .and()
                 .apply(authenticationConfig)
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .mvcMatchers("/auth/**").permitAll()
-                .mvcMatchers(HttpMethod.POST,"/posts/**").hasAnyRole("USER","MANAGER","ADMIN")
-                .anyRequest().permitAll();
+                .mvcMatchers(HttpMethod.POST,"/posts/**").permitAll()
+                .anyRequest().permitAll()
+                .and()
+                .oauth2Login()
+//                .defaultSuccessUrl("/auth/oauth")
+                .successHandler(customSuccessHandler)
+                .userInfoEndpoint()
+                .userService(customOauth2Service);
 
         return http.build();
     }
@@ -47,7 +59,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedHeader("*");
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedHeader("*");
         config.setAllowedMethods(List.of("GET","POST","DELETE","PATCH","OPTION","PUT"));
         source.registerCorsConfiguration("/**", config);
 

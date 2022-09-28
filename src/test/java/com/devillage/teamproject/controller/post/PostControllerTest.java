@@ -87,7 +87,7 @@ class PostControllerTest implements Reflection {
         setField(tag, "id", 1L);
         setField(tag, "name", "mvcTest");
 
-        given(postService.savePost(Mockito.any(Post.class))).willReturn(post);
+        given(postService.savePost(Mockito.any(Post.class), Mockito.any(CategoryType.class), Mockito.anyList(), Mockito.anyString())).willReturn(post);
 
         String content = objectMapper.writeValueAsString(post);
 

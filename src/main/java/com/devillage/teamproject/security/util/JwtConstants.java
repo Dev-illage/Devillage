@@ -13,4 +13,5 @@ public class JwtConstants {
     public final static String TOKEN_OK = "tokenOk";
     public final static String ROLES = "roles";
     public final static String SEQUENCE = "sequence";
+    public final static String REDIRECT_URL_OAUTH2 = "http://localhost:3000/";
 }

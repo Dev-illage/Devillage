@@ -2,8 +2,10 @@ package com.devillage.teamproject.service.comment;
 
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.Post;
+import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.repository.comment.CommentRepository;
+import com.devillage.teamproject.repository.comment.ReCommentRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.service.user.UserService;
@@ -11,6 +13,7 @@ import com.devillage.teamproject.service.user.UserServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -18,11 +21,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.devillage.teamproject.util.TestConstants.COMMENT_CONTENT;
 import static com.devillage.teamproject.util.TestConstants.ID1;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
@@ -34,6 +39,8 @@ class CommentServiceTest {
     private PostService postService;
     @Mock
     private UserService userService;
+    @Mock
+    private ReCommentRepository reCommentRepository;
     @InjectMocks
     private CommentServiceImpl commentService;
 
@@ -61,6 +68,27 @@ class CommentServiceTest {
         assertEquals(actualComment, post.getComments().get(0));
     }
 
+    @Test
+    @DisplayName("createReComment")
+    public void createReComment() throws Exception {
+        // given
+        User user = User.builder().id(ID1).build();
+        Comment comment = Comment.builder().id(ID1).build();
+        ReComment reCommentDto = ReComment.builder().content(COMMENT_CONTENT)
+                        .comment(comment).build();
 
+        given(commentRepository.findById(Mockito.anyLong())).willReturn(Optional.of(comment));
+        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(user.getId());
+        given(userService.findVerifiedUser(user.getId())).willReturn(user);
+        when(reCommentRepository.save(Mockito.any(ReComment.class))).then(AdditionalAnswers.returnsFirstArg());
+
+        // when
+        ReComment actualReComment = commentService.createReComment(reCommentDto, "someToken");
+
+        // then
+        assertEquals(reCommentDto.getContent(), actualReComment.getContent());
+        assertEquals(user, actualReComment.getUser());
+        assertEquals(comment, actualReComment.getComment());
+    }
 
 }

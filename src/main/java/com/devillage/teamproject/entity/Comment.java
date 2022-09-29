@@ -1,5 +1,6 @@
 package com.devillage.teamproject.entity;
 
+import com.devillage.teamproject.entity.enums.CommentStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,15 +37,23 @@ public class Comment extends AuditingEntity {
     @OneToMany(mappedBy = "comment")
     private final List<ReComment> reComments = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private CommentStatus commentStatus;
+
     public static Comment createComment(Comment comment, User user, Post post) {
         Comment newComment = Comment.builder()
                 .content(comment.getContent())
                 .user(user)
                 .post(post)
+                .commentStatus(CommentStatus.VALID)
                 .build();
         user.addComment(newComment);
         post.addComment(newComment);
 
         return newComment;
+    }
+
+    public void deleteComment() {
+        this.commentStatus = CommentStatus.DELETED;
     }
 }

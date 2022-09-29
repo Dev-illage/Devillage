@@ -49,8 +49,8 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public void deleteComment(Long postId, Long id) {
-
+    public void deleteComment(Long postId, Long commentId, String token) {
+        commentService.deleteComment(commentId, token);
     }
 
     @Override

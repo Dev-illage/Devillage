@@ -179,4 +179,35 @@ class CommentControllerTest {
                 ));
 
     }
+
+    @Test
+    @DisplayName("deleteComment")
+    public void deleteComment() throws Exception {
+        // given
+        User user = User.builder().id(ID1).build();
+        Comment comment = Comment.builder().id(ID1).build();
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/posts/{post-id}/comments/{comment-id}", ID1, comment.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, "some-token")
+        );
+
+        // then
+        actions.andExpect(status().isNoContent())
+                .andDo(document(
+                        "delete-comment",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자"),
+                                parameterWithName("comment-id").description("댓글 식별자")
+                        )
+                ));
+    }
 }

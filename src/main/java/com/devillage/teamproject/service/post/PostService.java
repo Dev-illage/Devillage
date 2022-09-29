@@ -3,14 +3,18 @@ package com.devillage.teamproject.service.post;
 import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
+import com.devillage.teamproject.entity.enums.CategoryType;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface PostService {
-    Post savePost(Post post);
 
-    Post editPost(Long id, Post post);
+    Post savePost(Post post, CategoryType categoryType, List<String> tagValue, String token);
+
+    Post editPost(Post post, CategoryType categoryType, List<String> tagValue, String token,Long id);
 
     Post getPost(Long id);
 
@@ -26,5 +30,5 @@ public interface PostService {
 
     Page<Post> getPostsByBookmark(String accessToken, int page, int size);
 
-    void deletePost();
+    void deletePost(Long postId);
 }

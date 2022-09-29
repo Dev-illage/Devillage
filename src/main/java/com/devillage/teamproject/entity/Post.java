@@ -81,11 +81,20 @@ public class Post extends AuditingEntity {
         this.content = content;
     }
 
-    public void edit(Post post){
-        this.category = post.getCategory();
+    public void addCategory(Category category) {
+        this.category = category;
+    }
+
+    public void addPostTag(PostTag postTag) {
+        this.tags.add(postTag);
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+    }
+    public void editPost(Post post) {
         this.content = post.getContent();
         this.title = post.getTitle();
-        this.tags = post.getTags();
     }
 
     @Deprecated

@@ -17,7 +17,7 @@ public interface CommentController {
     @ResponseStatus(HttpStatus.CREATED)
     CommentDto.ReCommentResponse postReComment(@PathVariable("post-id") Long postId,
                                                @PathVariable("comment-id") Long commentId,
-                                               CommentDto.ReCommentPost request,
+                                               @RequestBody CommentDto.ReCommentPost request,
                                                @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @PostMapping("/{post-id}/comments/{comment-id}/like")
@@ -42,16 +42,16 @@ public interface CommentController {
 
     @PatchMapping("/{post-id}/comments/{comment-id}")
     @ResponseStatus(HttpStatus.OK)
-    Long patchComment(@PathVariable("post-id") Long postId,
-                      @PathVariable("comment-id") Long commentId,
-                      CommentDto.Patch request);
+    CommentDto.Response patchComment(@PathVariable("post-id") Long postId,
+                                     @PathVariable("comment-id") Long commentId,
+                                     @RequestBody CommentDto.Patch request);
 
     @PatchMapping("/{post-id}/comments/{comment-id}/{re-comment-id}")
     @ResponseStatus(HttpStatus.OK)
-    Long patchReComment(@PathVariable("post-id") Long postId,
-                        @PathVariable("comment-id") Long commentId,
-                        @PathVariable("re-comment-id") Long reCommentId,
-                        CommentDto.ReCommentPatch request);
+    CommentDto.ReCommentResponse patchReComment(@PathVariable("post-id") Long postId,
+                                                @PathVariable("comment-id") Long commentId,
+                                                @PathVariable("re-comment-id") Long reCommentId,
+                                                @RequestBody CommentDto.Patch request);
 
     @DeleteMapping("/{post-id}/comments/{comment-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

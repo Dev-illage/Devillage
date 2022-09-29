@@ -21,6 +21,7 @@ public class ReComment extends AuditingEntity {
 
     @ToString.Include
     @EqualsAndHashCode.Include
+    @Setter
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)

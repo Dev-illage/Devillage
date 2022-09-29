@@ -1,6 +1,8 @@
 package com.devillage.teamproject.controller.comment;
 
 import com.devillage.teamproject.dto.CommentDto;
+import com.devillage.teamproject.entity.Comment;
+import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,13 +41,15 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public Long patchComment(Long postId, Long commentId, CommentDto.Patch request) {
-        return null;
+    public CommentDto.Response patchComment(Long postId, Long commentId, CommentDto.Patch request) {
+        Comment comment = commentService.editComment(postId, commentId, request.getContent());
+        return CommentDto.Response.of(comment);
     }
 
     @Override
-    public Long patchReComment(Long postId, Long commentId, Long reCommentId, CommentDto.ReCommentPatch request) {
-        return null;
+    public CommentDto.ReCommentResponse patchReComment(Long postId, Long commentId, Long reCommentId, CommentDto.Patch request) {
+        ReComment reComment = commentService.editReComment(postId, commentId, reCommentId, request.getContent());
+        return CommentDto.ReCommentResponse.of(reComment);
     }
 
     @Override

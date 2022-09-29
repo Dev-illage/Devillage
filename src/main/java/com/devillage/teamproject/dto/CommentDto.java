@@ -71,7 +71,6 @@ public class CommentDto {
         }
     }
 
-    //TODO : ReComment Response 임시 작성, 구현 시 주석 삭제
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
@@ -96,17 +95,11 @@ public class CommentDto {
         }
     }
 
-    //TODO : Patch 임시 작성, 구현 시 주석 삭제
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
     public static class Patch {
-
-    }
-
-    //TODO : ReComment Patch 임시 작성, 구현 시 주석 삭제
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ReCommentPatch {
-
+        String content;
     }
 }

@@ -22,18 +22,16 @@ public class PostDto {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
-        private CategoryType category;
+        private Category category;
         private String title;
-        private List<TagDto.Response> tags;
+        private List<PostTag> tags;
         private String content;
 
         public static Response of(com.devillage.teamproject.entity.Post post){
             return Response.builder()
-                    .category(post.getCategory().getCategoryType())
+                    .category(post.getCategory())
                     .title(post.getTitle())
-                    .tags(post.getTags().stream()
-                            .map(tag -> TagDto.Response.of(tag.getTag()))
-                            .collect(Collectors.toList()))
+                    .tags(post.getTags())
                     .content(post.getContent())
                     .build();
         }
@@ -57,16 +55,16 @@ public class PostDto {
                 return PostDetail.builder()
                         .key(post.getId())
                         .title(post.getTitle())
-//                        .category(post.getCategory().getCategoryType().name())
-                        .clicks(post.getClicks())
+                        .category(post.getCategory().getCategoryType().name())
                         .createdAt(post.getCreatedAt())
-//                        .isModified(post.getLastModifiedAt().isAfter(post.getCreatedAt()))
                         .content(post.getContent())
-//                        .tag(post.getTags().stream()
-//                                .map(tag -> TagDto.Response.of(tag.getTag()))
-//                                .collect(Collectors.toList()))
+//                        .isModified(post.getLastModifiedAt().isAfter(post.getCreatedAt()))
+                        .clicks(post.getClicks())
+                        .tag(post.getTags().stream()
+                                .map(postTag -> TagDto.Response.of(postTag.getTag()))
+                                .collect(Collectors.toList()))
 //                        .author(UserDto.AuthorInfo.of(post.getUser()))
-//                        .commentList(post.getComments())
+                        .commentList(post.getComments())
                         .build();
             }
 
@@ -143,7 +141,6 @@ public class PostDto {
 
     }
 
-
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Post {
@@ -161,18 +158,26 @@ public class PostDto {
         }
     }
 
+    //TODO : Patch DTO 임시 작성, 구현 시 주석 삭제
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
+//    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Patch {
-        private CategoryType category;
+        private Category category;
+        @NotBlank
         private String title;
-        private List<String> tags;
+        private List<PostTag> tags;
+        @NotBlank
         private String content;
 
         public com.devillage.teamproject.entity.Post toEntity() {
+
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
-                    this.title,
-                    this.content
+                    this.getCategory(),
+                    this.getTitle(),
+                    this.getTags(),
+                    this.getContent()
             );
             return post;
         }

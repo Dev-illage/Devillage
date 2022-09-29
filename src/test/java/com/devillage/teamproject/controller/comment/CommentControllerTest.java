@@ -129,6 +129,7 @@ class CommentControllerTest {
                 ));
     }
 
+    @Test
     @DisplayName("createReComment")
     public void createReComment() throws Exception {
         // given

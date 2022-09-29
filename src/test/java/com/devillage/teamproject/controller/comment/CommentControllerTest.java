@@ -138,10 +138,8 @@ class CommentControllerTest {
         CommentDto.ReCommentPost postDto = CommentDto.ReCommentPost.builder().content(COMMENT_CONTENT).build();
         ReComment reComment = ReComment.createReComment(user, comment, postDto.getContent());
         String content = gson.toJson(postDto);
-
         given(commentService.createReComment(Mockito.any(ReComment.class), Mockito.anyString()))
                 .willReturn(reComment);
-
         // when
         ResultActions actions = mockMvc.perform(
                 post("/posts/{post-id}/comments/{comment-id}", ID1, comment.getId())
@@ -150,7 +148,6 @@ class CommentControllerTest {
                         .content(content)
                         .header(AUTHORIZATION_HEADER, "some-token")
         );
-
         // then
         actions.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.userId").value(user.getId()))
@@ -167,16 +164,16 @@ class CommentControllerTest {
                                 parameterWithName("post-id").description("게시글 식별자"),
                                 parameterWithName("comment-id").description("댓글 식별자")
                         ),
-                        requestFields(
-                                fieldWithPath("content").description("댓글 내용")
-                        ),
                         responseFields(
+                                fieldWithPath("reCommentId").description("대댓글 식별자"),
+                                fieldWithPath("userId").description("댓글 쓴 사람 식별자"),
                                 fieldWithPath("commentId").description("댓글 식별자"),
-                                fieldWithPath("content").description("댓글 내용"),
-                                fieldWithPath("userId").description("댓글 작성자 식별자"),
-                                fieldWithPath("postId").description("댓글이 작성된 게시글 식별자")
+                                fieldWithPath("content").description("대댓글 내용"),
+                                fieldWithPath("createdAt").description("대댓글 쓴 날짜"),
+                                fieldWithPath("lastModifiedAt").description("대댓글을 마지막으로 수정한 날짜")
                         )
                 ));
+
     }
 
     @Test

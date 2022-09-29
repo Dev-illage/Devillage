@@ -56,7 +56,8 @@ public interface CommentController {
     @DeleteMapping("/{post-id}/comments/{comment-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteComment(@PathVariable("post-id") Long postId,
-                       @PathVariable("comment-id") Long id);
+                       @PathVariable("comment-id") Long commentId,
+                       @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @DeleteMapping("/{post-id}/comments/{comment-id}/{re-comment-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

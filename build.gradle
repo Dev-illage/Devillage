@@ -68,6 +68,12 @@ dependencies {
 
     // gson
     implementation 'com.google.code.gson:gson'
+
+    // webflux
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // aop
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 test {

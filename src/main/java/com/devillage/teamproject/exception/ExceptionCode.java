@@ -9,6 +9,8 @@ public enum ExceptionCode {
     SIGNATURE_EXCEPTION(401, "Signature Exception"),
     EXPIRED_JWT_EXCEPTION(401, "Expired Jwt Exception"),
 
+    BLOCKED_USER(403, "Blocked User"),
+
     USER_NOT_FOUND(404, "User not found"),
     POST_NOT_FOUND(404, "Post not found"),
     CATEGORY_NOT_FOUND(404, "Category not found"),

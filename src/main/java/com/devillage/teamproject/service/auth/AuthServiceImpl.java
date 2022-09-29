@@ -6,6 +6,7 @@ import com.devillage.teamproject.entity.Role;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.entity.UserRoles;
 import com.devillage.teamproject.entity.enums.RoleType;
+import com.devillage.teamproject.entity.enums.UserStatus;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.role.RoleRepository;
@@ -44,12 +45,12 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public User joinUser(User user) {
         duplicateEmailCheck(user);
+        user.setUserDefaults();
 
         Role role = roleRepository.getRoleByRoleType(RoleType.ROLE_USER);
         User savedUser = userRepository.save(user);
 
         userRolesRepository.save(new UserRoles(role, user));
-
         return savedUser;
     }
 
@@ -57,15 +58,13 @@ public class AuthServiceImpl implements AuthService{
     public AuthDto.Token loginUser(User user) {
         User findUser = findUserByEmail(user.getEmail());
 
-        passwordVerification(user, findUser);
+        checkUser(user, findUser);
         List<String> roles = getRolesFromUser(findUser);
 
-        String accessToken = jwtTokenUtil.createAccessToken(findUser.getEmail(), findUser.getId(), roles);
-        String refreshToken = jwtTokenUtil.createRefreshToken(findUser.getEmail(), findUser.getId(), roles);
+        AuthDto.Token responseTokenDto = createTokenDto(findUser.getEmail(), findUser.getId(), roles);
+        refreshTokenRepository.save(new RefreshToken(responseTokenDto.getRefreshToken()));
 
-        refreshTokenRepository.save(new RefreshToken(refreshToken));
-
-        return AuthDto.Token.of(JwtConstants.BEARER_TYPE,accessToken,refreshToken);
+        return responseTokenDto;
     }
 
     @Override
@@ -79,13 +78,12 @@ public class AuthServiceImpl implements AuthService{
         List<String> roles = (List<String>)claims.get(ROLES);
         Long userSequence = Long.valueOf((Integer)claims.get(SEQUENCE));
 
-        String accessToken = jwtTokenUtil.createAccessToken(email, userSequence, roles);
-        String refreshToken = jwtTokenUtil.createRefreshToken(email, userSequence, roles);
+        AuthDto.Token responseTokenDto = createTokenDto(email, userSequence, roles);
 
         refreshTokenRepository.delete(existingToken);
-        refreshTokenRepository.save(new RefreshToken(refreshToken));
+        refreshTokenRepository.save(new RefreshToken(responseTokenDto.getRefreshToken()));
 
-        return AuthDto.Token.of(BEARER_TYPE, accessToken, refreshToken);
+        return responseTokenDto;
     }
 
     @Override
@@ -95,16 +93,27 @@ public class AuthServiceImpl implements AuthService{
         refreshTokenRepository.delete(existingToken);
     }
 
+    private void userStatusVerification(User findUser) {
+        switch (findUser.getUserStatus()) {
+            case ACTIVE:
+                break;
+            case BLOCK:
+                throw new BusinessLogicException(ExceptionCode.BLOCKED_USER);
+            case RESIGNED:
+                throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+        }
+    }
+
+    private void userProviderVerification(User findUser) {
+        if (findUser.getOauthProvider() != null) {
+            throw new IllegalArgumentException("Wrong Approach");
+        }
+    }
+
     private User findUserByEmail(String email) {
         return userRepository
                 .findUserByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-    }
-
-    private void passwordVerification(User user, User findUser) {
-        if ( !findUser.passwordVerification(passwordEncoder, user) ) {
-            throw new AuthenticationCredentialsNotFoundException("Invalid input value");
-        }
     }
 
     private List<String> getRolesFromUser(User findUser) {
@@ -114,6 +123,17 @@ public class AuthServiceImpl implements AuthService{
                 .collect(Collectors.toList());
     }
 
+    private void checkUser(User user, User findUser) {
+        userStatusVerification(findUser);
+        userProviderVerification(findUser);
+        passwordVerification(user, findUser);
+    }
+
+    private void passwordVerification(User user, User findUser) {
+        if ( !findUser.passwordVerification(passwordEncoder, user) ) {
+            throw new AuthenticationCredentialsNotFoundException("Invalid input value");
+        }
+    }
 
     private void duplicateEmailCheck(User user) {
         if (userRepository.findUserByEmail(user.getEmail()).isEmpty()) {
@@ -128,5 +148,12 @@ public class AuthServiceImpl implements AuthService{
         return refreshTokenRepository
                 .findRefreshTokenByTokenValue(token)
                 .orElseThrow(() -> new MalformedJwtException("유효하지 않은 토큰"));
+    }
+
+    public AuthDto.Token createTokenDto (String email, Long id, List<String> roles) {
+        String accessToken = jwtTokenUtil.createAccessToken(email, id, roles);
+        String refreshToken = jwtTokenUtil.createRefreshToken(email, id, roles);
+
+        return AuthDto.Token.of(BEARER_TYPE, accessToken, refreshToken);
     }
 }

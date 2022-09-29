@@ -14,7 +14,7 @@ spring:
     database: mysql
     open-in-view: false
   profiles:
-    include: oauth
+    include: oauth, security
 
 logging:
   level:
@@ -28,6 +28,3 @@ server:
       charset: UTF-8
       force: true
 
-jwt:
-  secretKey: jwt-tokens-that-should-be-changed-production
-  refreshKey: jwt-refresh-tokens-that-should-be-changed-production

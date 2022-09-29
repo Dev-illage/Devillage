@@ -43,7 +43,7 @@ public class Oauth2UserManager {
         return Oauth2UserManager.builder()
                 .name((String) attributes.get("name"))
                 .attributes(attributes)
-                .email((String) attributes.get("url"))
+                .email((String) attributes.get("email"))
                 .picture((String) attributes.get("picture"))
                 .provider((String) attributes.get("provider"))
                 .nameAttributeKey(userNameAttributeName)

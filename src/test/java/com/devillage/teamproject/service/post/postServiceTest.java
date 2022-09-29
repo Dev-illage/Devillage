@@ -65,22 +65,6 @@ public class PostServiceTest implements Reflection {
     }
 
     @Test
-    public void deletePost() throws Exception{
-        //given
-        Post post = newInstance(Post.class);
-        setField(post,"id",1L);
-
-        Long postId = 1L;
-        doNothing().when(postRepository).deleteById(postId);
-        given(postRepository.findById(postId)).willReturn(Optional.of(post));
-
-        //when then
-        assertDoesNotThrow(() -> postService.deletePost(postId));
-
-    }
-
-
-    @Test
     public void userNotFound() {
         // given
         given(jwtTokenUtil.getUserId(anyString()))
@@ -117,5 +101,19 @@ public class PostServiceTest implements Reflection {
                 () -> postService.postReport("", postId));
         assertThrows(BusinessLogicException.class,
                 () -> postService.postLike("", postId));
+    }
+    @Test
+    public void deletePost() throws Exception{
+        //given
+        Post post = newInstance(Post.class);
+        setField(post,"id",1L);
+
+        Long postId = 1L;
+        doNothing().when(postRepository).deleteById(postId);
+        given(postRepository.findById(postId)).willReturn(Optional.of(post));
+
+        //when then
+        assertDoesNotThrow(() -> postService.deletePost(postId));
+
     }
 }

@@ -180,7 +180,6 @@ class PostControllerTest implements Reflection {
                 .andReturn();
     }
 
-
     @Test
     void postBookmark() throws Exception {
         // given

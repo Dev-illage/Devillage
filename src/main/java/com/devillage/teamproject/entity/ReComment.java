@@ -9,6 +9,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@AllArgsConstructor
+@Builder
 public class ReComment extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +21,7 @@ public class ReComment extends AuditingEntity {
 
     @ToString.Include
     @EqualsAndHashCode.Include
+    @Setter
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)

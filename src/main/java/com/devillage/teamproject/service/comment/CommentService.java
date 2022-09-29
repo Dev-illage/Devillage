@@ -10,7 +10,7 @@ public interface CommentService {
 
     Comment findComment();
 
-    Comment editComment();
+    Comment editComment(Long postId, Long commentId, String content);
 
     List<Comment> findComments();
 
@@ -20,7 +20,7 @@ public interface CommentService {
 
     ReComment findReComment();
 
-    ReComment editReComment();
+    ReComment editReComment(Long postId, Long commentId, Long reCommentId, String content);
 
     List<ReComment> findReComments();
 

@@ -44,8 +44,20 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public Comment editComment() {
-        return null;
+    public Comment editComment(Long postId, Long commentId, String content) {
+        Optional<Comment> optionalComment = commentRepository.findById(commentId);
+
+        Comment comment = optionalComment.orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND)
+        );
+
+        if (!comment.getPost().getId().equals(postId)) {
+            throw new BusinessLogicException(ExceptionCode.ID_DOES_NOT_MATCH);
+        }
+
+        comment.setContent(content);
+
+        return comment;
     }
 
     @Override
@@ -72,8 +84,21 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public ReComment editReComment() {
-        return null;
+    public ReComment editReComment(Long postId, Long commentId, Long reCommentId, String content) {
+        Optional<ReComment> optionalReComment = reCommentRepository.findById(reCommentId);
+
+        ReComment reComment = optionalReComment.orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.RE_COMMENT_NOT_FOUND)
+        );
+
+        if (!reComment.getComment().getId().equals(commentId)
+                || !reComment.getComment().getPost().getId().equals(postId)) {
+            throw new BusinessLogicException(ExceptionCode.ID_DOES_NOT_MATCH);
+        }
+
+        reComment.setContent(content);
+
+        return reComment;
     }
 
     @Override

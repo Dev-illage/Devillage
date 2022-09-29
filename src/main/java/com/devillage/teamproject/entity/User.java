@@ -76,6 +76,7 @@ public class User extends AuditingEntity {
         this.pwdLastModifiedAt = LocalDateTime.now();
         this.userStatus = UserStatus.ACTIVE;
         this.authenticatedMail = true;
+        this.point=0L;
 
         this.avatar.addUser(this);
     }
@@ -119,6 +120,14 @@ public class User extends AuditingEntity {
         this.email = email;
         this.password = password;
         this.nickName = nickName;
+        this.pwdLastModifiedAt = LocalDateTime.now();
+        this.userStatus = UserStatus.ACTIVE;
+        this.point = 0L;
+    }
+
+    public void setUserDefaults() {
+        this.userStatus = UserStatus.ACTIVE;
+        this.point = 0L;
         this.pwdLastModifiedAt = LocalDateTime.now();
     }
 

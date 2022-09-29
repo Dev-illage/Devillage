@@ -1,7 +1,7 @@
 package com.devillage.teamproject.dto;
 
 import com.devillage.teamproject.entity.Comment;
-import com.devillage.teamproject.entity.Post;
+import com.devillage.teamproject.entity.ReComment;
 import lombok.*;
 
 @Getter
@@ -56,24 +56,33 @@ public class CommentDto {
 
     }
 
-    //TODO : ReComment Response 임시 작성, 구현 시 주석 삭제
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
     public static class ReCommentResponse {
+        private Long reCommentId;
+        private String content;
+        private Long userId;
+        private Long commentId;
+        private Long postId;
 
+        public static CommentDto.ReCommentResponse of(ReComment reComment) {
+            return ReCommentResponse.builder()
+                    .reCommentId(reComment.getId())
+                    .content(reComment.getContent())
+                    .userId(reComment.getUser().getId())
+                    .commentId(reComment.getComment().getId())
+                    .postId(reComment.getComment().getPost().getId())
+                    .build();
+        }
     }
 
-    //TODO : Patch 임시 작성, 구현 시 주석 삭제
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
     public static class Patch {
-
-    }
-
-    //TODO : ReComment Patch 임시 작성, 구현 시 주석 삭제
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ReCommentPatch {
-
+        String content;
     }
 }

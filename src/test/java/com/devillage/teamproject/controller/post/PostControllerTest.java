@@ -31,7 +31,6 @@ import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -41,7 +40,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -157,28 +155,6 @@ class PostControllerTest implements Reflection {
                 .andReturn();
     }
 
-    @Test
-    void deletePost() throws Exception{
-        //given
-        Post post = newInstance(Post.class);
-        setField(post,"id",1L);
-
-        Long postId = 1L;
-        doNothing().when(postService).deletePost(postId);
-
-        //when
-        ResultActions actions =
-                mockMvc.perform(
-                        delete("/posts/{post-id}", postId)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .contentType(MediaType.APPLICATION_JSON)
-                );
-
-        //then
-        actions
-                .andExpect(status().isNoContent())
-                .andReturn();
-    }
 
     @Test
     void postBookmark() throws Exception {

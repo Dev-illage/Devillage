@@ -12,7 +12,7 @@ public interface PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    PostDto.Response postPost(@RequestBody PostDto.Post request);
+    PostDto.Response postPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER)String token, @RequestBody PostDto.Post request);
 
     @GetMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)

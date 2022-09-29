@@ -38,6 +38,13 @@ public class Post extends AuditingEntity {
     @EqualsAndHashCode.Include
     private Long likeCount;
 
+    public Post(String title, String content) {
+        this.title = title;
+        this.content = content;
+        this.clicks = 0L;
+        this.likeCount = 0L;
+    }
+
     public void setLikeCount(Long num) {
         likeCount = num;
     }
@@ -53,7 +60,7 @@ public class Post extends AuditingEntity {
     @OneToMany(mappedBy = "post")
     private final List<PostsFile> postsFile = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<PostTag> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
@@ -74,33 +81,35 @@ public class Post extends AuditingEntity {
     }
 
     //외부 접근용(PostDto.Response) 생성자 추가
-    public Post(String title, String content){
+    public Post(Category category, String title, List<PostTag> tags, String content){
+//        this.category = category;
         this.title = title;
+//        this.tags = tags;
         this.content = content;
     }
 
-    public void addCategory(Category category) {
-        this.category = category;
+    public void edit(Post post){
+        this.category = post.getCategory();
+        this.content = post.getContent();
+        this.title = post.getTitle();
+        this.tags = post.getTags();
     }
 
     public void addPostTag(PostTag postTag) {
         this.tags.add(postTag);
     }
 
+    public void addCategory(Category category) {
+        this.category = category;
+    }
+
     public void addUser(User user) {
         this.user = user;
     }
-    public void editPost(Post post) {
-        this.content = post.getContent();
-        this.title = post.getTitle();
-    }
-
-
 
     @Deprecated
     public void setDate() {
         setCreatedAt(LocalDateTime.now());
         setLastModifiedAt(LocalDateTime.now());
     }
-
 }

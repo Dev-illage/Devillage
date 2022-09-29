@@ -45,6 +45,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public User joinUser(User user) {
         duplicateEmailCheck(user);
+        user.setUserDefaults();
 
         Role role = roleRepository.getRoleByRoleType(RoleType.ROLE_USER);
         User savedUser = userRepository.save(user);

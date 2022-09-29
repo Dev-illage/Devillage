@@ -1,6 +1,8 @@
 package com.devillage.teamproject.controller.comment;
 
 import com.devillage.teamproject.dto.CommentDto;
+import com.devillage.teamproject.entity.Comment;
+import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +19,10 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public Long postReComment(Long postId, Long commentId, CommentDto.ReCommentPost request) {
-        return null;
+    public CommentDto.ReCommentResponse postReComment(Long postId, Long commentId,
+                                                      CommentDto.ReCommentPost request, String token) {
+        return CommentDto.ReCommentResponse.of(
+                commentService.createReComment(request.toEntity(postId, commentId), token));
     }
 
     @Override
@@ -37,18 +41,20 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public Long patchComment(Long postId, Long commentId, CommentDto.Patch request) {
-        return null;
+    public CommentDto.Response patchComment(Long postId, Long commentId, CommentDto.Patch request) {
+        Comment comment = commentService.editComment(postId, commentId, request.getContent());
+        return CommentDto.Response.of(comment);
     }
 
     @Override
-    public Long patchReComment(Long postId, Long commentId, Long reCommentId, CommentDto.ReCommentPatch request) {
-        return null;
+    public CommentDto.ReCommentResponse patchReComment(Long postId, Long commentId, Long reCommentId, CommentDto.Patch request) {
+        ReComment reComment = commentService.editReComment(postId, commentId, reCommentId, request.getContent());
+        return CommentDto.ReCommentResponse.of(reComment);
     }
 
     @Override
-    public void deleteComment(Long postId, Long id) {
-
+    public void deleteComment(Long postId, Long commentId, String token) {
+        commentService.deleteComment(commentId, token);
     }
 
     @Override

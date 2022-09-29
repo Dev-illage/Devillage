@@ -1,7 +1,6 @@
 package com.devillage.teamproject.controller.auth;
 
 import com.devillage.teamproject.dto.AuthDto;
-import com.devillage.teamproject.dto.ResponseDto;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;

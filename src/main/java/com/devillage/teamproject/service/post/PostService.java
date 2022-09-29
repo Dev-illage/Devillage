@@ -11,10 +11,9 @@ import java.util.List;
 
 @Service
 public interface PostService {
+    Post savePost(Post post, CategoryType categoryType, List<String> tags, String token);
 
-    Post savePost(Post post, CategoryType categoryType, List<String> tagValue, String token);
-
-    Post editPost(Post post, CategoryType categoryType, List<String> tagValue, String token,Long id);
+    Post editPost(Post post, CategoryType categoryType, List<String> tags, String token,Long id);
 
     Post getPost(Long id);
 

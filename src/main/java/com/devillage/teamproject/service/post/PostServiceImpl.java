@@ -121,6 +121,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void deletePost(Long postId) {
+        findVerifyPost(postId);
+        postRepository.deleteById(postId);
+    }
+
+    @Override
     public Post getPost(Long id) {
         Post post = findVerifyPost(id);
         return post;
@@ -162,12 +168,6 @@ public class PostServiceImpl implements PostService {
         return new PageImpl<>(postsList.subList(start, end),
                 PageRequest.of(page - 1, size),
                 postsList.size());
-    }
-
-    @Override
-    public void deletePost(Long postId) {
-        findVerifyPost(postId);
-        postRepository.deleteById(postId);
     }
 
     @Override

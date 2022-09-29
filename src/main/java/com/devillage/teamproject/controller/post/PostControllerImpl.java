@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.post;
 
+import com.devillage.teamproject.dto.DoubleResponseDto;
 import com.devillage.teamproject.dto.MultiResponseDto;
 import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
@@ -11,10 +12,12 @@ import com.devillage.teamproject.security.util.JwtConstants;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,47 +47,71 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public SingleResponseDto<PostDto.Response.BookmarkDto> postBookmark(String accessToken, Long postId) {
+    public PostDto.Response.BookmarkDto postBookmark(String accessToken, Long postId) {
 
         Bookmark bookmark = postService.postBookmark(accessToken, postId);
-        return SingleResponseDto.of(
-                PostDto.Response.BookmarkDto.of(
-                        bookmark.getUser().getId(),
-                        bookmark.getPost().getId(),
-                        bookmark.getId())
-        );
+        return PostDto.Response.BookmarkDto.of(
+                bookmark.getUser().getId(),
+                bookmark.getPost().getId(),
+                bookmark.getId());
     }
 
     @Override
-    public SingleResponseDto<PostDto.Response.ReportDto> postReport(String accessToken, Long postId) {
+    public PostDto.Response.ReportDto postReport(String accessToken, Long postId) {
 
         ReportedPost reportedPost = postService.postReport(accessToken, postId);
-        return SingleResponseDto.of(
-                PostDto.Response.ReportDto.of(
-                        reportedPost.getUser().getId(),
-                        reportedPost.getPost().getId(),
-                        reportedPost.getId())
-        );
+        return PostDto.Response.ReportDto.of(
+                reportedPost.getUser().getId(),
+                reportedPost.getPost().getId(),
+                reportedPost.getId());
     }
 
     @Override
     public PostDto.Response.LikeDto postLike(String accessToken, Long postId) {
 
-        Like like = postService.postLike(accessToken, postId);
-        return PostDto.Response.LikeDto.of(userId, postId, like.getId());
-
+        Post post = postService.postLike(accessToken, postId);
+        return PostDto.Response.LikeDto.of(
+                post.getUser().getId(),
+                post.getId(),
+                post.getLikeCount());
     }
-
-
 
     @Override
-    public MultiResponseDto<PostDto.Response.SimplePostDto> getPosts(String category, int page, int size) {
-        return null;
+    public DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByCategory(String category, int page, int size) {
+        Page<Post> posts = postService.getPostsByCategory(category, page, size);
+        return DoubleResponseDto.of(
+                posts.stream()
+                        .map(PostDto.Response.SimplePostDto::of)
+                        .collect(Collectors.toList()),
+                posts
+        );
     }
 
+    @Override
+    public DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsBySearch(String q, int page, int size) {
+        Page<Post> posts = postService.getPostsBySearch(q, page, size);
+        return DoubleResponseDto.of(
+                posts.stream()
+                        .map(PostDto.Response.SimplePostDto::of)
+                        .collect(Collectors.toList()),
+                posts
+        );
+    }
+
+    @Override
+    public DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByBookmark(String accessToken, int page, int size) {
+        Page<Post> posts = postService.getPostsByBookmark(accessToken, page, size);
+        return DoubleResponseDto.of(
+                posts.stream()
+                        .map(PostDto.Response.SimplePostDto::of)
+                        .collect(Collectors.toList()),
+                posts
+        );
+    }
 
     @Override
     public void deletePost(Long postId) {
         postService.deletePost(postId);
     }
+
 }

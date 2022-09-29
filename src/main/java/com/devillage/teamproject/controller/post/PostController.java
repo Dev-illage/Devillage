@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.post;
 
+import com.devillage.teamproject.dto.DoubleResponseDto;
 import com.devillage.teamproject.dto.MultiResponseDto;
 import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
@@ -20,13 +21,13 @@ public interface PostController {
 
     @PostMapping("/{post-id}/bookmark")
     @ResponseStatus(HttpStatus.OK)
-    SingleResponseDto<PostDto.Response.BookmarkDto> postBookmark(
+    PostDto.Response.BookmarkDto postBookmark(
             @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,
             @PathVariable("post-id") Long postId);
 
     @PostMapping("/{post-id}/report")
     @ResponseStatus(HttpStatus.OK)
-    SingleResponseDto<PostDto.Response.ReportDto> postReport(
+    PostDto.Response.ReportDto postReport(
             @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,
             @PathVariable("post-id") Long id);
 
@@ -38,14 +39,27 @@ public interface PostController {
 
     @PatchMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
-    PostDto.Response patchPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER)String token, @PathVariable("post-id") Long id,
-                   PostDto.Patch request);
+    PostDto.Response patchPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token,@PathVariable("post-id") Long id,
+                               PostDto.Patch request);
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    MultiResponseDto<PostDto.Response.SimplePostDto> getPosts(@RequestParam String category,
-                                                              @RequestParam int page,
-                                                              @RequestParam int size);
+    DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByCategory(@RequestParam String category,
+                                                                         @RequestParam int page,
+                                                                         @RequestParam int size);
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsBySearch(@RequestParam String q,
+                                                                       @RequestParam int page,
+                                                                       @RequestParam int size);
+
+    @GetMapping("/bookmark")
+    @ResponseStatus(HttpStatus.OK)
+    DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByBookmark(
+            @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,
+            @RequestParam int page,
+            @RequestParam int size);
 
     @DeleteMapping("/{post-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

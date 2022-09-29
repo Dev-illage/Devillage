@@ -74,10 +74,8 @@ public class Post extends AuditingEntity {
     }
 
     //외부 접근용(PostDto.Response) 생성자 추가
-    public Post(Category category, String title, List<PostTag> tags, String content){
-//        this.category = category;
+    public Post(String title, String content){
         this.title = title;
-//        this.tags = tags;
         this.content = content;
     }
 
@@ -96,6 +94,8 @@ public class Post extends AuditingEntity {
         this.content = post.getContent();
         this.title = post.getTitle();
     }
+
+
 
     @Deprecated
     public void setDate() {

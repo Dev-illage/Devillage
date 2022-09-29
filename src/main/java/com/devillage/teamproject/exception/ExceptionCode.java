@@ -19,8 +19,8 @@ public enum ExceptionCode {
     ALREADY_REPORTED(409, "Already reported"),
     ID_DOES_NOT_MATCH(409, "Id does not match"),
 
-    USER_RESIGNED(422, "Resigned User")
-
+    USER_RESIGNED(422, "Resigned User"),
+    USER_AUTHORIZED(403, "Unauthorized user"),
     ;
 
     private final int status;

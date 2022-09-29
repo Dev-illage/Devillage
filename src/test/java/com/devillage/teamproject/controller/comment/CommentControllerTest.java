@@ -20,6 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
+
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.COMMENT_CONTENT;
 import static com.devillage.teamproject.util.TestConstants.ID1;
@@ -127,6 +129,55 @@ class CommentControllerTest {
                 ));
     }
 
+    @DisplayName("createReComment")
+    public void createReComment() throws Exception {
+        // given
+        User user = User.builder().id(ID1).build();
+        Comment comment = Comment.builder().id(ID1).build();
+        CommentDto.ReCommentPost postDto = CommentDto.ReCommentPost.builder().content(COMMENT_CONTENT).build();
+        ReComment reComment = ReComment.createReComment(user, comment, postDto.getContent());
+        String content = gson.toJson(postDto);
+
+        given(commentService.createReComment(Mockito.any(ReComment.class), Mockito.anyString()))
+                .willReturn(reComment);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/posts/{post-id}/comments/{comment-id}", ID1, comment.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .header(AUTHORIZATION_HEADER, "some-token")
+        );
+
+        // then
+        actions.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.userId").value(user.getId()))
+                .andExpect(jsonPath("$.commentId").value(comment.getId()))
+                .andExpect(jsonPath("$.content").value(postDto.getContent()))
+                .andDo(document(
+                        "post-recomment",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자"),
+                                parameterWithName("comment-id").description("댓글 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("댓글 내용")
+                        ),
+                        responseFields(
+                                fieldWithPath("commentId").description("댓글 식별자"),
+                                fieldWithPath("content").description("댓글 내용"),
+                                fieldWithPath("userId").description("댓글 작성자 식별자"),
+                                fieldWithPath("postId").description("댓글이 작성된 게시글 식별자")
+                        )
+                ));
+    }
+
     @Test
     public void patchComment() throws Exception {
         // given
@@ -218,7 +269,6 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.commentId").value(reComment.getComment().getId()))
                 .andExpect(jsonPath("$.content").value(reComment.getComment().getContent()))
                 .andExpect(jsonPath("$.userId").value(reComment.getComment().getUser().getId()))
-                .andExpect(jsonPath("$.postId").value(reComment.getComment().getPost().getId()))
                 .andDo(document(
                         "comments/patch-re-comment",
                         preprocessRequest(prettyPrint()),
@@ -236,8 +286,41 @@ class CommentControllerTest {
                                 fieldWithPath("content").description("대댓글 내용"),
                                 fieldWithPath("userId").description("대댓글 작성자 식별자"),
                                 fieldWithPath("commentId").description("대댓글이 작성된 댓글 식별자"),
-                                fieldWithPath("postId").description("대댓글이 작성된 게시글 식별자")
+                                fieldWithPath("createdAt").description("대댓글 작성일시"),
+                                fieldWithPath("lastModifiedAt").description("대댓글 수정일시")
                         )
                 ));
+    }
+
+    @Test
+    @DisplayName("deleteComment")
+    public void deleteComment() throws Exception {
+        // given
+        User user = User.builder().id(ID1).build();
+        Comment comment = Comment.builder().id(ID1).build();
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/posts/{post-id}/comments/{comment-id}", ID1, comment.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, "some-token")
+        );
+
+        // then
+        actions.andExpect(status().isNoContent())
+                .andDo(document(
+                        "delete-comment",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자"),
+                                parameterWithName("comment-id").description("댓글 식별자")
+                        )
+                ));
+
     }
 }

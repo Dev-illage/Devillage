@@ -1,8 +1,11 @@
 package com.devillage.teamproject.dto;
 
 import com.devillage.teamproject.entity.Comment;
+import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReComment;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -49,11 +52,23 @@ public class CommentDto {
         }
     }
 
-    //TODO : ReComment Post 임시 작성, 구현 시 주석 삭제
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
     public static class ReCommentPost {
+        private String content;
 
+        public ReComment toEntity(Long postId, Long commentId) {
+            return ReComment.builder()
+                    .comment(Comment.builder()
+                            .id(commentId)
+                            .post(com.devillage.teamproject.entity.Post.builder()
+                                    .id(postId).build())
+                            .build())
+                    .content(this.content)
+                    .build();
+        }
     }
 
     @Getter
@@ -62,18 +77,20 @@ public class CommentDto {
     @Builder
     public static class ReCommentResponse {
         private Long reCommentId;
-        private String content;
         private Long userId;
         private Long commentId;
-        private Long postId;
+        private String content;
+        private LocalDateTime createdAt;
+        private LocalDateTime lastModifiedAt;
 
-        public static CommentDto.ReCommentResponse of(ReComment reComment) {
+        public static ReCommentResponse of(ReComment reComment) {
             return ReCommentResponse.builder()
                     .reCommentId(reComment.getId())
-                    .content(reComment.getContent())
                     .userId(reComment.getUser().getId())
                     .commentId(reComment.getComment().getId())
-                    .postId(reComment.getComment().getPost().getId())
+                    .content(reComment.getContent())
+                    .createdAt(reComment.getCreatedAt())
+                    .lastModifiedAt(reComment.getLastModifiedAt())
                     .build();
         }
     }

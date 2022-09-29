@@ -37,6 +37,17 @@ public class File extends AuditingEntity {
     @EqualsAndHashCode.Include
     private String type;
 
-    @OneToOne(mappedBy = "avatar")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
+
+    public static File ofOauth2UserPicture(String path) {
+        File file = new File();
+        file.localPath = path;
+        return file;
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+    }
 }

@@ -1,8 +1,6 @@
 package com.devillage.teamproject.controller.auth;
 
 import com.devillage.teamproject.dto.AuthDto;
-import com.devillage.teamproject.dto.ResponseDto;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

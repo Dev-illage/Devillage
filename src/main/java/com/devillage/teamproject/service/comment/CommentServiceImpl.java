@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -67,14 +68,25 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void deleteComment() {
+    public void deleteComment(Long commentId, String token) {
+        Comment comment = findVerifiedComment(commentId);
+        if (!Objects.equals(comment.getUser().getId(), jwtTokenUtil.getUserId(token))) {
+            throw new BusinessLogicException(ExceptionCode.USER_AUTHORIZED);
+        }
+        if (comment.getReComments().size() == 0) {
+            commentRepository.delete(comment);
+            return;
+        }
 
+        comment.deleteComment();
     }
 
     @Override
     @Transactional
-    public ReComment createReComment() {
-        return null;
+    public ReComment createReComment(ReComment reComment, String token) {
+        Comment comment = findVerifiedComment(reComment.getComment().getId());
+        User user = userService.findVerifiedUser(jwtTokenUtil.getUserId(token));
+        return reCommentRepository.save(ReComment.createReComment(user, comment, reComment.getContent()));
     }
 
     @Override
@@ -121,5 +133,10 @@ public class CommentServiceImpl implements CommentService {
         }
 
         reCommentRepository.deleteById(reCommentId);
+    }
+
+    public Comment findVerifiedComment(Long commentId) {
+        Optional<Comment> optionalComment = commentRepository.findById(commentId);
+        return optionalComment.orElseThrow(() -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND));
     }
 }

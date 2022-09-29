@@ -19,8 +19,10 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public Long postReComment(Long postId, Long commentId, CommentDto.ReCommentPost request) {
-        return null;
+    public CommentDto.ReCommentResponse postReComment(Long postId, Long commentId,
+                                                      CommentDto.ReCommentPost request, String token) {
+        return CommentDto.ReCommentResponse.of(
+                commentService.createReComment(request.toEntity(postId, commentId), token));
     }
 
     @Override
@@ -51,8 +53,8 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public void deleteComment(Long postId, Long id) {
-
+    public void deleteComment(Long postId, Long commentId, String token) {
+        commentService.deleteComment(commentId, token);
     }
 
     @Override

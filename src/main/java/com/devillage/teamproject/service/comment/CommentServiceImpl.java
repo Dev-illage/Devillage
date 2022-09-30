@@ -12,6 +12,7 @@ import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> findComments() {
+    public Page<Comment> findComments(Long postId, int page, int size) {
         return null;
     }
 

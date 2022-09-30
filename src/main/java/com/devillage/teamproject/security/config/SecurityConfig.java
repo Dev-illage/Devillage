@@ -17,6 +17,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static org.springframework.http.HttpMethod.*;
+
 @EnableGlobalAuthentication
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -33,19 +35,25 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .csrf().disable()
                 .cors().configurationSource(corsConfigurationSource())
-//                .cors().disable()
-//                .configurationSource(corsConfigurationSource())
                 .and()
                 .apply(authenticationConfig)
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .mvcMatchers("/auth/**").permitAll()
-                .mvcMatchers(HttpMethod.POST,"/posts/**").permitAll()
-                .anyRequest().permitAll()
+                .mvcMatchers(GET, "/posts/**").permitAll()
+                .mvcMatchers(POST,"/posts/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(PATCH, "/posts/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(DELETE, "/posts/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(GET, "/users/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(DELETE,"/users/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(PATCH,"/users/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(GET,"/files/**").permitAll()
+                .mvcMatchers(POST,"/files/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(GET, "/test/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .anyRequest().denyAll()
                 .and()
                 .oauth2Login()
-//                .defaultSuccessUrl("/auth/oauth")
                 .successHandler(customSuccessHandler)
                 .userInfoEndpoint()
                 .userService(customOauth2Service);
@@ -58,7 +66,6 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedHeader("*");
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedHeader("*");
         config.setAllowedMethods(List.of("GET","POST","DELETE","PATCH","OPTION","PUT"));

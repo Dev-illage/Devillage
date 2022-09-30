@@ -1,9 +1,4 @@
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/testonly?serverTimezone=Asia/Seoul
-    username: testuser
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update # create update create-update
@@ -12,9 +7,9 @@ spring:
         format_sql: true
         show_sql: true
     database: mysql
-    open-in-view: false
+    open-in-view: true
   profiles:
-    include: oauth, security
+    include: oauth, security, database
 
 logging:
   level:

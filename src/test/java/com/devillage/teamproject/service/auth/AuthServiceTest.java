@@ -137,8 +137,8 @@ public class AuthServiceTest implements ReflectionForStatic {
 
         Claims claims = Jwts.claims()
                         .setSubject(EMAIL1);
-        claims.put(SEQUENCE, ID1);
-        claims.put(JwtConstants.ROLES, ROLES);
+        claims.put(SEQUENCE, ID1.intValue());
+        claims.put(JwtConstants.ROLES, ROLES);;
 
         given(refreshTokenRepository.findRefreshTokenByTokenValue(splitToken)).willReturn(Optional.of(existingToken));
         given(jwtTokenUtil.parseRefreshToken(splitToken)).willReturn(claims);

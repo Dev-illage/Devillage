@@ -71,7 +71,7 @@ public class CommentControllerImpl implements CommentController {
     public DoubleResponseDto getComments(Long postId, Integer page, Integer size) {
         Page<Comment> commentPage = commentService.findComments(postId, page - 1, size);
         return DoubleResponseDto.of(commentPage.stream().map(
-                CommentDto.Response::of
+                CommentDto.ResponseWithReComment::of
         ).collect(Collectors.toList()), commentPage);
     }
 }

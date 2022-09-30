@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 application-oauth.yml
 application-security.yml
+application-database.yml
 application.yml
 
 ### STS ###

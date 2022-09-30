@@ -41,7 +41,6 @@ public class CommentDto {
     public static class ResponseWithReComment {
         private Long commentId;
         private Long userId;
-        private Long postId;
         private String content;
         private List<ReCommentResponse> reComments = new ArrayList<>();
         private LocalDateTime createdAt;
@@ -51,7 +50,6 @@ public class CommentDto {
             return ResponseWithReComment.builder()
                     .commentId(comment.getId())
                     .userId(comment.getUser().getId())
-                    .postId(comment.getPost().getId())
                     .content(comment.getContent())
                     .reComments(comment.getReComments().stream().map(
                             ReCommentResponse::of
@@ -109,7 +107,6 @@ public class CommentDto {
     public static class ReCommentResponse {
         private Long reCommentId;
         private Long userId;
-        private Long commentId;
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime lastModifiedAt;
@@ -118,7 +115,6 @@ public class CommentDto {
             return ReCommentResponse.builder()
                     .reCommentId(reComment.getId())
                     .userId(reComment.getUser().getId())
-                    .commentId(reComment.getComment().getId())
                     .content(reComment.getContent())
                     .createdAt(reComment.getCreatedAt())
                     .lastModifiedAt(reComment.getLastModifiedAt())

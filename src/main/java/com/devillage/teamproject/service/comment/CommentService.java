@@ -10,17 +10,17 @@ public interface CommentService {
 
     Comment findComment();
 
-    Comment editComment();
+    Comment editComment(Long postId, Long commentId, String content);
 
     List<Comment> findComments();
 
-    void deleteComment();
+    void deleteComment(Long commentId, String token);
 
     ReComment createReComment(ReComment reComment, String token);
 
     ReComment findReComment();
 
-    ReComment editReComment();
+    ReComment editReComment(Long postId, Long commentId, Long reCommentId, String content);
 
     List<ReComment> findReComments();
 

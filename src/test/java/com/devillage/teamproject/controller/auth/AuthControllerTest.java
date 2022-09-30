@@ -74,7 +74,7 @@ public class AuthControllerTest implements ReflectionForStatic {
         mockMvc.perform(post("/auth/new")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().string(ID1.toString()))
                 .andDo(print());
     }
@@ -100,7 +100,7 @@ public class AuthControllerTest implements ReflectionForStatic {
         MvcResult result = mockMvc.perform(post("/auth/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn();
 
         Assertions.assertThat(result.getResponse().getContentAsString()).isNotEqualTo(WRONG_ID.toString());
@@ -134,9 +134,9 @@ public class AuthControllerTest implements ReflectionForStatic {
 
         // then
         perform.andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.accessToken").value(accessToken))
-                .andExpect(jsonPath("$.data.refreshToken").value(refreshToken))
-                .andExpect(jsonPath("$.data.bearer").value(BEARER));
+                .andExpect(jsonPath("$.accessToken").value(accessToken))
+                .andExpect(jsonPath("$.refreshToken").value(refreshToken))
+                .andExpect(jsonPath("$.bearer").value(BEARER));
     }
 
     @Test
@@ -158,9 +158,9 @@ public class AuthControllerTest implements ReflectionForStatic {
 
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.bearer").value(BEARER))
-                .andExpect(jsonPath("$.data.accessToken").value(accessToken))
-                .andExpect(jsonPath("$.data.refreshToken").value(refreshToken))
+                .andExpect(jsonPath("$.bearer").value(BEARER))
+                .andExpect(jsonPath("$.accessToken").value(accessToken))
+                .andExpect(jsonPath("$.refreshToken").value(refreshToken))
                 .andDo(print());
     }
 

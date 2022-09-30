@@ -73,10 +73,12 @@ public class JwtTokenUtil {
         return Keys.hmacShaKeyFor(byteKey);
     }
 
+    @Deprecated
     public String getUserEmail(String token) {
         return paresAccessToken(splitToken(token)).getSubject();
     }
 
+    @Deprecated
     public Long getUserId(String token) {
         return Long.valueOf((Integer) paresAccessToken(splitToken(token)).get(SEQUENCE));
     }

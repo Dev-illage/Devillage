@@ -12,6 +12,8 @@ public interface CommentService {
 
     Comment editComment(Long postId, Long commentId, String content);
 
+    Comment likeComment(Long postId,Long commentId,String token);
+
     List<Comment> findComments();
 
     void deleteComment(Long commentId, String token);

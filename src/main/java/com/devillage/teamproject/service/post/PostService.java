@@ -13,7 +13,7 @@ import java.util.List;
 public interface PostService {
     Post savePost(Post post, CategoryType categoryType, List<String> tags, String token);
 
-    Post editPost(Long id, Post post);
+    Post editPost(Post post, CategoryType categoryType, List<String> tags, String token,Long id);
 
     Post getPost(Long id);
 
@@ -29,5 +29,7 @@ public interface PostService {
 
     Page<Post> getPostsByBookmark(String accessToken, int page, int size);
 
-    void deletePost();
+    void deletePost(Long postId);
+
+    Post findVerifyPost(Long postId);
 }

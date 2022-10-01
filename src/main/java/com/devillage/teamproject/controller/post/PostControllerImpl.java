@@ -22,8 +22,10 @@ public class PostControllerImpl implements PostController {
     private final PostService postService;
 
     @Override
-    public PostDto.Response postPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER)String token, PostDto.Post request) {
-        Post savedPost = postService.savePost(request.toEntity(), request.getCategory(), request.getTags(), token);
+    public PostDto.Response postPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token, PostDto.Post request) {
+        Post post = request.toEntity();
+        Post savedPost = postService.savePost(post,request.getCategory(),request.getTags(),token);
+
         return PostDto.Response.of(savedPost);
     }
 
@@ -34,9 +36,9 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public PostDto.Response patchPost(Long id, PostDto.Patch request) {
+    public PostDto.Response patchPost(String token, Long id, PostDto.Patch request) {
         Post post = request.toEntity();
-        Post updatedPost = postService.editPost(id, post);
+        Post updatedPost = postService.editPost(post,request.getCategory(),request.getTags(),token,id);
         return PostDto.Response.of(updatedPost);
     }
 
@@ -104,7 +106,8 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public void deletePost(Long id) {
-
+    public void deletePost(Long postId) {
+        postService.deletePost(postId);
     }
+
 }

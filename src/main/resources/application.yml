@@ -14,7 +14,7 @@ spring:
     database: mysql
     open-in-view: false
   profiles:
-    include: oauth, security
+    include: oauth, security, database
 
 logging:
   level:

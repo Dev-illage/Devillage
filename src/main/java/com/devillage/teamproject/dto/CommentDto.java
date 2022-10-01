@@ -6,6 +6,9 @@ import com.devillage.teamproject.entity.ReComment;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,6 +30,32 @@ public class CommentDto {
                     .content(comment.getContent())
                     .userId(comment.getUser().getId())
                     .postId(comment.getPost().getId())
+                    .build();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
+    public static class ResponseWithReComment {
+        private Long commentId;
+        private Long userId;
+        private String content;
+        private List<ReCommentResponse> reComments = new ArrayList<>();
+        private LocalDateTime createdAt;
+        private LocalDateTime lastModifiedAt;
+
+        public static ResponseWithReComment of(Comment comment) {
+            return ResponseWithReComment.builder()
+                    .commentId(comment.getId())
+                    .userId(comment.getUser().getId())
+                    .content(comment.getContent())
+                    .reComments(comment.getReComments().stream().map(
+                            ReCommentResponse::of
+                    ).collect(Collectors.toList()))
+                    .createdAt(comment.getCreatedAt())
+                    .lastModifiedAt(comment.getLastModifiedAt())
                     .build();
         }
     }
@@ -78,7 +107,6 @@ public class CommentDto {
     public static class ReCommentResponse {
         private Long reCommentId;
         private Long userId;
-        private Long commentId;
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime lastModifiedAt;
@@ -87,7 +115,6 @@ public class CommentDto {
             return ReCommentResponse.builder()
                     .reCommentId(reComment.getId())
                     .userId(reComment.getUser().getId())
-                    .commentId(reComment.getComment().getId())
                     .content(reComment.getContent())
                     .createdAt(reComment.getCreatedAt())
                     .lastModifiedAt(reComment.getLastModifiedAt())

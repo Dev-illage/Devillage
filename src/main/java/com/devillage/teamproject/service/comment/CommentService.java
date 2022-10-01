@@ -2,6 +2,7 @@ package com.devillage.teamproject.service.comment;
 
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.ReComment;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface CommentService {
 
     Comment editComment(Long postId, Long commentId, String content);
 
-    List<Comment> findComments();
+    Page<Comment> findComments(Long postId, int page, int size);
 
     void deleteComment(Long commentId, String token);
 

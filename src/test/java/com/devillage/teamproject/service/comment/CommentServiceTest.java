@@ -20,9 +20,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static com.devillage.teamproject.util.TestConstants.*;
@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest implements Reflection {
@@ -153,13 +152,14 @@ class CommentServiceTest implements Reflection {
                 () -> commentService.editReComment(ID2, comment.getId(), reComment.getId(), newContent));
     }
 
+    @Test
     @DisplayName("createReComment")
     public void createReComment() throws Exception {
         // given
         User user = User.builder().id(ID1).build();
         Comment comment = Comment.builder().id(ID1).build();
         ReComment reCommentDto = ReComment.builder().content(COMMENT_CONTENT)
-                        .comment(comment).build();
+                .comment(comment).build();
 
         given(commentRepository.findById(Mockito.anyLong())).willReturn(Optional.of(comment));
         given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(user.getId());
@@ -212,6 +212,28 @@ class CommentServiceTest implements Reflection {
         // when then
         assertThrows(BusinessLogicException.class,
                 () -> commentService.deleteComment(comment.getId(), "someToken"));
+    }
+
+    @Test
+    @DisplayName("getAllComments")
+    public void getAllComments() throws Exception {
+        // given
+        Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).build();
+        ReComment reComment1_1 = ReComment.builder().id(ID1).content(COMMENT_CONTENT).comment(comment1).build();
+        comment1.getReComments().add(reComment1_1);
+        Comment comment2 = Comment.builder().id(ID2).content(COMMENT_CONTENT).build();
+        Comment comment3 = Comment.builder().id(ID2 + 1).content(COMMENT_CONTENT).build();
+
+        given(postService.getPost(Mockito.anyLong())).willReturn(null);
+        given(commentRepository.findAllByPostId(Mockito.anyLong(), Mockito.any()))
+                .willReturn(new PageImpl<>(List.of(comment1, comment2, comment3)));
+
+        // when
+        Page<Comment> commentPage = commentService.findComments(ID1, 1, 10);
+
+        // then
+        assertEquals(3, commentPage.getTotalElements());
+
     }
 
 }

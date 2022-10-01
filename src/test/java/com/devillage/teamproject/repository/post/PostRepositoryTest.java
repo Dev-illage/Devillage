@@ -59,6 +59,14 @@ class PostRepositoryTest implements Reflection {
         setField(post1, "category", category1);
         setField(post2, "category", category1);
         setField(post3, "category", category2);
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
+
+        int prevFreesSize = postRepository.findByCategory_CategoryType(free, pageable)
+                .getContent()
+                .size();
+        int prevNotices = postRepository.findByCategory_CategoryType(notice, pageable)
+                .getContent()
+                .size();
 
         categoryRepository.save(category1);
         categoryRepository.save(category2);
@@ -67,20 +75,12 @@ class PostRepositoryTest implements Reflection {
         postRepository.save(post3);
 
         // when
-        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
-
-        Page<Post> frees = postRepository.findByCategory_CategoryType(
-                free, pageable);
-        Page<Post> notices = postRepository.findByCategory_CategoryType(
-                notice, pageable);
+        Page<Post> frees = postRepository.findByCategory_CategoryType(free, pageable);
+        Page<Post> notices = postRepository.findByCategory_CategoryType(notice, pageable);
 
         // then
-        assertThat(frees.getContent().size()).isEqualTo(2);
-        assertThat(frees.getContent().get(0)).isEqualTo(post2);
-        assertThat(frees.getContent().get(1)).isEqualTo(post1);
-
-        assertThat(notices.getContent().size()).isEqualTo(1);
-        assertThat(notices.getContent().get(0)).isEqualTo(post3);
+        assertThat(frees.getContent().size() - prevFreesSize).isEqualTo(2);
+        assertThat(notices.getContent().size() - prevNotices).isEqualTo(1);
     }
 
     @Test

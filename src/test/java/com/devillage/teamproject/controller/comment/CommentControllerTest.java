@@ -19,16 +19,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
-import static com.devillage.teamproject.util.TestConstants.COMMENT_CONTENT;
-import static com.devillage.teamproject.util.TestConstants.ID1;
+import static com.devillage.teamproject.util.TestConstants.*;
+import static com.devillage.teamproject.util.TestConstants.ID2;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -324,6 +328,63 @@ class CommentControllerTest {
                         pathParameters(
                                 parameterWithName("post-id").description("게시글 식별자"),
                                 parameterWithName("comment-id").description("댓글 식별자")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("getAllComments")
+    public void getAllComments() throws Exception {
+        // given
+        int page = 1;
+        int size = 10;
+        Post post = Post.builder().id(ID1).build();
+        User user = User.builder().id(ID1).build();
+        Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).user(user).post(post).build();
+        ReComment reComment1_1 = ReComment.builder().id(ID1).content(COMMENT_CONTENT).user(user).comment(comment1).build();
+        comment1.getReComments().add(reComment1_1);
+        Comment comment2 = Comment.builder().id(ID2).content(COMMENT_CONTENT).user(user).post(post).build();
+        Comment comment3 = Comment.builder().id(ID2 + 1).content(COMMENT_CONTENT).user(user).post(post).build();
+
+        given(commentService.findComments(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt()))
+                .willReturn(new PageImpl<>(List.of(comment1, comment2, comment3)));
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/posts/{post-id}/comments", post.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andDo(document(
+                        "get-comments",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
+                                fieldWithPath("data[].commentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
+                                fieldWithPath("data[].userId").type(JsonFieldType.NUMBER).description("작성자 식별자"),
+                                fieldWithPath("data[].content").type(JsonFieldType.STRING).description("댓글 내용"),
+                                fieldWithPath("data[].reComments").type(JsonFieldType.ARRAY).description("대댓글"),
+                                fieldWithPath("data[].createdAt").description("작성시간"),
+                                fieldWithPath("data[].lastModifiedAt").description("수정 시간"),
+                                fieldWithPath("data[].reComments[].reCommentId").type(JsonFieldType.NUMBER).description("대댓글 식별자"),
+                                fieldWithPath("data[].reComments[].userId").type(JsonFieldType.NUMBER).description("작성자 식별자"),
+                                fieldWithPath("data[].reComments[].content").type(JsonFieldType.STRING).description("대댓글 내용"),
+                                fieldWithPath("data[].reComments[].createdAt").description("작성 시간"),
+                                fieldWithPath("data[].reComments[].lastModifiedAt").description("수정 시간"),
+
+                                fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("페이지"),
+                                fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("사이즈"),
+                                fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("총 갯수"),
+                                fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수")
                         )
                 ));
 

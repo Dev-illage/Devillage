@@ -23,8 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static com.devillage.teamproject.util.TestConstants.*;
@@ -33,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest implements Reflection {
@@ -155,13 +152,14 @@ class CommentServiceTest implements Reflection {
                 () -> commentService.editReComment(ID2, comment.getId(), reComment.getId(), newContent));
     }
 
+    @Test
     @DisplayName("createReComment")
     public void createReComment() throws Exception {
         // given
         User user = User.builder().id(ID1).build();
         Comment comment = Comment.builder().id(ID1).build();
         ReComment reCommentDto = ReComment.builder().content(COMMENT_CONTENT)
-                        .comment(comment).build();
+                .comment(comment).build();
 
         given(commentRepository.findById(Mockito.anyLong())).willReturn(Optional.of(comment));
         given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(user.getId());

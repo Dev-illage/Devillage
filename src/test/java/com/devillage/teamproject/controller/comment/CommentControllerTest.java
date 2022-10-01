@@ -1,6 +1,8 @@
 package com.devillage.teamproject.controller.comment;
 
 import com.devillage.teamproject.entity.ReComment;
+import com.devillage.teamproject.security.config.SecurityConfig;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.comment.CommentService;
 import org.junit.jupiter.api.Test;
 import com.devillage.teamproject.dto.CommentDto;
@@ -15,6 +17,8 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,9 +42,12 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = CommentController.class,
-        excludeAutoConfiguration = {
-                SecurityAutoConfiguration.class
+@WebMvcTest(controllers = {CommentController.class, JwtTokenUtil.class},
+        excludeFilters = {
+                @ComponentScan.Filter(
+                        type = FilterType.ASSIGNABLE_TYPE,
+                        classes = {SecurityConfig.class}
+                )
         })
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs

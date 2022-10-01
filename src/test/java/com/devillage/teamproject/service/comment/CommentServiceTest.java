@@ -45,8 +45,6 @@ class CommentServiceTest implements Reflection {
     private PostService postService;
     @Mock
     private UserService userService;
-    @Mock
-    private ReCommentRepository reCommentRepository;
     @InjectMocks
     private CommentServiceImpl commentService;
 
@@ -153,6 +151,7 @@ class CommentServiceTest implements Reflection {
                 () -> commentService.editReComment(post.getId(), ID2, reComment.getId(), newContent));
         assertThrows(BusinessLogicException.class,
                 () -> commentService.editReComment(ID2, comment.getId(), reComment.getId(), newContent));
+    }
 
     @DisplayName("createReComment")
     public void createReComment() throws Exception {

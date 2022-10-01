@@ -26,9 +26,11 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public Long likeComment(Long postId, Long commentId, String token) {
+    public boolean likeComment(Long postId, Long commentId, String token) {
         Comment comment = commentService.likeComment(postId,commentId,token);
-        return comment.getLikeCount();
+        Long count = comment.getLikeCount();
+        if(count==1) return true;
+        else return false;
 
     }
 

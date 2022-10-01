@@ -22,7 +22,7 @@ public interface CommentController {
 
     @PostMapping("/{post-id}/comments/{comment-id}/like")
     @ResponseStatus(HttpStatus.OK)
-    Long likeComment(@PathVariable("post-id") Long postId,
+    boolean likeComment(@PathVariable("post-id") Long postId,
                   @PathVariable("comment-id") Long commentId,
                      @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 

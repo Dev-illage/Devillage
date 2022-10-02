@@ -1,15 +1,8 @@
 package com.devillage.teamproject.controller.comment;
 
-import com.devillage.teamproject.controller.post.PostController;
 
 import com.devillage.teamproject.entity.ReComment;
-import com.devillage.teamproject.security.config.SecurityConfig;
-import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.comment.CommentService;
-import com.devillage.teamproject.util.security.DefaultConfigWithoutCsrf;
-import com.devillage.teamproject.util.security.WithMockCustomUser;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.devillage.teamproject.dto.CommentDto;
@@ -26,25 +19,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.Filter;
+
 import java.time.LocalDateTime;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
@@ -66,16 +53,19 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(controllers = {CommentController.class, JwtTokenUtil.class})
+@WebMvcTest(controllers = {CommentController.class, ResultJwtArgumentResolver.class},
+        excludeFilters = {
+                @ComponentScan.Filter(
+                        type = FilterType.ASSIGNABLE_TYPE,
+                        classes = {SecurityConfig.class}
+                )
+        })
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
-@Import(DefaultConfigWithoutCsrf.class)
-@WithMockCustomUser
 class CommentControllerTest {
 
     @Autowired
@@ -91,7 +81,6 @@ class CommentControllerTest {
     private Gson gson;
 
     @Test
-    @WithMockCustomUser
     void deleteReComment() throws Exception {
         // given
         Long postId = 1L;
@@ -103,7 +92,7 @@ class CommentControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/posts/{post-id}/comments/{comment-id}/{re-comment-id}",
-                        postId, commentId, reCommentId).with(csrf())
+                        postId, commentId, reCommentId)
         );
 
         // then
@@ -121,7 +110,6 @@ class CommentControllerTest {
 
     @Test
     @DisplayName("createComment")
-    @WithMockCustomUser
     public void createComment() throws Exception {
         // given
         User user = User.builder().id(ID1).build();
@@ -237,7 +225,6 @@ class CommentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json)
-                        .header("Authorization","Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmb29AZW1haWwuY29tIiwiZXhwIjoxNjM4ODU1MzA1LCJpYXQiOjE2Mzg4MTkzMDV9.q4FWV7yVDAs_DREiF524VZ-udnqwV81GEOgdCj6QQAs")
         );
 
         // then

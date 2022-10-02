@@ -1,18 +1,11 @@
 package com.devillage.teamproject.controller.user;
 
-import com.devillage.teamproject.controller.post.PostController;
 import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
-import com.devillage.teamproject.util.TestConstants;
-import com.devillage.teamproject.util.auth.AuthTestUtils;
-import com.devillage.teamproject.util.security.DefaultConfigWithoutCsrf;
-import com.devillage.teamproject.util.security.WithMockCustomUser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -25,24 +18,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-
-import org.springframework.context.annotation.Import;
-
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
 import static com.devillage.teamproject.security.util.JwtConstants.*;
 import static com.devillage.teamproject.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -50,27 +34,29 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {UserController.class, JwtTokenUtil.class})
+@WebMvcTest(controllers = {UserController.class, JwtTokenUtil.class},
+        excludeFilters = {
+                @ComponentScan.Filter(
+                        type = FilterType.ASSIGNABLE_TYPE,
+                        classes = {SecurityConfig.class}
+                )
+        })
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 @Slf4j
-@Import(DefaultConfigWithoutCsrf.class)
-@WithMockCustomUser
 class UserControllerTest implements Reflection {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private UserService userService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("getProfile")
@@ -192,38 +178,5 @@ class UserControllerTest implements Reflection {
                         )
                 ));
 
-    }
-
-    @Test
-    @DisplayName("Post /user/profile/{id} 테스트")
-    public void userPasswordVerifiedTest() throws Exception {
-        //given
-        User testUser = AuthTestUtils.createTestUser(EMAIL1, NICKNAME1, PASSWORD1);
-        given(userService.checkUserPassword(anyLong(), anyString(), anyLong())).willReturn(ID1);
-
-        String token = BEARER + AuthTestUtils.createToken(EMAIL1, ID1, TestConstants.ROLES, TestConstants.SECRET_KEY.getBytes(), ACCESS_TOKEN_EXPIRE_COUNT);
-
-        String password = PASSWORD1;
-        String json = objectMapper.writeValueAsString(password);
-
-        //when
-        ResultActions actions = mockMvc.perform(post("/users/profile/{id}", ID1)
-                .header(AUTHORIZATION_HEADER, token)
-                .content(json));
-
-        //then
-        actions.andExpect(status().isOk())
-                .andDo(
-                        document("post-user/profile",
-                                preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
-                                requestHeaders(
-                                        headerWithName(AUTHORIZATION_HEADER).description("Access Token")
-                                ),
-                                pathParameters(
-                                        parameterWithName("id").description("user key")
-                                ),
-                                responseBody())
-                );
     }
 }

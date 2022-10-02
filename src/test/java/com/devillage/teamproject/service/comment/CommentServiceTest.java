@@ -1,11 +1,9 @@
 package com.devillage.teamproject.service.comment;
 
-import com.devillage.teamproject.entity.Comment;
-import com.devillage.teamproject.entity.Post;
-import com.devillage.teamproject.entity.ReComment;
-import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CommentStatus;
 import com.devillage.teamproject.exception.BusinessLogicException;
+import com.devillage.teamproject.repository.comment.CommentLikeRepository;
 import com.devillage.teamproject.repository.comment.CommentRepository;
 import com.devillage.teamproject.repository.comment.ReCommentRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
@@ -20,18 +18,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+
+
+import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.devillage.teamproject.util.TestConstants.*;
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest implements Reflection {
@@ -40,11 +41,14 @@ class CommentServiceTest implements Reflection {
     @Mock
     private ReCommentRepository reCommentRepository;
     @Mock
+    private CommentLikeRepository commentLikeRepository;
+    @Mock
     private JwtTokenUtil jwtTokenUtil;
     @Mock
     private PostService postService;
     @Mock
     private UserService userService;
+
     @InjectMocks
     private CommentServiceImpl commentService;
 
@@ -88,7 +92,7 @@ class CommentServiceTest implements Reflection {
         Comment comment = Comment.builder().content(COMMENT_CONTENT).post(post).build();
 
         given(userService.findVerifiedUser(Mockito.anyLong())).willReturn(user);
-        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(user.getId());
+        given(jwtTokenUtil.getUserId(anyString())).willReturn(user.getId());
         given(postService.getPost(Mockito.anyLong())).willReturn(post);
         Comment expectedComment = Comment.createComment(comment, user, post);
         given(commentRepository.save(Mockito.any(Comment.class))).willReturn(expectedComment);
@@ -153,17 +157,16 @@ class CommentServiceTest implements Reflection {
                 () -> commentService.editReComment(ID2, comment.getId(), reComment.getId(), newContent));
     }
 
-    @Test
     @DisplayName("createReComment")
     public void createReComment() throws Exception {
         // given
         User user = User.builder().id(ID1).build();
         Comment comment = Comment.builder().id(ID1).build();
         ReComment reCommentDto = ReComment.builder().content(COMMENT_CONTENT)
-                .comment(comment).build();
+                        .comment(comment).build();
 
         given(commentRepository.findById(Mockito.anyLong())).willReturn(Optional.of(comment));
-        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(user.getId());
+        given(jwtTokenUtil.getUserId(anyString())).willReturn(user.getId());
         given(userService.findVerifiedUser(user.getId())).willReturn(user);
         given(reCommentRepository.save(Mockito.any(ReComment.class))).willAnswer(AdditionalAnswers.returnsFirstArg());
 
@@ -189,7 +192,7 @@ class CommentServiceTest implements Reflection {
         comment.getReComments().add(reComment);
 
         given(commentRepository.findById(Mockito.anyLong())).willReturn(Optional.of(comment));
-        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(user.getId());
+        given(jwtTokenUtil.getUserId(anyString())).willReturn(user.getId());
 
         // when
         commentService.deleteComment(comment.getId(), "someToken");
@@ -208,7 +211,7 @@ class CommentServiceTest implements Reflection {
         comment.getReComments().add(reComment);
 
         given(commentRepository.findById(Mockito.anyLong())).willReturn(Optional.of(comment));
-        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(user.getId() + 1);
+        given(jwtTokenUtil.getUserId(anyString())).willReturn(user.getId() + 1);
 
         // when then
         assertThrows(BusinessLogicException.class,
@@ -216,25 +219,37 @@ class CommentServiceTest implements Reflection {
     }
 
     @Test
-    @DisplayName("getAllComments")
-    public void getAllComments() throws Exception {
-        // given
-        Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).build();
-        ReComment reComment1_1 = ReComment.builder().id(ID1).content(COMMENT_CONTENT).comment(comment1).build();
-        comment1.getReComments().add(reComment1_1);
-        Comment comment2 = Comment.builder().id(ID2).content(COMMENT_CONTENT).build();
-        Comment comment3 = Comment.builder().id(ID2 + 1).content(COMMENT_CONTENT).build();
+    public void likeComment() throws Exception{
+        //given
+        Post post = newInstance(Post.class);
+        User user = newInstance(User.class);
+        Comment comment = newInstance(Comment.class);
+        CommentLike commentLike = newInstance(CommentLike.class);
 
-        given(postService.getPost(Mockito.anyLong())).willReturn(null);
-        given(commentRepository.findAllByPostId(Mockito.anyLong(), Mockito.any()))
-                .willReturn(new PageImpl<>(List.of(comment1, comment2, comment3)));
+        setField(comment,"likeCount",0L);
+        setField(comment,"user",user);
+        setField(comment,"post",post);
+        setField(user,"commentLikes",new ArrayList<>());
 
-        // when
-        Page<Comment> commentPage = commentService.findComments(ID1, 1, 10);
+        Long commentId = 1L;
+        Long userId = 1L;
+        Long postId = 1L;
 
-        // then
-        assertEquals(3, commentPage.getTotalElements());
+        List<CommentLike> commentLikes = commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(commentId,userId,postId);
 
+        given(jwtTokenUtil.getUserId(anyString())).willReturn(userId);
+        given(commentRepository.findById(commentId)).willReturn(Optional.of(comment));
+        given(commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(anyLong(),anyLong(),anyLong())).willReturn(new ArrayList<>());
+//        doReturn(new ArrayList<>()).when(commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(commentId, userId, postId));
+        given(userService.findVerifiedUser(userId)).willReturn(user);
+        given(commentLikeRepository.countByCommentId(commentId)).willReturn(0L);
+
+        //when
+        Comment compareComment = commentService.likeComment(commentId,userId,"token");
+
+        //then
+        assertThat(compareComment).isEqualTo(comment);
+        assertEquals(comment.getLikeCount(),1L);
     }
 
 }

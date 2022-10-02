@@ -23,8 +23,9 @@ public interface CommentController {
 
     @PostMapping("/{post-id}/comments/{comment-id}/like")
     @ResponseStatus(HttpStatus.OK)
-    Long postLike(@PathVariable("post-id") Long postId,
-                  @PathVariable("comment-id") Long commentId);
+    boolean likeComment(@PathVariable("post-id") Long postId,
+                  @PathVariable("comment-id") Long commentId,
+                     @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @GetMapping("/{post-id}/comments/{comment-id}")
     @ResponseStatus(HttpStatus.OK)

@@ -91,8 +91,15 @@ public class User extends AuditingEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private final List<Like> likes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private final List<CommentLike> commentLikes = new ArrayList<>();
+
     public void addLike(Like like) {
         likes.add(like);
+    }
+
+    public void addCommentLike(CommentLike commentLike){
+        commentLikes.add(commentLike);
     }
 
     @OneToMany(mappedBy = "user")
@@ -129,6 +136,10 @@ public class User extends AuditingEntity {
         this.userStatus = UserStatus.ACTIVE;
         this.point = 0L;
         this.pwdLastModifiedAt = LocalDateTime.now();
+    }
+
+    public void updatePassword(PasswordEncoder passwordEncoder,String password){
+        this.password = passwordEncoder.encode(password);
     }
 
     public void passwordEncryption(PasswordEncoder passwordEncoder) {

@@ -38,8 +38,12 @@ public class Comment extends AuditingEntity {
     @OneToMany(mappedBy = "comment")
     private final List<ReComment> reComments = new ArrayList<>();
 
+    @ToString.Include
+    @EqualsAndHashCode.Include
+    private Long likeCount = 0L;
     @Enumerated(EnumType.STRING)
     private CommentStatus commentStatus;
+
 
     public static Comment createComment(Comment comment, User user, Post post) {
         Comment newComment = Comment.builder()
@@ -52,6 +56,10 @@ public class Comment extends AuditingEntity {
         post.addComment(newComment);
 
         return newComment;
+    }
+
+    public void setLikeCount(Long count) {
+        this.likeCount = count;
     }
 
     public void deleteComment() {

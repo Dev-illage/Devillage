@@ -4,6 +4,7 @@ import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
+import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.util.Reflection;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,12 +25,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -44,7 +44,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = PostController.class,
+@WebMvcTest(controllers = {PostController.class, ResultJwtArgumentResolver.class},
         excludeAutoConfiguration = {
                 SecurityAutoConfiguration.class
         })
@@ -57,6 +57,9 @@ class PostControllerTest implements Reflection {
 
     @MockBean
     PostService postService;
+
+    @MockBean
+    ResultJwtArgumentResolver resultJwtArgumentResolver;
 
     @Autowired
     ObjectMapper objectMapper = new ObjectMapper();
@@ -87,7 +90,7 @@ class PostControllerTest implements Reflection {
         setField(tag, "id", 1L);
         setField(tag, "name", "mvcTest");
 
-        given(postService.savePost(Mockito.any(Post.class), Mockito.any(CategoryType.class), Mockito.anyList(), Mockito.anyString())).willReturn(post);
+        given(postService.savePost(any(Post.class), any(CategoryType.class), Mockito.anyList(), Mockito.anyString())).willReturn(post);
 
         String content = objectMapper.writeValueAsString(post);
 
@@ -124,8 +127,7 @@ class PostControllerTest implements Reflection {
         setField(post, "tags", List.of(postTag));
         setField(post, "content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
         setField(post, "clicks", 1L);
-        setField(post, "createdAt", LocalDateTime.now());
-        setField(post, "lastModifiedAt", LocalDateTime.now());
+        post.setDate();
         setField(category, "categoryType", CategoryType.NOTICE);
         setField(postTag, "tag", tag);
         setField(tag, "id", 1L);
@@ -136,7 +138,7 @@ class PostControllerTest implements Reflection {
         setField(authorInfo, "authorName", "강지");
         Long id = post.getId();
 
-        given(postService.getPost(Mockito.any(long.class))).willReturn(post);
+        given(postService.getPost(any(long.class))).willReturn(post);
 
         //when
         ResultActions actions =
@@ -162,7 +164,7 @@ class PostControllerTest implements Reflection {
         Bookmark bookmark = new Bookmark(user, post);
         setField(bookmark, "id", 3L);
 
-        given(postService.postBookmark(anyString(), anyLong()))
+        given(postService.postBookmark(any(), anyLong()))
                 .willReturn(bookmark);
 
         // when
@@ -200,7 +202,7 @@ class PostControllerTest implements Reflection {
         ReportedPost report = new ReportedPost(user, post);
         setField(report, "id", 3L);
 
-        given(postService.postReport(anyString(), anyLong()))
+        given(postService.postReport(any(), anyLong()))
                 .willReturn(report);
 
         // when
@@ -240,7 +242,7 @@ class PostControllerTest implements Reflection {
         setField(post, "user", user);
         setField(post, "likeCount", 1L);
 
-        given(postService.postLike(anyString(), anyLong()))
+        given(postService.postLike(any(), anyLong()))
                 .willReturn(post);
 
         // when

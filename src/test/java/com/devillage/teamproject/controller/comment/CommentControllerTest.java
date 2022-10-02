@@ -1,14 +1,15 @@
 package com.devillage.teamproject.controller.comment;
 
-import com.devillage.teamproject.entity.ReComment;
-import com.devillage.teamproject.service.comment.CommentService;
-import org.junit.jupiter.api.Test;
 import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.Post;
+import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
+import com.devillage.teamproject.service.comment.CommentService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -19,8 +20,6 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.time.LocalDateTime;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.COMMENT_CONTENT;
@@ -38,7 +37,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = CommentController.class,
+@WebMvcTest(controllers = {CommentController.class, ResultJwtArgumentResolver.class},
         excludeAutoConfiguration = {
                 SecurityAutoConfiguration.class
         })
@@ -51,6 +50,9 @@ class CommentControllerTest {
 
     @MockBean
     CommentService commentService;
+
+    @MockBean
+    ResultJwtArgumentResolver resultJwtArgumentResolver;
 
     @Autowired
     private Gson gson;

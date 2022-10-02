@@ -2,6 +2,7 @@ package com.devillage.teamproject.controller.post;
 
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
+import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.util.Reflection;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,17 +22,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = PostController.class,
+@WebMvcTest(controllers = {PostController.class, ResultJwtArgumentResolver.class},
         excludeAutoConfiguration = {
                 SecurityAutoConfiguration.class
         })
@@ -53,6 +54,9 @@ public class GetPostsControllerTest implements Reflection {
 
     @MockBean
     PostService postService;
+
+    @MockBean
+    ResultJwtArgumentResolver resultJwtArgumentResolver;
 
     @Autowired
     ObjectMapper objectMapper = new ObjectMapper();
@@ -245,7 +249,7 @@ public class GetPostsControllerTest implements Reflection {
     @Test
     public void getPostsByBookmark() throws Exception {
         // given
-        given(postService.getPostsByBookmark("", page, size))
+        given(postService.getPostsByBookmark(any(), anyInt(), anyInt()))
                 .willReturn(pagePosts);
 
         // when

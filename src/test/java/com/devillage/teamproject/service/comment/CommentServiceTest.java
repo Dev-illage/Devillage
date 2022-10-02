@@ -20,6 +20,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.Optional;
 
@@ -210,6 +212,28 @@ class CommentServiceTest implements Reflection {
         // when then
         assertThrows(BusinessLogicException.class,
                 () -> commentService.deleteComment(comment.getId(), "someToken"));
+    }
+
+    @Test
+    @DisplayName("getAllComments")
+    public void getAllComments() throws Exception {
+        // given
+        Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).build();
+        ReComment reComment1_1 = ReComment.builder().id(ID1).content(COMMENT_CONTENT).comment(comment1).build();
+        comment1.getReComments().add(reComment1_1);
+        Comment comment2 = Comment.builder().id(ID2).content(COMMENT_CONTENT).build();
+        Comment comment3 = Comment.builder().id(ID2 + 1).content(COMMENT_CONTENT).build();
+
+        given(postService.getPost(Mockito.anyLong())).willReturn(null);
+        given(commentRepository.findAllByPostId(Mockito.anyLong(), Mockito.any()))
+                .willReturn(new PageImpl<>(List.of(comment1, comment2, comment3)));
+
+        // when
+        Page<Comment> commentPage = commentService.findComments(ID1, 1, 10);
+
+        // then
+        assertEquals(3, commentPage.getTotalElements());
+
     }
 
 }

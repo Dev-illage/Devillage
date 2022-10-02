@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -61,12 +62,10 @@ class PostRepositoryTest implements Reflection {
         setField(post3, "category", category2);
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
 
-        int prevFreesSize = postRepository.findByCategory_CategoryType(free, pageable)
-                .getContent()
-                .size();
-        int prevNotices = postRepository.findByCategory_CategoryType(notice, pageable)
-                .getContent()
-                .size();
+        long prevFreesSize = postRepository.findByCategory_CategoryType(free, pageable)
+                .getTotalElements();
+        long prevNoticesSize = postRepository.findByCategory_CategoryType(notice, pageable)
+                .getTotalElements();
 
         categoryRepository.save(category1);
         categoryRepository.save(category2);
@@ -79,8 +78,8 @@ class PostRepositoryTest implements Reflection {
         Page<Post> notices = postRepository.findByCategory_CategoryType(notice, pageable);
 
         // then
-        assertThat(frees.getContent().size() - prevFreesSize).isEqualTo(2);
-        assertThat(notices.getContent().size() - prevNotices).isEqualTo(1);
+        assertThat(frees.getTotalElements() - prevFreesSize).isEqualTo(2);
+        assertThat(notices.getTotalElements() - prevNoticesSize).isEqualTo(1);
     }
 
     @Test
@@ -94,37 +93,30 @@ class PostRepositoryTest implements Reflection {
         Post post3 = newInstance(Post.class);
         Post post4 = newInstance(Post.class);
 
-        setField(post1, "title", "검색어1");
-        setField(post2, "content", "검색어1");
-        setField(post3, "title", "검색어2");
-        setField(post4, "content", "검색어2");
-
-        postRepository.saveAll(List.of(post1, post2, post3, post4));
-
         String word1 = "검색어1";
         String word2 = "검색어2";
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
+
+        long prevWord1Size = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word1, word1, pageable)
+                .getTotalElements();
+        long prevWord2Size = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word2, word2, pageable)
+                .getTotalElements();
+
+        setField(post1, "title", word1);
+        setField(post2, "content", word1);
+        setField(post3, "title", word2);
+        setField(post4, "content", word2);
+
+        postRepository.saveAll(List.of(post1, post2, post3, post4));
+
 
         // when
         Page<Post> posts1 = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word1, word1, pageable);
         Page<Post> posts2 = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word2, word2, pageable);
 
         // then
-        assertThat(posts1.getContent().size()).isEqualTo(2);
-        assertThat(posts1.getNumber()).isEqualTo(page - 1);
-        assertThat(posts1.getSize()).isEqualTo(size);
-        assertThat(posts1.getTotalPages()).isEqualTo(2 / size + 1);
-        assertThat(posts1.getTotalElements()).isEqualTo(2);
-        assertThat(posts1.getContent().get(0)).isIn(List.of(post1, post2));
-        assertThat(posts1.getContent().get(1)).isIn(List.of(post1, post2));
-
-        assertThat(posts2.getContent().size()).isEqualTo(2);
-        assertThat(posts2.getNumber()).isEqualTo(page - 1);
-        assertThat(posts2.getSize()).isEqualTo(size);
-        assertThat(posts2.getTotalPages()).isEqualTo(2 / size + 1);
-        assertThat(posts2.getTotalElements()).isEqualTo(2);
-        assertThat(posts2.getContent().get(0)).isIn(List.of(post3, post4));
-        assertThat(posts2.getContent().get(1)).isIn(List.of(post3, post4));
+        assertThat(posts1.getTotalElements() - prevWord1Size).isEqualTo(2);
+        assertThat(posts2.getTotalElements() - prevWord2Size).isEqualTo(2);
     }
 
 }

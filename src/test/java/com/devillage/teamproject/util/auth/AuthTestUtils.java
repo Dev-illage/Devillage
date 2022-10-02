@@ -1,6 +1,7 @@
 package com.devillage.teamproject.util.auth;
 
 import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.entity.enums.UserStatus;
 import com.devillage.teamproject.util.ReflectionForStatic;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -47,6 +48,7 @@ public class AuthTestUtils implements ReflectionForStatic {
         User user = ReflectionForStatic.newInstance(User.class);
         ReflectionForStatic.setField(user, "email", email);
         ReflectionForStatic.setField(user, "password", password);
+        ReflectionForStatic.setField(user, "userStatus", UserStatus.ACTIVE);
         return user;
     }
 }

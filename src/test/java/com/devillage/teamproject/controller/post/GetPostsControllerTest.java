@@ -2,6 +2,8 @@ package com.devillage.teamproject.controller.post;
 
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
+import com.devillage.teamproject.security.config.SecurityConfig;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.util.Reflection;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +13,8 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -40,9 +44,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = PostController.class,
-        excludeAutoConfiguration = {
-                SecurityAutoConfiguration.class
+@WebMvcTest(controllers = {PostController.class, JwtTokenUtil.class},
+        excludeFilters = {
+                @ComponentScan.Filter(
+                        type = FilterType.ASSIGNABLE_TYPE,
+                        classes = {SecurityConfig.class}
+                )
         })
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs

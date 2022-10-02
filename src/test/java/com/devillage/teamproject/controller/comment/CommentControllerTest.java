@@ -1,8 +1,6 @@
 package com.devillage.teamproject.controller.comment;
 
 import com.devillage.teamproject.entity.ReComment;
-import com.devillage.teamproject.security.config.SecurityConfig;
-import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.comment.CommentService;
 import org.junit.jupiter.api.Test;
 import com.devillage.teamproject.dto.CommentDto;
@@ -17,8 +15,6 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,7 +25,6 @@ import java.time.LocalDateTime;
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.COMMENT_CONTENT;
 import static com.devillage.teamproject.util.TestConstants.ID1;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -40,14 +35,12 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {CommentController.class, JwtTokenUtil.class},
-        excludeFilters = {
-                @ComponentScan.Filter(
-                        type = FilterType.ASSIGNABLE_TYPE,
-                        classes = SecurityConfig.class
-                )
+@WebMvcTest(controllers = CommentController.class,
+        excludeAutoConfiguration = {
+                SecurityAutoConfiguration.class
         })
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
@@ -328,30 +321,4 @@ class CommentControllerTest {
                 ));
 
     }
-
-    @Test
-    public void likeComment() throws Exception {
-        //given
-        User user = User.builder().id(ID1).build();
-        Post post = Post.builder().id(ID1).user(user).build();
-        Comment comment = Comment.builder().id(ID1).build();
-        Long postId = post.getId();
-        Long commentId = comment.getId();
-
-        given(commentService.likeComment(eq(postId),eq(commentId),Mockito.anyString())).willReturn(comment);
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                post("/{post-id}/comments/{comment-id}/like",postId,commentId)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-
-        );
-        //then
-        //TODO : restDocs 추가
-        actions.andExpect(status().isOk())
-                .andExpect(content().string("true"))
-                .andReturn();
-    }
-
 }

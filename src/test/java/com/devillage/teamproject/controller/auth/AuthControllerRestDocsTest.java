@@ -92,7 +92,7 @@ public class AuthControllerRestDocsTest implements ReflectionForStatic {
         mockMvc.perform(post("/auth/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().string(ID1.toString()))
                 .andDo(
                         document("post-auth/new",
@@ -134,9 +134,9 @@ public class AuthControllerRestDocsTest implements ReflectionForStatic {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.accessToken").value(accessToken))
-                .andExpect(jsonPath("$.data.refreshToken").value(refreshToken))
-                .andExpect(jsonPath("$.data.bearer").value(BEARER))
+                .andExpect(jsonPath("$.accessToken").value(accessToken))
+                .andExpect(jsonPath("$.refreshToken").value(refreshToken))
+                .andExpect(jsonPath("$.bearer").value(BEARER))
                 .andDo(document(
                         "post-auth/token",
                         preprocessRequest(prettyPrint()),
@@ -147,10 +147,9 @@ public class AuthControllerRestDocsTest implements ReflectionForStatic {
                         ),
                         responseFields(
                                 List.of(
-                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("data container"),
-                                fieldWithPath("data.bearer").type(JsonFieldType.STRING).description("authorization header prefix"),
-                                fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("accessToken"),
-                                fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("refreshToken")
+                                fieldWithPath("bearer").type(JsonFieldType.STRING).description("authorization header prefix"),
+                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("accessToken"),
+                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("refreshToken")
                                 )
                         )
                 )
@@ -176,9 +175,9 @@ public class AuthControllerRestDocsTest implements ReflectionForStatic {
 
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.bearer").value(BEARER))
-                .andExpect(jsonPath("$.data.accessToken").value(accessToken))
-                .andExpect(jsonPath("$.data.refreshToken").value(refreshToken))
+                .andExpect(jsonPath("$.bearer").value(BEARER))
+                .andExpect(jsonPath("$.accessToken").value(accessToken))
+                .andExpect(jsonPath("$.refreshToken").value(refreshToken))
                 .andDo(
                         document("post-auth/token/refresh",
                                 preprocessRequest(),
@@ -188,10 +187,9 @@ public class AuthControllerRestDocsTest implements ReflectionForStatic {
                                 ),
                                 responseFields(
                                         List.of(
-                                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("data container"),
-                                                fieldWithPath("data.bearer").type(JsonFieldType.STRING).description("authorization header prefix"),
-                                                fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("accessToken"),
-                                                fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("refreshToken")
+                                                fieldWithPath("bearer").type(JsonFieldType.STRING).description("authorization header prefix"),
+                                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("accessToken"),
+                                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("refreshToken")
                                         )
                                 )
                                 )

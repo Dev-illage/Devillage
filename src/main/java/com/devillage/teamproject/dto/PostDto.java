@@ -164,16 +164,20 @@ public class PostDto {
     @Builder
 //    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Patch {
-        private CategoryType category;
+        private Category category;
+        @NotBlank
         private String title;
-        private List<String> tags;
+        private List<PostTag> tags;
+        @NotBlank
         private String content;
 
         public com.devillage.teamproject.entity.Post toEntity() {
 
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
-                    this.title,
-                    this.content
+                    this.getCategory(),
+                    this.getTitle(),
+                    this.getTags(),
+                    this.getContent()
             );
             return post;
         }

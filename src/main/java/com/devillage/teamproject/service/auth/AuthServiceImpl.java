@@ -130,7 +130,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     private void passwordVerification(User user, User findUser) {
-        if ( !findUser.passwordVerification(passwordEncoder, user) ) {
+        if ( !findUser.passwordVerification(passwordEncoder, user.getPassword()) ) {
             throw new AuthenticationCredentialsNotFoundException("Invalid input value");
         }
     }

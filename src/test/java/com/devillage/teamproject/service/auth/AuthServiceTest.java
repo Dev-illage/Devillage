@@ -13,7 +13,6 @@ import com.devillage.teamproject.repository.user_roles.UserRolesRepository;
 import com.devillage.teamproject.security.util.JwtConstants;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.util.ReflectionForStatic;
-import com.devillage.teamproject.util.TestConfig;
 import com.devillage.teamproject.util.auth.AuthTestUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -46,7 +45,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Slf4j
-@Import({TestConfig.class})
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest implements ReflectionForStatic {
     @Mock

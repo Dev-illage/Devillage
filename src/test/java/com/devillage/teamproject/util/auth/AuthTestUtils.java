@@ -19,6 +19,7 @@ public class AuthTestUtils implements ReflectionForStatic {
         Claims claims = Jwts.claims()
                 .setSubject(userEmail);
         claims.put(ROLES, roles);
+        claims.put(SEQUENCE, userSequence);
 
         return Jwts.builder()
                 .setClaims(claims)

@@ -1,7 +1,9 @@
 package com.devillage.teamproject.controller.user;
 
+import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.dto.UserDto;
+import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +18,14 @@ public interface UserController {
 
     @PatchMapping("/profile/{user-id}")
     @ResponseStatus(HttpStatus.OK)
+    Long patchProfile(@PathVariable("user-id") Long id,
+                      UserDto.PatchProfile request);
+
+    @PostMapping("/profile/{user-id}")
+    @ResponseStatus(HttpStatus.OK)
     Long postProfile(@PathVariable("user-id") Long id,
-                     UserDto.PatchProfile request);
+                     @RequestBody String password,
+                     @AccessToken AuthDto.UserInfo userInfo);
 
     @PatchMapping("/pwd/{user-id}")
     @ResponseStatus(HttpStatus.OK)

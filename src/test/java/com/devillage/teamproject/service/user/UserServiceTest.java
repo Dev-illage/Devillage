@@ -7,6 +7,9 @@ import com.devillage.teamproject.repository.user.BlockRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.util.Reflection;
+import com.devillage.teamproject.util.auth.AuthTestUtils;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,10 +17,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
+import static com.devillage.teamproject.util.ReflectionForStatic.setField;
 import static com.devillage.teamproject.util.TestConstants.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
@@ -34,6 +41,14 @@ public class UserServiceTest implements Reflection {
 
     @InjectMocks
     private UserServiceImpl userService;
+
+    @InjectMocks
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    public void injectBean() throws NoSuchFieldException, IllegalAccessException {
+        setField(userService, "passwordEncoder", passwordEncoder);
+    }
 
     @Test
     @DisplayName("findUser")
@@ -124,5 +139,21 @@ public class UserServiceTest implements Reflection {
         // then
         assertEquals(block, actualBlock);
 
+    }
+
+    @Test
+    @DisplayName("패스워드 확인 테스트")
+    public void userPasswordCheckTest() throws NoSuchFieldException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        //given
+        String encodedPwd = passwordEncoder.encode(PASSWORD1);
+        User testUser = AuthTestUtils.createTestUser(EMAIL1, encodedPwd);
+        given(userRepository.findById(ID1)).willReturn(Optional.of(testUser));
+
+
+        //when
+        Long userID = userService.checkUserPassword(ID1, PASSWORD2, ID1);
+
+        //then
+        assertThat(testUser.getId()).isEqualTo(userID);
     }
 }

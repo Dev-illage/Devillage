@@ -16,7 +16,7 @@ import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.HttpMethod.GET;
 
 @TestConfiguration
-public class DefaultConfigWithoutCsrf {
+public class SecurityTestConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

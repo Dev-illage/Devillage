@@ -16,6 +16,7 @@ logging:
     org.springframework.web.client: debug
     org.hibernate.sql: debug
     org.hibernate.type: trace
+    org.springframework.security: debug
 
 server:
   servlet:

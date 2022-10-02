@@ -30,4 +30,7 @@ public interface PostService {
     Page<Post> getPostsByBookmark(Long userId, int page, int size);
 
     void deletePost();
+
+    Long checkUserPassword(Long id, String password, Long tokenId
+    );
 }

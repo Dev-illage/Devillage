@@ -19,11 +19,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,6 +44,7 @@ public class PostServiceImpl implements PostService {
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Post savePost(Post post, CategoryType categoryType, List<String> tagValue, String token) {
@@ -138,6 +141,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void deletePost() {
+
+    }
+
+    @Override
     public Bookmark postBookmark(Long userId, Long postId) {
         User user = userService.findVerifiedUser(userId);
         Post post = findVerifyPost(postId);
@@ -193,6 +201,20 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
+    @Override
+    public Long checkUserPassword(Long id, String password, Long tokenId) {
+        if (!Objects.equals(id, tokenId)) throw new IllegalArgumentException("잘못된 요청");
+
+        User findUser = userRepository.findById(id)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+
+        if (!findUser.passwordVerification(passwordEncoder, password)) {
+            throw new IllegalArgumentException("잘못된 패스워드");
+        }
+
+        return findUser.getId();
+    }
+
     private Post findVerifyPost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
 
@@ -200,5 +222,6 @@ public class PostServiceImpl implements PostService {
                 () -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND)
         );
     }
+
 
 }

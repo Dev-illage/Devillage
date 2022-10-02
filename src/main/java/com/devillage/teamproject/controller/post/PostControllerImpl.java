@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.post;
 
+import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.DoubleResponseDto;
 import com.devillage.teamproject.dto.MultiResponseDto;
 import com.devillage.teamproject.dto.PostDto;
@@ -22,8 +23,10 @@ public class PostControllerImpl implements PostController {
     private final PostService postService;
 
     @Override
-    public PostDto.Response postPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER)String token, PostDto.Post request) {
-        Post savedPost = postService.savePost(request.toEntity(), request.getCategory(), request.getTags(), token);
+    public PostDto.Response postPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token, PostDto.Post request) {
+        Post post = request.toEntity();
+        Post savedPost = postService.savePost(post,request.getCategory(),request.getTags(),token);
+
         return PostDto.Response.of(savedPost);
     }
 
@@ -34,16 +37,16 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public PostDto.Response patchPost(Long id, PostDto.Patch request) {
+    public PostDto.Response patchPost(String token, Long id, PostDto.Patch request) {
         Post post = request.toEntity();
-        Post updatedPost = postService.editPost(id, post);
+        Post updatedPost = postService.editPost(post,request.getCategory(),request.getTags(),token,id);
         return PostDto.Response.of(updatedPost);
     }
 
     @Override
-    public PostDto.Response.BookmarkDto postBookmark(String accessToken, Long postId) {
+    public PostDto.Response.BookmarkDto postBookmark(AuthDto.UserInfo userInfo, Long postId) {
 
-        Bookmark bookmark = postService.postBookmark(accessToken, postId);
+        Bookmark bookmark = postService.postBookmark(userInfo.getId(), postId);
         return PostDto.Response.BookmarkDto.of(
                 bookmark.getUser().getId(),
                 bookmark.getPost().getId(),
@@ -51,9 +54,9 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public PostDto.Response.ReportDto postReport(String accessToken, Long postId) {
+    public PostDto.Response.ReportDto postReport(AuthDto.UserInfo userInfo, Long postId) {
 
-        ReportedPost reportedPost = postService.postReport(accessToken, postId);
+        ReportedPost reportedPost = postService.postReport(userInfo.getId(), postId);
         return PostDto.Response.ReportDto.of(
                 reportedPost.getUser().getId(),
                 reportedPost.getPost().getId(),
@@ -61,9 +64,9 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public PostDto.Response.LikeDto postLike(String accessToken, Long postId) {
+    public PostDto.Response.LikeDto postLike(AuthDto.UserInfo userInfo, Long postId) {
 
-        Post post = postService.postLike(accessToken, postId);
+        Post post = postService.postLike(userInfo.getId(), postId);
         return PostDto.Response.LikeDto.of(
                 post.getUser().getId(),
                 post.getId(),
@@ -93,8 +96,8 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByBookmark(String accessToken, int page, int size) {
-        Page<Post> posts = postService.getPostsByBookmark(accessToken, page, size);
+    public DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByBookmark(AuthDto.UserInfo userInfo, int page, int size) {
+        Page<Post> posts = postService.getPostsByBookmark(userInfo.getId(), page, size);
         return DoubleResponseDto.of(
                 posts.stream()
                         .map(PostDto.Response.SimplePostDto::of)
@@ -104,7 +107,8 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public void deletePost(Long id) {
-
+    public void deletePost(Long postId) {
+        postService.deletePost(postId);
     }
+
 }

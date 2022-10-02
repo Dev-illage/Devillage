@@ -13,21 +13,23 @@ import java.util.List;
 public interface PostService {
     Post savePost(Post post, CategoryType categoryType, List<String> tags, String token);
 
-    Post editPost(Long id, Post post);
+    Post editPost(Post post, CategoryType categoryType, List<String> tags, String token,Long id);
 
     Post getPost(Long id);
 
-    Bookmark postBookmark(String accessToken, Long postId);
+    Bookmark postBookmark(Long userId, Long postId);
 
-    ReportedPost postReport(String accessToken, Long postId);
+    ReportedPost postReport(Long userId, Long postId);
 
-    Post postLike(String accessToken, Long postId);
+    Post postLike(Long userId, Long postId);
 
     Page<Post> getPostsByCategory(String category, int page, int size);
 
     Page<Post> getPostsBySearch(String word, int page, int size);
 
-    Page<Post> getPostsByBookmark(String accessToken, int page, int size);
+    Page<Post> getPostsByBookmark(Long userId, int page, int size);
 
-    void deletePost();
+    void deletePost(Long postId);
+
+    Post findVerifyPost(Long postId);
 }

@@ -1,6 +1,7 @@
 package com.devillage.teamproject.controller.comment;
 
 import com.devillage.teamproject.controller.post.PostController;
+
 import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
@@ -10,15 +11,20 @@ import com.devillage.teamproject.util.security.WithMockCustomUser;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.Post;
+import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.security.config.SecurityConfig;
+import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
+import com.devillage.teamproject.service.comment.CommentService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,6 +33,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -42,6 +50,12 @@ import java.time.LocalDateTime;
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.COMMENT_CONTENT;
 import static com.devillage.teamproject.util.TestConstants.ID1;
+
+import java.util.List;
+
+import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
+import static com.devillage.teamproject.util.TestConstants.*;
+
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -56,6 +70,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @WebMvcTest(controllers = {CommentController.class, JwtTokenUtil.class})
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
@@ -68,6 +83,9 @@ class CommentControllerTest {
 
     @MockBean
     CommentService commentService;
+
+    @MockBean
+    ResultJwtArgumentResolver resultJwtArgumentResolver;
 
     @Autowired
     private Gson gson;

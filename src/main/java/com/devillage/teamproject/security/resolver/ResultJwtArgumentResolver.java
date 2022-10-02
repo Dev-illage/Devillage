@@ -40,7 +40,7 @@ public class ResultJwtArgumentResolver implements HandlerMethodArgumentResolver 
         }
 
         String token = jwtTokenUtil.splitToken(accessToken);
-        Claims claims = jwtTokenUtil.paresAccessToken(token);
+        Claims claims = jwtTokenUtil.parseAccessToken(token);
         String email = claims.getSubject();
         List<String> roles = (List) claims.get(ROLES);
         Long id = Long.valueOf((Integer)claims.get(SEQUENCE));

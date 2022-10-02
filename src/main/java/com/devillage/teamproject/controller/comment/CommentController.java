@@ -1,6 +1,7 @@
 package com.devillage.teamproject.controller.comment;
 
 import com.devillage.teamproject.dto.CommentDto;
+import com.devillage.teamproject.dto.DoubleResponseDto;
 import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,9 @@ public interface CommentController {
 
     @PostMapping("/{post-id}/comments/{comment-id}/like")
     @ResponseStatus(HttpStatus.OK)
-    Long postLike(@PathVariable("post-id") Long postId,
-                  @PathVariable("comment-id") Long commentId);
+    boolean likeComment(@PathVariable("post-id") Long postId,
+                  @PathVariable("comment-id") Long commentId,
+                     @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @GetMapping("/{post-id}/comments/{comment-id}")
     @ResponseStatus(HttpStatus.OK)
@@ -64,4 +66,10 @@ public interface CommentController {
     void deleteReComment(@PathVariable("post-id") Long postId,
                          @PathVariable("comment-id") Long commentId,
                          @PathVariable("re-comment-id") Long reCommentID);
+
+    @GetMapping("/{post-id}/comments")
+    @ResponseStatus(HttpStatus.OK)
+    DoubleResponseDto getComments(@PathVariable("post-id") Long postId,
+                                  @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                  @RequestParam(value = "size", required = false, defaultValue = "10") Integer size);
 }

@@ -1,17 +1,12 @@
 package com.devillage.teamproject.security.util;
 
-import com.devillage.teamproject.entity.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -65,7 +60,7 @@ public class JwtTokenUtil {
         return parseToken(token, refreshByteKey);
     }
 
-    public Claims paresAccessToken(String token) {
+    public Claims parseAccessToken(String token) {
         return parseToken(token, secretByteKey);
     }
 
@@ -75,12 +70,12 @@ public class JwtTokenUtil {
 
     @Deprecated
     public String getUserEmail(String token) {
-        return paresAccessToken(splitToken(token)).getSubject();
+        return parseAccessToken(splitToken(token)).getSubject();
     }
 
     @Deprecated
     public Long getUserId(String token) {
-        return Long.valueOf((Integer) paresAccessToken(splitToken(token)).get(SEQUENCE));
+        return Long.valueOf((Integer) parseAccessToken(splitToken(token)).get(SEQUENCE));
     }
 
     public String splitToken(String token) {

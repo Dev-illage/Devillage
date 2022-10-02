@@ -8,6 +8,7 @@ import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,9 +29,6 @@ public class PostServiceTest implements Reflection {
 
     @Mock
     private PostRepository postRepository;
-
-    @Mock
-    private JwtTokenUtil jwtTokenUtil;
 
     @Mock
     private UserService userService;
@@ -65,27 +63,21 @@ public class PostServiceTest implements Reflection {
     @Test
     public void userNotFound() {
         // given
-        given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(1L);
-
         given(userService.findVerifiedUser(userId))
                 .willReturn(null);
 
         // when / then
         assertThrows(BusinessLogicException.class,
-                () -> postService.postBookmark("", postId));
+                () -> postService.postBookmark(userId, postId));
         assertThrows(BusinessLogicException.class,
-                () -> postService.postReport("", postId));
+                () -> postService.postReport(userId, postId));
         assertThrows(BusinessLogicException.class,
-                () -> postService.postLike("", postId));
+                () -> postService.postLike(userId, postId));
     }
 
     @Test
     public void postNotFound() {
         // given
-        given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(1L);
-
         given(postRepository.findById(postId))
                 .willReturn(Optional.empty());
 
@@ -94,10 +86,10 @@ public class PostServiceTest implements Reflection {
 
         // when / then
         assertThrows(BusinessLogicException.class,
-                () -> postService.postBookmark("", postId));
+                () -> postService.postBookmark(userId, postId));
         assertThrows(BusinessLogicException.class,
-                () -> postService.postReport("", postId));
+                () -> postService.postReport(userId, postId));
         assertThrows(BusinessLogicException.class,
-                () -> postService.postLike("", postId));
+                () -> postService.postLike(userId, postId));
     }
 }

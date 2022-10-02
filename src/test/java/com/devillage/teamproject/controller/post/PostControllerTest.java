@@ -5,7 +5,9 @@ import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import com.devillage.teamproject.security.config.SecurityConfig;
+
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.util.Reflection;
 import com.devillage.teamproject.util.security.DefaultConfigWithoutCsrf;
@@ -14,13 +16,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+
 import org.springframework.context.annotation.Import;
+
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,12 +34,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -63,6 +65,9 @@ class PostControllerTest implements Reflection {
 
     @MockBean
     PostService postService;
+
+    @MockBean
+    ResultJwtArgumentResolver resultJwtArgumentResolver;
 
     @Autowired
     ObjectMapper objectMapper = new ObjectMapper();
@@ -168,7 +173,7 @@ class PostControllerTest implements Reflection {
         Bookmark bookmark = new Bookmark(user, post);
         setField(bookmark, "id", 3L);
 
-        given(postService.postBookmark(anyString(), anyLong()))
+        given(postService.postBookmark(any(), anyLong()))
                 .willReturn(bookmark);
 
         // when
@@ -206,7 +211,7 @@ class PostControllerTest implements Reflection {
         ReportedPost report = new ReportedPost(user, post);
         setField(report, "id", 3L);
 
-        given(postService.postReport(anyString(), anyLong()))
+        given(postService.postReport(any(), anyLong()))
                 .willReturn(report);
 
         // when
@@ -246,7 +251,7 @@ class PostControllerTest implements Reflection {
         setField(post, "user", user);
         setField(post, "likeCount", 1L);
 
-        given(postService.postLike(anyString(), anyLong()))
+        given(postService.postLike(any(), anyLong()))
                 .willReturn(post);
 
         // when

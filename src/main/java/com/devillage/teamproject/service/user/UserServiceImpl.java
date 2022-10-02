@@ -8,6 +8,8 @@ import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.user.BlockRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,17 +19,13 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BlockRepository blockRepository;
     private final JwtTokenUtil jwtTokenUtil;
-
-    public UserServiceImpl(UserRepository userRepository, BlockRepository blockRepository, JwtTokenUtil jwtTokenUtil) {
-        this.userRepository = userRepository;
-        this.blockRepository = blockRepository;
-        this.jwtTokenUtil = jwtTokenUtil;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional

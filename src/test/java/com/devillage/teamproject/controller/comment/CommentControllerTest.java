@@ -5,7 +5,6 @@ import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.entity.User;
-import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import com.devillage.teamproject.service.comment.CommentService;
 import com.devillage.teamproject.util.security.SecurityTestConfig;
@@ -18,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
@@ -159,8 +156,8 @@ class CommentControllerTest {
         );
         // then
         actions.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.reCommentId").value(reComment.getId()))
                 .andExpect(jsonPath("$.userId").value(user.getId()))
-                .andExpect(jsonPath("$.commentId").value(comment.getId()))
                 .andExpect(jsonPath("$.content").value(postDto.getContent()))
                 .andDo(document(
                         "post-recomment",
@@ -176,7 +173,6 @@ class CommentControllerTest {
                         responseFields(
                                 fieldWithPath("reCommentId").description("대댓글 식별자"),
                                 fieldWithPath("userId").description("댓글 쓴 사람 식별자"),
-                                fieldWithPath("commentId").description("댓글 식별자"),
                                 fieldWithPath("content").description("대댓글 내용"),
                                 fieldWithPath("createdAt").description("대댓글 쓴 날짜"),
                                 fieldWithPath("lastModifiedAt").description("대댓글을 마지막으로 수정한 날짜")
@@ -273,9 +269,8 @@ class CommentControllerTest {
         // then
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.reCommentId").value(reComment.getId()))
-                .andExpect(jsonPath("$.commentId").value(reComment.getComment().getId()))
-                .andExpect(jsonPath("$.content").value(reComment.getComment().getContent()))
                 .andExpect(jsonPath("$.userId").value(reComment.getComment().getUser().getId()))
+                .andExpect(jsonPath("$.content").value(reComment.getComment().getContent()))
                 .andDo(document(
                         "comments/patch-re-comment",
                         preprocessRequest(prettyPrint()),
@@ -290,9 +285,8 @@ class CommentControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("reCommentId").description("대댓글 식별자"),
-                                fieldWithPath("content").description("대댓글 내용"),
                                 fieldWithPath("userId").description("대댓글 작성자 식별자"),
-                                fieldWithPath("commentId").description("대댓글이 작성된 댓글 식별자"),
+                                fieldWithPath("content").description("대댓글 내용"),
                                 fieldWithPath("createdAt").description("대댓글 작성일시"),
                                 fieldWithPath("lastModifiedAt").description("대댓글 수정일시")
                         )

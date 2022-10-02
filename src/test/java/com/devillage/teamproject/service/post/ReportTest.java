@@ -35,9 +35,6 @@ class ReportTest implements Reflection {
     private ReportedPostRepository reportRepository;
 
     @Mock
-    private JwtTokenUtil jwtTokenUtil;
-
-    @Mock
     private UserService userService;
 
     @InjectMocks
@@ -55,9 +52,6 @@ class ReportTest implements Reflection {
     @Test
     void createReportedPost() {
         // given
-        given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(userId);
-
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
@@ -68,7 +62,7 @@ class ReportTest implements Reflection {
                 .willReturn(user);
 
         // when
-        ReportedPost findReportedPost = postService.postReport("", postId);
+        ReportedPost findReportedPost = postService.postReport(userId, postId);
 
         // then
         Assertions.assertThat(findReportedPost.getPost()).isEqualTo(post);
@@ -79,9 +73,6 @@ class ReportTest implements Reflection {
     void alreadyReportedPost() {
         // given
         ReportedPost report = new ReportedPost(user, post);
-
-        given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(userId);
 
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
@@ -94,7 +85,7 @@ class ReportTest implements Reflection {
 
         // when / then
         assertThrows(BusinessLogicException.class,
-                () -> postService.postReport("", postId));
+                () -> postService.postReport(userId, postId));
     }
 
 }

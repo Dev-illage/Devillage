@@ -55,9 +55,6 @@ class LikeTest implements Reflection {
     @Test
     void createLike() {
         // given
-        given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(userId);
-
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
@@ -70,7 +67,7 @@ class LikeTest implements Reflection {
                 .willReturn(user);
 
         // when
-        Post findPost = postService.postLike("", postId);
+        Post findPost = postService.postLike(userId, postId);
 
         // then
         Assertions.assertThat(findPost).isEqualTo(post);
@@ -82,9 +79,6 @@ class LikeTest implements Reflection {
     void deleteLike() throws Exception {
         // given
         Like like = new Like(user, post);
-
-        given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(userId);
 
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
@@ -98,7 +92,7 @@ class LikeTest implements Reflection {
                 .willReturn(user);
 
         // when
-        Post findPost = postService.postLike("", postId);
+        Post findPost = postService.postLike(userId, postId);
 
         // then
         Assertions.assertThat(findPost).isEqualTo(post);

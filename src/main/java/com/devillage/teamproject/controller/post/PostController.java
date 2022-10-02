@@ -1,8 +1,10 @@
 package com.devillage.teamproject.controller.post;
 
+import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.DoubleResponseDto;
 import com.devillage.teamproject.dto.MultiResponseDto;
 import com.devillage.teamproject.dto.PostDto;
+import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,7 @@ public interface PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    PostDto.Response postPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER)String token, @RequestBody PostDto.Post request);
+    PostDto.Response postPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token, @RequestBody PostDto.Post request);
 
     @GetMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
@@ -21,19 +23,19 @@ public interface PostController {
     @PostMapping("/{post-id}/bookmark")
     @ResponseStatus(HttpStatus.OK)
     PostDto.Response.BookmarkDto postBookmark(
-            @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,
+            @AccessToken AuthDto.UserInfo userInfo,
             @PathVariable("post-id") Long postId);
 
     @PostMapping("/{post-id}/report")
     @ResponseStatus(HttpStatus.OK)
     PostDto.Response.ReportDto postReport(
-            @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,
+            @AccessToken AuthDto.UserInfo userInfo,
             @PathVariable("post-id") Long id);
 
     @PostMapping("/{post-id}/like")
     @ResponseStatus(HttpStatus.OK)
     PostDto.Response.LikeDto postLike(
-            @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,
+            @AccessToken AuthDto.UserInfo userInfo,
             @PathVariable("post-id") Long id);
 
     @PatchMapping("/{post-id}")
@@ -44,19 +46,19 @@ public interface PostController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByCategory(@RequestParam String category,
-                                                               @RequestParam int page,
-                                                               @RequestParam int size);
+                                                                         @RequestParam int page,
+                                                                         @RequestParam int size);
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsBySearch(@RequestParam String q,
-                                                                         @RequestParam int page,
-                                                                         @RequestParam int size);
+                                                                       @RequestParam int page,
+                                                                       @RequestParam int size);
 
     @GetMapping("/bookmark")
     @ResponseStatus(HttpStatus.OK)
     DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByBookmark(
-            @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,
+            @AccessToken AuthDto.UserInfo userInfo,
             @RequestParam int page,
             @RequestParam int size);
 

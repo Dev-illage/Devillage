@@ -19,4 +19,7 @@ public interface UserService {
     Block blockUser(Long destUserId, String token);
 
     User findVerifiedUser(Long userId);
+
+    Long checkUserPassword(Long id, String password, Long tokenId
+    );
 }

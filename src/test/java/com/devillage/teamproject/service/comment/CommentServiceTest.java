@@ -215,6 +215,40 @@ class CommentServiceTest implements Reflection {
                 () -> commentService.deleteComment(comment.getId(), "someToken"));
     }
 
+//    @Test
+//    public void likeComment() throws Exception{
+//        //given
+//        Post post = newInstance(Post.class);
+//        User user = newInstance(User.class);
+//        Comment comment = newInstance(Comment.class);
+//        CommentLike commentLike = newInstance(CommentLike.class);
+//
+//        setField(comment,"likeCount",0L);
+//        setField(comment,"user",user);
+//        setField(comment,"post",post);
+//        setField(user,"commentLikes",new ArrayList<>());
+//
+//        Long commentId = 1L;
+//        Long userId = 1L;
+//        Long postId = 1L;
+//
+//        List<CommentLike> commentLikes = commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(commentId,userId,postId);
+//
+//        given(jwtTokenUtil.getUserId(anyString())).willReturn(userId);
+//        given(commentRepository.findById(commentId)).willReturn(Optional.of(comment));
+//        given(commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(anyLong(),anyLong(),anyLong())).willReturn(new ArrayList<>());
+////        doReturn(new ArrayList<>()).when(commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(commentId, userId, postId));
+//        given(userService.findVerifiedUser(userId)).willReturn(user);
+//        given(commentLikeRepository.countByCommentId(commentId)).willReturn(0L);
+//
+//        //when
+//        Comment compareComment = commentService.likeComment(commentId,userId,"token");
+//
+//        //then
+//        assertThat(compareComment).isEqualTo(comment);
+//        assertEquals(comment.getLikeCount(),1L);
+//    }
+
     @Test
     @DisplayName("getAllComments")
     public void getAllComments() throws Exception {

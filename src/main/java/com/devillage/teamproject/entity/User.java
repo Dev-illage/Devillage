@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,8 +136,8 @@ public class User extends AuditingEntity {
         this.password = passwordEncoder.encode(this.password);
     }
 
-    public boolean passwordVerification(PasswordEncoder passwordEncoder, User user) {
-        return passwordEncoder.matches(user.getPassword(), this.getPassword());
+    public boolean passwordVerification(@NotNull PasswordEncoder passwordEncoder, @NotNull String password) {
+        return passwordEncoder.matches(password, this.getPassword());
     }
 
     public void deleteUser() {

@@ -8,6 +8,8 @@ import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import com.devillage.teamproject.service.comment.CommentService;
+import com.devillage.teamproject.util.security.SecurityTestConfig;
+import com.devillage.teamproject.util.security.WithMockCustomUser;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
@@ -42,13 +45,9 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {CommentController.class, ResultJwtArgumentResolver.class},
-        excludeFilters = {
-                @ComponentScan.Filter(
-                        type = FilterType.ASSIGNABLE_TYPE,
-                        classes = {SecurityConfig.class}
-                )
-        })
+@WebMvcTest(controllers = {CommentController.class, ResultJwtArgumentResolver.class})
+@WithMockCustomUser
+@Import(SecurityTestConfig.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 class CommentControllerTest {
@@ -301,38 +300,6 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("deleteComment")
-    public void deleteComment() throws Exception {
-        // given
-        User user = User.builder().id(ID1).build();
-        Comment comment = Comment.builder().id(ID1).build();
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                delete("/posts/{post-id}/comments/{comment-id}", ID1, comment.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header(AUTHORIZATION_HEADER, "some-token")
-        );
-
-        // then
-        actions.andExpect(status().isNoContent())
-                .andDo(document(
-                        "delete-comment",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestHeaders(
-                                headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
-                        ),
-                        pathParameters(
-                                parameterWithName("post-id").description("게시글 식별자"),
-                                parameterWithName("comment-id").description("댓글 식별자")
-                        )
-                ));
-
-    }
-
-    @Test
     @DisplayName("getAllComments")
     public void getAllComments() throws Exception {
         // given
@@ -384,6 +351,38 @@ class CommentControllerTest {
                                 fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("사이즈"),
                                 fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("총 갯수"),
                                 fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("deleteComment")
+    public void deleteComment() throws Exception {
+        // given
+        User user = User.builder().id(ID1).build();
+        Comment comment = Comment.builder().id(ID1).build();
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/posts/{post-id}/comments/{comment-id}", ID1, comment.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, "some-token")
+        );
+
+        // then
+        actions.andExpect(status().isNoContent())
+                .andDo(document(
+                        "delete-comment",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자"),
+                                parameterWithName("comment-id").description("댓글 식별자")
                         )
                 ));
 

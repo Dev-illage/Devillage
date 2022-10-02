@@ -98,11 +98,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ReComment findReComment() {
-        return null;
-    }
-
-    @Override
     @Transactional
     public ReComment editReComment(Long postId, Long commentId, Long reCommentId, String content) {
         Optional<ReComment> optionalReComment = reCommentRepository.findById(reCommentId);

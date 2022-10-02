@@ -32,9 +32,6 @@ public class GetPostsServiceTest implements Reflection {
     private PostRepository postRepository;
 
     @Mock
-    private JwtTokenUtil jwtTokenUtil;
-
-    @Mock
     private UserService userService;
 
     @InjectMocks
@@ -94,15 +91,12 @@ public class GetPostsServiceTest implements Reflection {
         int size1 = 1;
         int size2 = 3;
 
-        given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(user.getId());
-
         given(userService.findVerifiedUser(user.getId()))
                 .willReturn(user);
 
         // when
-        Page<Post> findPosts1 = postService.getPostsByBookmark("", page, size1);
-        Page<Post> findPosts2 = postService.getPostsByBookmark("", page, size2);
+        Page<Post> findPosts1 = postService.getPostsByBookmark(user.getId(), page, size1);
+        Page<Post> findPosts2 = postService.getPostsByBookmark(user.getId(), page, size2);
 
         // then
         Assertions.assertThat(findPosts1.getContent().get(0)).isEqualTo(post3);

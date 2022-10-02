@@ -5,10 +5,7 @@ import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.repository.post.BookmarkRepository;
 import com.devillage.teamproject.repository.post.PostRepository;
-import com.devillage.teamproject.repository.user.UserRepository;
-import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
-import com.devillage.teamproject.service.user.UserServiceImpl;
 import com.devillage.teamproject.util.Reflection;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,12 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,9 +28,6 @@ class BookmarkTest implements Reflection {
 
     @Mock
     private BookmarkRepository bookmarkRepository;
-
-    @Mock
-    private JwtTokenUtil jwtTokenUtil;
 
     @Mock
     private UserService userService;
@@ -55,9 +47,6 @@ class BookmarkTest implements Reflection {
     @Test
     void createBookmark() {
         // given
-        given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(userId);
-
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
         given(userService.findVerifiedUser(userId))
@@ -67,7 +56,7 @@ class BookmarkTest implements Reflection {
                 .willReturn(new ArrayList<>());
 
         // when
-        Bookmark findBookmark = postService.postBookmark("", postId);
+        Bookmark findBookmark = postService.postBookmark(userId, postId);
 
         // then
         Assertions.assertThat(findBookmark.getPost()).isEqualTo(post);
@@ -79,9 +68,6 @@ class BookmarkTest implements Reflection {
         // given
         Bookmark bookmark = new Bookmark(user, post);
 
-        given(jwtTokenUtil.getUserId(anyString()))
-                .willReturn(userId);
-
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
         given(userService.findVerifiedUser(userId))
@@ -91,7 +77,7 @@ class BookmarkTest implements Reflection {
                 .willReturn(List.of(bookmark));
 
         // when
-        Bookmark findBookmark = postService.postBookmark("", postId);
+        Bookmark findBookmark = postService.postBookmark(userId, postId);
 
         // then
         Assertions.assertThat(findBookmark).isEqualTo(bookmark);

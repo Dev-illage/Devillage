@@ -150,8 +150,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> getPostsByBookmark(String accessToken, int page, int size) {
-        Long userId = jwtTokenUtil.getUserId(accessToken);
+    public Page<Post> getPostsByBookmark(Long userId, int page, int size) {
         User user = userService.findVerifiedUser(userId);
 
         List<Post> postsList = user.getBookmarks()
@@ -169,8 +168,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Bookmark postBookmark(String accessToken, Long postId) {
-        Long userId = jwtTokenUtil.getUserId(accessToken);
+    public void deletePost() {
+
+    }
+
+    @Override
+    public Bookmark postBookmark(Long userId, Long postId) {
         User user = userService.findVerifiedUser(userId);
         Post post = findVerifyPost(postId);
 
@@ -189,8 +192,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ReportedPost postReport(String accessToken, Long postId) {
-        Long userId = jwtTokenUtil.getUserId(accessToken);
+    public ReportedPost postReport(Long userId, Long postId) {
         User user = userService.findVerifiedUser(userId);
         Post post = findVerifyPost(postId);
 
@@ -206,8 +208,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post postLike(String accessToken, Long postId) {
-        Long userId = jwtTokenUtil.getUserId(accessToken);
+    public Post postLike(Long userId, Long postId) {
         User user = userService.findVerifiedUser(userId);
         Post post = findVerifyPost(postId);
 

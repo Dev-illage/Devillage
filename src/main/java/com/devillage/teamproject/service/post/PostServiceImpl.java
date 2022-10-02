@@ -168,11 +168,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePost() {
-
-    }
-
-    @Override
     public Bookmark postBookmark(Long userId, Long postId) {
         User user = userService.findVerifiedUser(userId);
         Post post = findVerifyPost(postId);

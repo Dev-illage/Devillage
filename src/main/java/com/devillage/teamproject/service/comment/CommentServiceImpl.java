@@ -12,6 +12,8 @@ import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,9 +63,13 @@ public class CommentServiceImpl implements CommentService {
         return comment;
     }
 
-    @Override
-    public List<Comment> findComments() {
-        return null;
+    public Page<Comment> findComments(Long postId, int page, int size) {
+        postService.getPost(postId);
+        Page<Comment> commentPage = commentRepository.findAllByPostId(postId, PageRequest.of(page, size));
+        commentPage.getContent().stream().forEach(
+                Comment::getReComments
+        );
+        return commentPage;
     }
 
     @Override
@@ -87,11 +93,6 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = findVerifiedComment(reComment.getComment().getId());
         User user = userService.findVerifiedUser(jwtTokenUtil.getUserId(token));
         return reCommentRepository.save(ReComment.createReComment(user, comment, reComment.getContent()));
-    }
-
-    @Override
-    public ReComment findReComment() {
-        return null;
     }
 
     @Override

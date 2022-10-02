@@ -201,20 +201,6 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
-    @Override
-    public Long checkUserPassword(Long id, String password, Long tokenId) {
-        if (!Objects.equals(id, tokenId)) throw new IllegalArgumentException("잘못된 요청");
-
-        User findUser = userRepository.findById(id)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-
-        if (!findUser.passwordVerification(passwordEncoder, password)) {
-            throw new IllegalArgumentException("잘못된 패스워드");
-        }
-
-        return findUser.getId();
-    }
-
     private Post findVerifyPost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
 

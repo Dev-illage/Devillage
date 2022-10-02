@@ -1,6 +1,5 @@
 package com.devillage.teamproject.controller.user;
 
-import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.Block;
@@ -23,13 +22,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public Long patchProfile(Long id, UserDto.PatchProfile request) {
+    public Long postProfile(Long id, UserDto.PatchProfile request) {
         return null;
-    }
-
-    @Override
-    public Long postProfile(Long id, String password, AuthDto.UserInfo userInfo) {
-        return userService.checkUserPassword(id, password, userInfo.getId());
     }
 
     @Override

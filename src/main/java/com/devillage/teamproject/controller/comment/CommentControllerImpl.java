@@ -31,8 +31,8 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public boolean likeComment(Long postId, Long commentId, String token) {
-        return false;
+    public Long postLike(Long postId, Long commentId) {
+        return null;
     }
 
 //    @Override

@@ -13,11 +13,12 @@ public interface CommentService {
 
     Comment editComment(Long postId, Long commentId, String content);
 
+
+    Page<Comment> findComments(Long postId, int page, int size);
+
     void deleteComment(Long commentId, String token);
 
     ReComment createReComment(ReComment reComment, String token);
-
-    Page<Comment> findComments(Long postId, int page, int size);
 
     ReComment editReComment(Long postId, Long commentId, Long reCommentId, String content);
 

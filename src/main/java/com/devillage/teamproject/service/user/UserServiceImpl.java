@@ -8,24 +8,25 @@ import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.user.BlockRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BlockRepository blockRepository;
     private final JwtTokenUtil jwtTokenUtil;
-    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, BlockRepository blockRepository, JwtTokenUtil jwtTokenUtil) {
+        this.userRepository = userRepository;
+        this.blockRepository = blockRepository;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
     @Override
     @Transactional
@@ -82,19 +83,5 @@ public class UserServiceImpl implements UserService {
             throw new BusinessLogicException(ExceptionCode.USER_RESIGNED);
         }
         return findUser;
-    }
-
-    @Override
-    public Long checkUserPassword(Long id, String password, Long tokenId) {
-        if (!Objects.equals(id, tokenId)) throw new IllegalArgumentException("잘못된 요청");
-
-        User findUser = userRepository.findById(id)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-
-        if (!findUser.passwordVerification(passwordEncoder, password)) {
-            throw new IllegalArgumentException("잘못된 패스워드");
-        }
-
-        return findUser.getId();
     }
 }

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -63,6 +64,7 @@ public class CommentServiceImpl implements CommentService {
         return comment;
     }
 
+    @Override
     public Page<Comment> findComments(Long postId, int page, int size) {
         postService.getPost(postId);
         Page<Comment> commentPage = commentRepository.findAllByPostId(postId, PageRequest.of(page, size));

@@ -7,7 +7,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,15 +91,8 @@ public class User extends AuditingEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private final List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private final List<CommentLike> commentLikes = new ArrayList<>();
-
     public void addLike(Like like) {
         likes.add(like);
-    }
-
-    public void addCommentLike(CommentLike commentLike){
-        commentLikes.add(commentLike);
     }
 
     @OneToMany(mappedBy = "user")
@@ -139,16 +131,12 @@ public class User extends AuditingEntity {
         this.pwdLastModifiedAt = LocalDateTime.now();
     }
 
-    public void updatePassword(PasswordEncoder passwordEncoder,String password){
-        this.password = passwordEncoder.encode(password);
-    }
-
     public void passwordEncryption(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
     }
 
-    public boolean passwordVerification(@NotNull PasswordEncoder passwordEncoder, @NotNull String password) {
-        return passwordEncoder.matches(password, this.getPassword());
+    public boolean passwordVerification(PasswordEncoder passwordEncoder, User user) {
+        return passwordEncoder.matches(user.getPassword(), this.getPassword());
     }
 
     public void deleteUser() {

@@ -35,9 +35,9 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public PostDto.Response patchPost(Long id, PostDto.Patch request) {
+    public PostDto.Response patchPost(String token, Long id, PostDto.Patch request) {
         Post post = request.toEntity();
-        Post updatedPost = postService.editPost(id, post);
+        Post updatedPost = postService.editPost(post,request.getCategory(),request.getTags(),token,id);
         return PostDto.Response.of(updatedPost);
     }
 

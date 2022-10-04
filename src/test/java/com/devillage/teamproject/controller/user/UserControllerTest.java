@@ -41,8 +41,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {UserController.class, JwtTokenUtil.class})
 @WithMockCustomUser
@@ -177,5 +176,24 @@ class UserControllerTest implements Reflection {
                         )
                 ));
 
+    }
+
+    @Test
+    public void updatePassword() throws Exception{
+        User user = newInstance(User.class);
+        setField(user, "id",ID1);
+        given(userService.updatePassword(Mockito.anyString(),Mockito.anyString())).willReturn(true);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                patch("/users/profile")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        MvcResult result = actions.andExpect(status().isOk())
+                .andExpect(content().string("true"))
+                .andReturn();
     }
 }

@@ -24,8 +24,8 @@ public interface UserController {
 
     @PatchMapping("/pwd/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    Long postPassword(@PathVariable("user-id") Long id,
-                      String password);
+    boolean postPassword(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token,
+                         @RequestBody String password);
 
 
     @GetMapping("/profile")

@@ -48,17 +48,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post savePost(Post post, CategoryType categoryType, List<String> tagValue, String token) {
-        // 1. 카테고리 엔티티 찾아오기 ( => 포스트 안에 저장해줘야 하니까)
-        // 2. 태그 가져오기
-        // 2-1. 해당 태그가 기존에 존재한다면 걔를 가져와서 포스트에 넣어줘야하고
-        // 2-2. 존재하지 않는다면 -> 새롭게 저장해야된다. -> 포스트 리스트
-        // 3. List<포스트> -> 반복문 저장을
-
-        // 문제 : 포스트 태그 하나는 저장 똑바로 안됨
-        // 문제 : post에 날짜 시간 저장 안됨
-        //
-
-        // 할일 추가 -> 유저도 저장해야됨
         Long userId = jwtTokenUtil.getUserId(token);
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
@@ -92,15 +81,54 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post editPost(Long id, Post post) {
-        Post getPost = findVerifyPost(post.getId());
-        getPost.edit(post);
-        return getPost;
+    public Post editPost(Post post, CategoryType categoryType, List<String> tagValue, String token,Long id) {
+        Post verifiedPost = findVerifyPost(id);
+        Long userId = jwtTokenUtil.getUserId(token);
+        User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+
+        Category category = categoryRepository.findCategoriesByCategoryType(categoryType);
+
+        tagValue.forEach(
+                e -> {
+//                    if(tagRepository.findTagByName(e).isEmpty()){
+//                        Tag tag = tagRepository.save(new Tag(e));
+//                        PostTag postTag = new PostTag(verifiedPost,tag);
+//                        postTagRepository.save(postTag);
+//                        verifiedPost.addPostTag(postTag);
+//                        verifiedPost.addCategory(category);
+//                        verifiedPost.editPost(post);
+//                        postRepository.save(verifiedPost);
+//                        findUser.addPost(verifiedPost);
+//                        verifiedPost.addUser(findUser);
+//                    }
+//                    else {
+//                        Tag tag = tagRepository.findTagByName(e).orElseThrow(IllegalArgumentException::new);
+//                        PostTag postTag = new PostTag(verifiedPost,tag);
+//                        postTagRepository.save(postTag);
+//                        verifiedPost.addPostTag(postTag);
+//                        verifiedPost.addCategory(category);
+//                        verifiedPost.editPost(post);
+//                        postRepository.save(verifiedPost);
+//                        findUser.addPost(verifiedPost);
+//                        verifiedPost.addUser(findUser);
+//
+//                    }
+                }
+        );
+//        postRepository.save(verifiedPost);
+        return verifiedPost;
+    }
+
+    @Override
+    public void deletePost(Long postId) {
+        findVerifyPost(postId);
+        postRepository.deleteById(postId);
     }
 
     @Override
     public Post getPost(Long id) {
-        return findVerifyPost(id);
+        Post post = findVerifyPost(id);
+        return post;
     }
 
     @Override
@@ -140,10 +168,6 @@ public class PostServiceImpl implements PostService {
                 postsList.size());
     }
 
-    @Override
-    public void deletePost() {
-
-    }
 
     @Override
     public Bookmark postBookmark(Long userId, Long postId) {
@@ -201,13 +225,12 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
-    private Post findVerifyPost(Long postId) {
+    public Post findVerifyPost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
 
         return findPost.orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND)
         );
     }
-
 
 }

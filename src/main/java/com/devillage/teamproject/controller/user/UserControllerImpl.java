@@ -28,8 +28,9 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public Long postPassword(Long id, String password) {
-        return null;
+    public boolean postPassword(String token, String password) {
+        userService.updatePassword(token,password);
+        return true;
     }
 
     @Override

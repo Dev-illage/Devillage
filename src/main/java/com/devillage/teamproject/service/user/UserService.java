@@ -22,4 +22,6 @@ public interface UserService {
 
     Long checkUserPassword(Long id, String password, Long tokenId
     );
+
+    boolean updatePassword(String token,String password);
 }

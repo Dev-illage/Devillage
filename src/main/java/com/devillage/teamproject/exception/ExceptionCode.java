@@ -23,6 +23,8 @@ public enum ExceptionCode {
 
     USER_RESIGNED(422, "Resigned User"),
     USER_AUTHORIZED(403, "Unauthorized user"),
+    NOT_VALID_PASSWORD(404,"Not valid password"),
+    CAN_NOT_UPDATE_PASSWORD(400,"Can not update password")
     ;
 
     private final int status;

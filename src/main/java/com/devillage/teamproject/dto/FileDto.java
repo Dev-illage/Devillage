@@ -31,7 +31,7 @@ public class FileDto {
                     file.getLocalPath(),
                     file.getRemotePath(),
                     file.getType(),
-                    file.getUser().getId()
+                    file.getOwner().getId()
             );
         }
     }

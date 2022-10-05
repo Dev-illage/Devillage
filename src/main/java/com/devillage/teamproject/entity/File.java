@@ -38,8 +38,8 @@ public class File extends AuditingEntity {
     private String type;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "owner_user_id")
+    private User owner;
 
     public static File ofOauth2UserPicture(String path) {
         File file = new File();
@@ -48,6 +48,6 @@ public class File extends AuditingEntity {
     }
 
     public void addUser(User user) {
-        this.user = user;
+        this.owner = user;
     }
 }

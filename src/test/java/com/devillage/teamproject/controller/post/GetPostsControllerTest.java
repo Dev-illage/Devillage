@@ -98,7 +98,7 @@ public class GetPostsControllerTest implements Reflection {
         setField(file, "localPath", "/localPath/file");
         setField(file, "remotePath", "/remotePath/file");
         setField(file, "type", "type");
-        setField(file, "user", user);
+        setField(file, "owner", user);
 
         setField(post, "title", "제목");
         setField(post, "content", "내용");
@@ -142,7 +142,7 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].files[0].localPath").value(file.getLocalPath()))
                 .andExpect(jsonPath("$.data[0].files[0].remotePath").value(file.getRemotePath()))
                 .andExpect(jsonPath("$.data[0].files[0].type").value(file.getType()))
-                .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getUser().getId()))
+                .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getOwner().getId()))
                 .andExpect(jsonPath("$.pageInfo.page").value(page))
                 .andExpect(jsonPath("$.pageInfo.size").value(size))
                 .andDo(document("posts/getPostsByCategory",
@@ -212,7 +212,7 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].files[0].localPath").value(file.getLocalPath()))
                 .andExpect(jsonPath("$.data[0].files[0].remotePath").value(file.getRemotePath()))
                 .andExpect(jsonPath("$.data[0].files[0].type").value(file.getType()))
-                .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getUser().getId()))
+                .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getOwner().getId()))
                 .andExpect(jsonPath("$.pageInfo.page").value(page))
                 .andExpect(jsonPath("$.pageInfo.size").value(size))
                 .andDo(document("posts/getPostsBySearch",
@@ -281,7 +281,7 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].files[0].localPath").value(file.getLocalPath()))
                 .andExpect(jsonPath("$.data[0].files[0].remotePath").value(file.getRemotePath()))
                 .andExpect(jsonPath("$.data[0].files[0].type").value(file.getType()))
-                .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getUser().getId()))
+                .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getOwner().getId()))
                 .andExpect(jsonPath("$.pageInfo.page").value(page))
                 .andExpect(jsonPath("$.pageInfo.size").value(size))
                 .andDo(document("posts/getPostsByBookmark",

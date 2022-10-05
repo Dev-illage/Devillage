@@ -6,8 +6,11 @@ import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
+import com.devillage.teamproject.util.TestConstants;
+import com.devillage.teamproject.util.auth.AuthTestUtils;
 import com.devillage.teamproject.util.security.SecurityTestConfig;
 import com.devillage.teamproject.util.security.WithMockCustomUser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +33,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import static com.devillage.teamproject.security.util.JwtConstants.*;
 import static com.devillage.teamproject.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -37,8 +42,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -57,6 +61,9 @@ class UserControllerTest implements Reflection {
     @MockBean
     private UserService userService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     @DisplayName("getProfile")
     public void getProfile() throws Exception {
@@ -68,7 +75,7 @@ class UserControllerTest implements Reflection {
         setField(user, "statusMessage", STATUS_MESSAGE1);
         setField(user, "pwdLastModifiedAt", PASSWORD_LAST_MODIFIED_AT1);
 
-        given(userService.findUser(Mockito.anyString())).willReturn(user);
+        given(userService.findUser(anyString())).willReturn(user);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -144,7 +151,7 @@ class UserControllerTest implements Reflection {
         setField(targetUser, "id", ID2);
         Block block = Block.builder().srcUser(srcUser).destUser(targetUser).id(ID1).build();
 
-        given(userService.blockUser(Mockito.anyLong(), Mockito.anyString())).willReturn(block);
+        given(userService.blockUser(anyLong(), anyString())).willReturn(block);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -177,5 +184,38 @@ class UserControllerTest implements Reflection {
                         )
                 ));
 
+    }
+
+    @Test
+    @DisplayName("Post /user/profile/{id} 테스트")
+    public void userPasswordVerifiedTest() throws Exception {
+        //given
+        User testUser = AuthTestUtils.createTestUser(EMAIL1, NICKNAME1, PASSWORD1);
+        given(userService.checkUserPassword(anyLong(), anyString(), anyLong())).willReturn(ID1);
+
+        String token = BEARER + AuthTestUtils.createToken(EMAIL1, ID1, TestConstants.ROLES, TestConstants.SECRET_KEY.getBytes(), ACCESS_TOKEN_EXPIRE_COUNT);
+
+        String password = PASSWORD1;
+        String json = objectMapper.writeValueAsString(password);
+
+        //when
+        ResultActions actions = mockMvc.perform(post("/users/profile/{id}", ID1)
+                .header(AUTHORIZATION_HEADER, token)
+                .content(json));
+
+        //then
+        actions.andExpect(status().isOk())
+                .andDo(
+                        document("post-user/profile",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName(AUTHORIZATION_HEADER).description("Access Token")
+                                ),
+                                pathParameters(
+                                        parameterWithName("id").description("user key")
+                                ),
+                                responseBody())
+                );
     }
 }

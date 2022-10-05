@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional(readOnly = true)
@@ -75,6 +77,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean updatePassword(String token,String password){
+        String validPassword =  validatePassword(password);
+        Long userId = jwtTokenUtil.getUserId(token);
+        User user = findVerifiedUser(userId);
+
+        if(user.getOauthProvider()!=null){
+            throw new BusinessLogicException(ExceptionCode.CAN_NOT_UPDATE_PASSWORD);
+        }
+        user.updatePassword(passwordEncoder,validPassword);
+
+        return true;
+    }
+
+    @Override
     public User findVerifiedUser(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         User findUser = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
@@ -97,4 +113,16 @@ public class UserServiceImpl implements UserService {
 
         return findUser.getId();
     }
+
+
+    public String validatePassword(String password){
+        Pattern passPattern = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$");
+        Matcher passMatcher = passPattern.matcher(password);
+
+        if(!passMatcher.matches()){
+            throw new BusinessLogicException(ExceptionCode.NOT_VALID_PASSWORD);
+        }
+        return password;
+    }
+
 }

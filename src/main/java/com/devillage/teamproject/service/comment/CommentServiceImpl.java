@@ -1,11 +1,9 @@
 package com.devillage.teamproject.service.comment;
 
-import com.devillage.teamproject.entity.Comment;
-import com.devillage.teamproject.entity.Post;
-import com.devillage.teamproject.entity.ReComment;
-import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
+import com.devillage.teamproject.repository.comment.CommentLikeRepository;
 import com.devillage.teamproject.repository.comment.CommentRepository;
 import com.devillage.teamproject.repository.comment.ReCommentRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
@@ -29,6 +27,7 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final ReCommentRepository reCommentRepository;
+    private final CommentLikeRepository commentLikeRepository;
     private final JwtTokenUtil jwtTokenUtil;
     private final PostService postService;
     private final UserService userService;
@@ -61,6 +60,33 @@ public class CommentServiceImpl implements CommentService {
 
         comment.setContent(content);
 
+        return comment;
+    }
+
+    @Override
+    public Comment likeComment(Long postId,Long commentId,String token) {
+        Long userId = jwtTokenUtil.getUserId(token);
+        User user = userService.findVerifiedUser(userId);
+        Post post = postService.findVerifyPost(postId);
+        Comment comment = findVerifiedComment(commentId);
+
+        Long count = commentLikeRepository.countByCommentId(commentId);
+        List<CommentLike> commentLikes = commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(commentId, userId, postId);
+
+        if(!commentLikes.isEmpty()){
+            commentLikeRepository.deleteAll();
+            count-=1;
+        }
+        else {
+            CommentLike commentLike = new CommentLike(user,comment,post);
+            user.addCommentLike(commentLike);
+            count+=1;
+
+        }
+
+        comment.setLikeCount(count);
+//        Long result = comment.getLikeCount();
+//        commentRepository.save(comment);
         return comment;
     }
 
@@ -137,6 +163,8 @@ public class CommentServiceImpl implements CommentService {
 
         reCommentRepository.deleteById(reCommentId);
     }
+
+
 
     public Comment findVerifiedComment(Long commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);

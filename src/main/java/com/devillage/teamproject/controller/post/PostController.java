@@ -40,7 +40,7 @@ public interface PostController {
 
     @PatchMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
-    PostDto.Response patchPost(@PathVariable("post-id") Long id,
+    PostDto.Response patchPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,@PathVariable("post-id") Long id,
                                PostDto.Patch request);
 
     @GetMapping

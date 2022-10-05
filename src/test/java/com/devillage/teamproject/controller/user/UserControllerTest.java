@@ -1,11 +1,14 @@
 package com.devillage.teamproject.controller.user;
 
+import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
+import com.devillage.teamproject.util.TestConstants;
+import com.devillage.teamproject.util.auth.AuthTestUtils;
 import com.devillage.teamproject.util.security.SecurityTestConfig;
 import com.devillage.teamproject.util.security.WithMockCustomUser;
 import com.jayway.jsonpath.JsonPath;
@@ -23,6 +26,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -30,8 +34,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import static com.devillage.teamproject.security.util.JwtConstants.*;
 import static com.devillage.teamproject.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -181,18 +187,31 @@ class UserControllerTest implements Reflection {
     @Test
     public void updatePassword() throws Exception{
         User user = newInstance(User.class);
-        setField(user, "id",ID1);
-        given(userService.updatePassword(Mockito.anyString(),Mockito.anyString())).willReturn(true);
+        setField(user,"id",ID1);
+        setField(user,"email",EMAIL2);
+        setField(user,"nickName",NICKNAME1);
+        setField(user,"password",PASSWORD1);
+
+        String token = BEARER + AuthTestUtils.createToken(EMAIL1, ID1, TestConstants.ROLES,
+                TestConstants.SECRET_KEY.getBytes(), ACCESS_TOKEN_EXPIRE_COUNT);
+
+        Long userId = user.getId();
+        String password = "aasssssad##!!";
+
+        when(userService.updatePassword(userId,password)).thenReturn(true);
 
         // when
         ResultActions actions = mockMvc.perform(
-                patch("/users/profile")
+                patch("/users/pwd/{user-id}",userId)
+                        .header(AUTHORIZATION_HEADER, token)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(password)
         );
 
         // then
-        MvcResult result = actions.andExpect(status().isOk())
+        MvcResult result = actions
+                .andExpect(status().isOk())
                 .andExpect(content().string("true"))
                 .andReturn();
     }

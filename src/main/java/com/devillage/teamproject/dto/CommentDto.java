@@ -3,6 +3,7 @@ package com.devillage.teamproject.dto;
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReComment;
+import com.devillage.teamproject.entity.enums.CommentStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -47,16 +48,27 @@ public class CommentDto {
         private LocalDateTime lastModifiedAt;
 
         public static ResponseWithReComment of(Comment comment) {
-            return ResponseWithReComment.builder()
-                    .commentId(comment.getId())
-                    .userId(comment.getUser().getId())
-                    .content(comment.getContent())
-                    .reComments(comment.getReComments().stream().map(
-                            ReCommentResponse::of
-                    ).collect(Collectors.toList()))
-                    .createdAt(comment.getCreatedAt())
-                    .lastModifiedAt(comment.getLastModifiedAt())
-                    .build();
+            return comment.getCommentStatus() == CommentStatus.DELETED ?
+                    ResponseWithReComment.builder()
+                            .commentId(comment.getId())
+                            .userId(null)
+                            .content(null)
+                            .reComments(comment.getReComments().stream().map(
+                                    ReCommentResponse::of
+                            ).collect(Collectors.toList()))
+                            .createdAt(comment.getCreatedAt())
+                            .lastModifiedAt(comment.getLastModifiedAt())
+                            .build() :
+                    ResponseWithReComment.builder()
+                            .commentId(comment.getId())
+                            .userId(comment.getUser().getId())
+                            .content(comment.getContent())
+                            .reComments(comment.getReComments().stream().map(
+                                    ReCommentResponse::of
+                            ).collect(Collectors.toList()))
+                            .createdAt(comment.getCreatedAt())
+                            .lastModifiedAt(comment.getLastModifiedAt())
+                            .build();
         }
     }
 

@@ -4,6 +4,7 @@ import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.Block;
+import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.service.user.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,8 +29,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public boolean postPassword(String token, String password) {
-        userService.updatePassword(token,password);
+    public boolean postPassword(AuthDto.UserInfo userInfo, String password) {
+        userService.updatePassword(userInfo.getId(),password);
         return true;
     }
 

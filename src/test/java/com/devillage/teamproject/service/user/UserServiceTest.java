@@ -3,10 +3,13 @@ package com.devillage.teamproject.service.user;
 import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.entity.enums.UserStatus;
+import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.repository.user.BlockRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.util.Reflection;
+import com.devillage.teamproject.util.TestConstants;
+import com.devillage.teamproject.util.auth.AuthTestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,13 +17,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Optional;
 
+import static com.devillage.teamproject.security.util.JwtConstants.ACCESS_TOKEN_EXPIRE_COUNT;
+import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest implements Reflection {
@@ -32,6 +44,9 @@ public class UserServiceTest implements Reflection {
 
     @Mock
     private JwtTokenUtil jwtTokenUtil;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -126,25 +141,29 @@ public class UserServiceTest implements Reflection {
         assertEquals(block, actualBlock);
 
     }
-//
+
 //    @Test
 //    public void updatePassword() throws Exception {
 //        // given
 //        User user = newInstance(User.class);
 //        setField(user, "id",ID1);
-//        setField(user, "password",ID1);
-//        PasswordEncoder passwordEncoder;
-//        String updatedPassword = "aakkff##!!";
+
+//        setField(user, "password",PASSWORD1);
 //
-//        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(ID1);
+//        String updatedPassword = "sdfsdff!23##";
+//
+//        given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
+//        given(userService.validatePassword(updatedPassword)).willReturn(updatedPassword);
 //
 //        // when
-//        Block actualBlock = userService.blockUser(ID2, "someToken");
+//        userService.updatePassword(ID1, updatedPassword);
 //
 //        // then
+//        assertThrows(BusinessLogicException.class, () -> user.getOauthProvider().equals(null));
 //        assertEquals(updatedPassword,user.getPassword());
-//
 //    }
 
-
 }
+
+
+

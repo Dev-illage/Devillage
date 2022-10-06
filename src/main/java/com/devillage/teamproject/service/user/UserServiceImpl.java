@@ -77,10 +77,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updatePassword(String token,String password){
+    public boolean updatePassword(Long id,String password){
         String validPassword =  validatePassword(password);
-        Long userId = jwtTokenUtil.getUserId(token);
-        User user = findVerifiedUser(userId);
+        User user = findVerifiedUser(id);
 
         if(user.getOauthProvider()!=null){
             throw new BusinessLogicException(ExceptionCode.CAN_NOT_UPDATE_PASSWORD);

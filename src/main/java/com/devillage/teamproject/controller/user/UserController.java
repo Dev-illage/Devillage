@@ -24,7 +24,7 @@ public interface UserController {
 
     @PatchMapping("/pwd/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    boolean postPassword(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token,
+    boolean postPassword(@AccessToken AuthDto.UserInfo userInfo,
                          @RequestBody String password);
 
 

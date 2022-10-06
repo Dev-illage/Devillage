@@ -66,6 +66,9 @@ class UserControllerTest implements Reflection {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     @Test
     @DisplayName("getProfile")
     public void getProfile() throws Exception {
@@ -195,7 +198,7 @@ class UserControllerTest implements Reflection {
         User testUser = AuthTestUtils.createTestUser(EMAIL1, NICKNAME1, PASSWORD1);
         given(userService.checkUserPassword(anyLong(), anyString(), anyLong())).willReturn(ID1);
 
-        String token = BEARER + AuthTestUtils.createToken(EMAIL1, ID1, TestConstants.ROLES, TestConstants.SECRET_KEY.getBytes(), ACCESS_TOKEN_EXPIRE_COUNT);
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
 
         String password = PASSWORD1;
         String json = objectMapper.writeValueAsString(password);
@@ -229,8 +232,7 @@ class UserControllerTest implements Reflection {
         setField(user,"nickName",NICKNAME1);
         setField(user,"password",PASSWORD1);
 
-        String token = BEARER + AuthTestUtils.createToken(EMAIL1, ID1, TestConstants.ROLES,
-                TestConstants.SECRET_KEY.getBytes(), ACCESS_TOKEN_EXPIRE_COUNT);
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL2, ID1, TestConstants.ROLES);
 
         Long userId = user.getId();
         String password = "aasssssad##!!";

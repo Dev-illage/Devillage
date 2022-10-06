@@ -93,7 +93,7 @@ public class GetPostsControllerTest implements Reflection {
         setField(tag, "name", "태그");
         setField(postsFile, "file", file);
         setField(file, "id", 1L);
-        setField(file, "originalFileName", "originalFileName");
+        setField(file, "originalFilename", "originalFilename");
         setField(file, "fileSize", 1234L);
         setField(file, "localPath", "/localPath/file");
         setField(file, "remotePath", "/remotePath/file");
@@ -137,7 +137,7 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].tags[0].tagId").value(tag.getId()))
                 .andExpect(jsonPath("$.data[0].tags[0].name").value(tag.getName()))
                 .andExpect(jsonPath("$.data[0].files[0].id").value(file.getId()))
-                .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFileName()))
+                .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFilename()))
                 .andExpect(jsonPath("$.data[0].files[0].fileSize").value(file.getFileSize()))
                 .andExpect(jsonPath("$.data[0].files[0].localPath").value(file.getLocalPath()))
                 .andExpect(jsonPath("$.data[0].files[0].remotePath").value(file.getRemotePath()))
@@ -207,7 +207,7 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].tags[0].tagId").value(tag.getId()))
                 .andExpect(jsonPath("$.data[0].tags[0].name").value(tag.getName()))
                 .andExpect(jsonPath("$.data[0].files[0].id").value(file.getId()))
-                .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFileName()))
+                .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFilename()))
                 .andExpect(jsonPath("$.data[0].files[0].fileSize").value(file.getFileSize()))
                 .andExpect(jsonPath("$.data[0].files[0].localPath").value(file.getLocalPath()))
                 .andExpect(jsonPath("$.data[0].files[0].remotePath").value(file.getRemotePath()))
@@ -276,7 +276,7 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].tags[0].tagId").value(tag.getId()))
                 .andExpect(jsonPath("$.data[0].tags[0].name").value(tag.getName()))
                 .andExpect(jsonPath("$.data[0].files[0].id").value(file.getId()))
-                .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFileName()))
+                .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFilename()))
                 .andExpect(jsonPath("$.data[0].files[0].fileSize").value(file.getFileSize()))
                 .andExpect(jsonPath("$.data[0].files[0].localPath").value(file.getLocalPath()))
                 .andExpect(jsonPath("$.data[0].files[0].remotePath").value(file.getRemotePath()))

@@ -26,7 +26,7 @@ public class FileDto {
         public static Response of(File file) {
             return new Response(
                     file.getId(),
-                    file.getOriginalFileName(),
+                    file.getOriginalFilename(),
                     file.getFileSize(),
                     file.getLocalPath(),
                     file.getRemotePath(),

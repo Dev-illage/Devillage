@@ -19,7 +19,9 @@ public class File extends AuditingEntity {
 
     @ToString.Include
     @EqualsAndHashCode.Include
-    private String originalFileName;
+    private String originalFilename;
+
+    private String filename;
 
     @ToString.Include
     @EqualsAndHashCode.Include
@@ -49,5 +51,15 @@ public class File extends AuditingEntity {
 
     public void addUser(User user) {
         this.owner = user;
+    }
+
+    public static File createLocalImage(String originalFilename, String filename, Long fileSize,
+                                        String localPath) {
+        File file = new File();
+        file.originalFilename = originalFilename;
+        file.filename = filename;
+        file.fileSize = fileSize;
+        file.localPath = localPath;
+        return file;
     }
 }

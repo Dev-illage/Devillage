@@ -1,13 +1,12 @@
 package com.devillage.teamproject.service.file;
 
 import com.devillage.teamproject.entity.File;
-import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Service
 public interface FileService {
-    File saveFile();
+    File saveFile(MultipartFile multipartFile);
 
     File findFile();
 

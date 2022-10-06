@@ -23,11 +23,11 @@ import java.util.UUID;
 @Service
 @Transactional(readOnly = true)
 @Slf4j
-public class LocalFileService implements FileService {
+public class LocalImageService implements FileService {
     private final FileRepository fileRepository;
     private final UserService userService;
 
-    public LocalFileService(FileRepository fileRepository, UserService userService) {
+    public LocalImageService(FileRepository fileRepository, UserService userService) {
         this.fileRepository = fileRepository;
         this.userService = userService;
     }

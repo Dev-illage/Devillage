@@ -126,25 +126,25 @@ public class UserServiceTest implements Reflection {
         assertEquals(block, actualBlock);
 
     }
-
-    @Test
-    public void updatePassword() throws Exception {
-        // given
-        User user = newInstance(User.class);
-        setField(user, "id",ID1);
-        setField(user, "password",ID1);
-        PasswordEncoder passwordEncoder;
-        String updatedPassword = "aakkff##!!";
-
-        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(ID1);
-
-        // when
-        Block actualBlock = userService.blockUser(ID2, "someToken");
-
-        // then
-        assertEquals(updatedPassword,user.getPassword());
-
-    }
+//
+//    @Test
+//    public void updatePassword() throws Exception {
+//        // given
+//        User user = newInstance(User.class);
+//        setField(user, "id",ID1);
+//        setField(user, "password",ID1);
+//        PasswordEncoder passwordEncoder;
+//        String updatedPassword = "aakkff##!!";
+//
+//        given(jwtTokenUtil.getUserId(Mockito.anyString())).willReturn(ID1);
+//
+//        // when
+//        Block actualBlock = userService.blockUser(ID2, "someToken");
+//
+//        // then
+//        assertEquals(updatedPassword,user.getPassword());
+//
+//    }
 
 
 }

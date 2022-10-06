@@ -216,23 +216,24 @@ class UserControllerTest implements Reflection {
                                 ),
                                 responseBody())
                 );
-
-    @Test
-    public void updatePassword() throws Exception{
-        User user = newInstance(User.class);
-        setField(user, "id",ID1);
-        given(userService.updatePassword(Mockito.anyString(),Mockito.anyString())).willReturn(true);
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                patch("/users/profile")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        MvcResult result = actions.andExpect(status().isOk())
-                .andExpect(content().string("true"))
-                .andReturn();
     }
-}
+
+        @Test
+        public void updatePassword () throws Exception {
+            User user = newInstance(User.class);
+            setField(user, "id", ID1);
+            given(userService.updatePassword(Mockito.anyString(), Mockito.anyString())).willReturn(true);
+
+            // when
+            ResultActions actions = mockMvc.perform(
+                    patch("/users/profile")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+            );
+
+            // then
+            MvcResult result = actions.andExpect(status().isOk())
+                    .andExpect(content().string("true"))
+                    .andReturn();
+        }
+    }

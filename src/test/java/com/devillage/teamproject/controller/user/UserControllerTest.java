@@ -252,4 +252,5 @@ class UserControllerTest implements Reflection {
                 .andExpect(content().string("true"))
                 .andReturn();
     }
-}
+
+    }

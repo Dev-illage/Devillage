@@ -1,9 +1,11 @@
 package com.devillage.teamproject.service.file;
 
 import com.devillage.teamproject.entity.File;
+import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.file.FileRepository;
+import com.devillage.teamproject.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,15 +25,20 @@ import java.util.UUID;
 @Slf4j
 public class LocalFileService implements FileService {
     private final FileRepository fileRepository;
+    private final UserService userService;
 
-    public LocalFileService(FileRepository fileRepository) {
+    public LocalFileService(FileRepository fileRepository, UserService userService) {
         this.fileRepository = fileRepository;
+        this.userService = userService;
     }
 
     @Override
     @Transactional
-    public File saveFile(MultipartFile multipartFile) {
-        return null;
+    public File saveFile(Long ownerUserId, MultipartFile multipartFile) {
+        User owner = userService.findVerifiedUser(ownerUserId);
+        File file = parseMultipartFile(multipartFile);
+        file.addUser(owner);
+        return fileRepository.save(file);
     }
 
     @Override

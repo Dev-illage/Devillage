@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface FileService {
-    File saveFile(MultipartFile multipartFile);
+    File saveFile(Long ownerUserId, MultipartFile multipartFile);
 
     File findFile();
 

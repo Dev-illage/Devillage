@@ -88,29 +88,29 @@ public class PostServiceImpl implements PostService {
 
         tagValue.forEach(
                 e -> {
-//                    if(tagRepository.findTagByName(e).isEmpty()){
-//                        Tag tag = tagRepository.save(new Tag(e));
-//                        PostTag postTag = new PostTag(verifiedPost,tag);
-//                        postTagRepository.save(postTag);
-//                        verifiedPost.addPostTag(postTag);
-//                        verifiedPost.addCategory(category);
-//                        verifiedPost.editPost(post);
-//                        postRepository.save(verifiedPost);
-//                        findUser.addPost(verifiedPost);
-//                        verifiedPost.addUser(findUser);
-//                    }
-//                    else {
-//                        Tag tag = tagRepository.findTagByName(e).orElseThrow(IllegalArgumentException::new);
-//                        PostTag postTag = new PostTag(verifiedPost,tag);
-//                        postTagRepository.save(postTag);
-//                        verifiedPost.addPostTag(postTag);
-//                        verifiedPost.addCategory(category);
-//                        verifiedPost.editPost(post);
-//                        postRepository.save(verifiedPost);
-//                        findUser.addPost(verifiedPost);
-//                        verifiedPost.addUser(findUser);
-//
-//                    }
+                    if(tagRepository.findTagByName(e).isEmpty()){
+                        Tag tag = tagRepository.save(new Tag(e));
+                        PostTag postTag = new PostTag(verifiedPost,tag);
+                        postTagRepository.save(postTag);
+                        verifiedPost.addPostTag(postTag);
+                        verifiedPost.addCategory(category);
+                        post.editPost(verifiedPost);
+                        postRepository.save(verifiedPost);
+                        findUser.addPost(verifiedPost);
+                        verifiedPost.addUser(findUser);
+                    }
+                    else {
+                        Tag tag = tagRepository.findTagByName(e).orElseThrow(IllegalArgumentException::new);
+                        PostTag postTag = new PostTag(verifiedPost,tag);
+                        postTagRepository.save(postTag);
+                        verifiedPost.addPostTag(postTag);
+                        verifiedPost.addCategory(category);
+                        post.editPost(verifiedPost);
+                        postRepository.save(verifiedPost);
+                        findUser.addPost(verifiedPost);
+                        verifiedPost.addUser(findUser);
+
+                    }
                 }
         );
 //        postRepository.save(verifiedPost);

@@ -22,16 +22,18 @@ public class PostDto {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
-        private Category category;
+        private String category;
         private String title;
-        private List<PostTag> tags;
+        private List<TagDto.Response> tag;
         private String content;
 
         public static Response of(com.devillage.teamproject.entity.Post post){
             return Response.builder()
-                    .category(post.getCategory())
+                    .category(post.getCategory().getCategoryType().name())
                     .title(post.getTitle())
-                    .tags(post.getTags())
+                    .tag(post.getTags().stream()
+                            .map(postTag -> TagDto.Response.of(postTag.getTag()))
+                            .collect(Collectors.toList()))
                     .content(post.getContent())
                     .build();
         }
@@ -161,22 +163,17 @@ public class PostDto {
     }
 
     @Getter
-    @AllArgsConstructor
-    @Builder
-//    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Patch {
         private CategoryType category;
-        @NotBlank
         private String title;
         private List<String> tags;
-        @NotBlank
         private String content;
 
         public com.devillage.teamproject.entity.Post toEntity() {
-
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
-                    this.getTitle(),
-                    this.getContent()
+                    this.title,
+                    this.content
             );
             return post;
         }

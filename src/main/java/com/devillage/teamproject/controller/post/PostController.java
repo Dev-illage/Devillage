@@ -38,7 +38,7 @@ public interface PostController {
     @PatchMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
     PostDto.Response patchPost(@AccessToken AuthDto.UserInfo userInfo,@PathVariable("post-id") Long id,
-                               PostDto.Patch request);
+                               @RequestBody PostDto.Patch request);
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

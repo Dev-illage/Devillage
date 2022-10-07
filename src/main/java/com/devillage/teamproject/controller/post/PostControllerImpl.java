@@ -33,8 +33,7 @@ public class PostControllerImpl implements PostController {
 
     @Override
     public PostDto.Response patchPost(AuthDto.UserInfo userInfo, Long postId, PostDto.Patch request) {
-        Post post = request.toEntity();
-        Post updatedPost = postService.editPost(post,request.getCategory(),request.getTags(),userInfo.getId(),postId);
+        Post updatedPost = postService.editPost(request.toEntity(),request.getCategory(),request.getTags(),userInfo.getId(),postId);
         return PostDto.Response.of(updatedPost);
     }
 

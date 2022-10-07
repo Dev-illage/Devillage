@@ -11,11 +11,11 @@ import java.util.List;
 
 @Service
 public interface PostService {
-    Post savePost(Post post, CategoryType categoryType, List<String> tags, String token);
+    Post savePost(Post post, CategoryType categoryType, List<String> tags, Long userId);
 
-    Post editPost(Post post, CategoryType categoryType, List<String> tags, String token,Long id);
+    Post editPost(Post post, CategoryType categoryType, List<String> tags, Long userId,Long postId);
 
-    Post getPost(Long id);
+    Post getPost(Long userId);
 
     Bookmark postBookmark(Long userId, Long postId);
 

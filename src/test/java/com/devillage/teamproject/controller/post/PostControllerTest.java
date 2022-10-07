@@ -125,13 +125,13 @@ class PostControllerTest implements Reflection {
         Tag tag = newInstance(Tag.class);
         Comment comment = newInstance(Comment.class);
 
-        setField(post, "category", category);
+        setField(user, "id", 1L);
         setField(post, "id", 1L);
+        setField(post, "category", category);
         setField(post, "title", "Mockito 관련 질문입니다.");
         setField(post, "tags", List.of(postTag));
         setField(post, "content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
         setField(post, "clicks", 1L);
-        post.setDate();
         setField(category, "categoryType", CategoryType.NOTICE);
         setField(postTag, "tag", tag);
         setField(tag, "id", 1L);
@@ -140,6 +140,8 @@ class PostControllerTest implements Reflection {
         setField(comment, "content", "잘 봤습니다.");
         setField(authorInfo, "authorId", 1L);
         setField(authorInfo, "authorName", "강지");
+        post.addUser(user);
+        post.setDate();
         Long id = post.getId();
 
         given(postService.getPost(any(long.class))).willReturn(post);
@@ -156,8 +158,10 @@ class PostControllerTest implements Reflection {
         //todo: 검증 조건 및 restdocs 추가 예정
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.title").value(post.getTitle()))
-                .andExpect(jsonPath("$.response.content").value(post.getContent()))
+                .andExpect(jsonPath("$.data.title").value(post.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(post.getContent()))
+                .andExpect(jsonPath("$.data.author.authorId").value(UserDto.AuthorInfo.of(post.getUser()).getAuthorId()))
+                .andExpect(jsonPath("$.data.category").value(post.getCategory().getCategoryType().name()))
                 .andReturn();
     }
 

@@ -1,9 +1,6 @@
 package com.devillage.teamproject.controller.post;
 
-import com.devillage.teamproject.dto.AuthDto;
-import com.devillage.teamproject.dto.DoubleResponseDto;
-import com.devillage.teamproject.dto.MultiResponseDto;
-import com.devillage.teamproject.dto.PostDto;
+import com.devillage.teamproject.dto.*;
 import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
@@ -14,11 +11,11 @@ public interface PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    PostDto.Response postPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token, @RequestBody PostDto.Post request);
+    PostDto.Response postPost(@AccessToken AuthDto.UserInfo userInfo, @RequestBody PostDto.Post request);
 
     @GetMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
-    MultiResponseDto<PostDto.Response.PostDetail> getPost(@PathVariable("post-id") Long id);
+    SingleResponseDto<PostDto.Response.PostDetail> getPost(@PathVariable("post-id") Long userId);
 
     @PostMapping("/{post-id}/bookmark")
     @ResponseStatus(HttpStatus.OK)
@@ -40,7 +37,7 @@ public interface PostController {
 
     @PatchMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
-    PostDto.Response patchPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String accessToken,@PathVariable("post-id") Long id,
+    PostDto.Response patchPost(@AccessToken AuthDto.UserInfo userInfo,@PathVariable("post-id") Long id,
                                PostDto.Patch request);
 
     @GetMapping

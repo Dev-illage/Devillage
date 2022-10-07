@@ -1,9 +1,6 @@
 package com.devillage.teamproject.controller.post;
 
-import com.devillage.teamproject.dto.AuthDto;
-import com.devillage.teamproject.dto.DoubleResponseDto;
-import com.devillage.teamproject.dto.MultiResponseDto;
-import com.devillage.teamproject.dto.PostDto;
+import com.devillage.teamproject.dto.*;
 import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
@@ -23,21 +20,21 @@ public class PostControllerImpl implements PostController {
     private final PostService postService;
 
     @Override
-    public PostDto.Response postPost(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER)String token, PostDto.Post request) {
-        Post savedPost = postService.savePost(request.toEntity(), request.getCategory(), request.getTags(), token);
+    public PostDto.Response postPost(AuthDto.UserInfo userInfo, PostDto.Post request) {
+        Post savedPost = postService.savePost(request.toEntity(), request.getCategory(), request.getTags(), userInfo.getId());
         return PostDto.Response.of(savedPost);
     }
 
     @Override
-    public MultiResponseDto<PostDto.Response.PostDetail> getPost(Long id) {
-        Post post = postService.getPost(id);
-        return MultiResponseDto.of(PostDto.Response.PostDetail.of(post));
+    public SingleResponseDto<PostDto.Response.PostDetail> getPost(Long postId) {
+        Post post = postService.getPost(postId);
+        return SingleResponseDto.of(PostDto.Response.PostDetail.of(post));
     }
 
     @Override
-    public PostDto.Response patchPost(String token, Long id, PostDto.Patch request) {
+    public PostDto.Response patchPost(AuthDto.UserInfo userInfo, Long postId, PostDto.Patch request) {
         Post post = request.toEntity();
-        Post updatedPost = postService.editPost(post,request.getCategory(),request.getTags(),token,id);
+        Post updatedPost = postService.editPost(post,request.getCategory(),request.getTags(),userInfo.getId(),postId);
         return PostDto.Response.of(updatedPost);
     }
 

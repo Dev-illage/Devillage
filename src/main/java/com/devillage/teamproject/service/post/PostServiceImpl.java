@@ -47,8 +47,7 @@ public class PostServiceImpl implements PostService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Post savePost(Post post, CategoryType categoryType, List<String> tagValue, String token) {
-        Long userId = jwtTokenUtil.getUserId(token);
+    public Post savePost(Post post, CategoryType categoryType, List<String> tagValue, Long userId) {
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
         Category category = categoryRepository.findCategoriesByCategoryType(categoryType);
@@ -81,9 +80,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post editPost(Post post, CategoryType categoryType, List<String> tagValue, String token,Long id) {
-        Post verifiedPost = findVerifyPost(id);
-        Long userId = jwtTokenUtil.getUserId(token);
+    public Post editPost(Post post, CategoryType categoryType, List<String> tagValue, Long userId,Long postId) {
+        Post verifiedPost = findVerifyPost(postId);
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
         Category category = categoryRepository.findCategoriesByCategoryType(categoryType);
@@ -126,8 +124,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getPost(Long id) {
-        Post post = findVerifyPost(id);
+    public Post getPost(Long userId) {
+        Post post = findVerifyPost(userId);
         return post;
     }
 

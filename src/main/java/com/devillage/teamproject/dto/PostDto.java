@@ -49,6 +49,7 @@ public class PostDto {
             private Long clicks;
             private List<TagDto.Response> tag;
             private UserDto.AuthorInfo author;
+            private Long like;
             private List<Comment> commentList;
 
             public static PostDetail of(com.devillage.teamproject.entity.Post post){
@@ -58,12 +59,13 @@ public class PostDto {
                         .category(post.getCategory().getCategoryType().name())
                         .createdAt(post.getCreatedAt())
                         .content(post.getContent())
-//                        .isModified(post.getLastModifiedAt().isAfter(post.getCreatedAt()))
+                        .isModified(post.getLastModifiedAt().isAfter(post.getCreatedAt()))
                         .clicks(post.getClicks())
                         .tag(post.getTags().stream()
                                 .map(postTag -> TagDto.Response.of(postTag.getTag()))
                                 .collect(Collectors.toList()))
-//                        .author(UserDto.AuthorInfo.of(post.getUser()))
+                        .author(UserDto.AuthorInfo.of(post.getUser()))
+                        .like(post.getLikeCount())
                         .commentList(post.getComments())
                         .build();
             }

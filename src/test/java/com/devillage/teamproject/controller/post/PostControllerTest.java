@@ -166,120 +166,120 @@ class PostControllerTest implements Reflection {
     }
 
 
-//    @Test
-//    void postBookmark() throws Exception {
-//        // given
-//        Bookmark bookmark = new Bookmark(user, post);
-//        setField(bookmark, "id", 3L);
-//
-//        given(postService.postBookmark(any(), anyLong()))
-//                .willReturn(bookmark);
-//
-//        // when
-//        ResultActions actions = mockMvc.perform(
-//                post("/posts/{post-id}/bookmark", post.getId())
-//                        .header(HttpHeaders.AUTHORIZATION, "")
-//        );
-//
-//        // then
-//        actions.andExpect(status().isOk())
-//                .andExpect(jsonPath("$.user").value(user.getId()))
-//                .andExpect(jsonPath("$.post").value(post.getId()))
-//                .andExpect(jsonPath("$.bookmark").value(bookmark.getId()))
-//                .andDo(document("posts/bookmark",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        requestHeaders(
-//                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
-//                        ),
-//                        pathParameters(
-//                                parameterWithName("post-id").description("게시글 식별자")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),
-//                                fieldWithPath("post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-//                                fieldWithPath("bookmark").type(JsonFieldType.NUMBER).description("북마크 식별자")
-//                        )
-//                ));
-//
-//    }
-//
-//    @Test
-//    void postReport() throws Exception {
-//        // given
-//        ReportedPost report = new ReportedPost(user, post);
-//        setField(report, "id", 3L);
-//
-//        given(postService.postReport(any(), anyLong()))
-//                .willReturn(report);
-//
-//        // when
-//        ResultActions actions = mockMvc.perform(
-//                post("/posts/{post-id}/report", post.getId())
-//                        .header(HttpHeaders.AUTHORIZATION, "")
-//        );
-//
-//        // then
-//        actions.andExpect(status().isOk())
-//                .andExpect(jsonPath("$.user").value(user.getId()))
-//                .andExpect(jsonPath("$.post").value(post.getId()))
-//                .andExpect(jsonPath("$.report").value(report.getId()))
-//                .andDo(document("posts/report",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        requestHeaders(
-//                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
-//                        ),
-//                        pathParameters(
-//                                parameterWithName("post-id").description("게시글 식별자")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),
-//                                fieldWithPath("post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-//                                fieldWithPath("report").type(JsonFieldType.NUMBER).description("신고글 식별자")
-//                        )
-//                ));
-//
-//    }
-//
-//    @Test
-//    void postLike() throws Exception {
-//        // given
-//        Like like = new Like(user, post);
-//        setField(like, "id", 3L);
-//        setField(post, "user", user);
-//        setField(post, "likeCount", 1L);
-//
-//        given(postService.postLike(any(), anyLong()))
-//                .willReturn(post);
-//
-//        // when
-//        ResultActions actions = mockMvc.perform(
-//                post("/posts/{post-id}/like", post.getId())
-//                        .header(HttpHeaders.AUTHORIZATION, "")
-//        );
-//
-//        // then
-//        actions.andExpect(status().isOk())
-//                .andExpect(jsonPath("$.user").value(user.getId()))
-//                .andExpect(jsonPath("$.post").value(post.getId()))
-//                .andExpect(jsonPath("$.like").value(post.getLikeCount()))
-//                .andDo(document("posts/like",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        requestHeaders(
-//                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
-//                        ),
-//                        pathParameters(
-//                                parameterWithName("post-id").description("게시글 식별자")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),
-//                                fieldWithPath("post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-//                                fieldWithPath("like").type(JsonFieldType.NUMBER).description("좋아요 개수")
-//                        )
-//                ));
-//
-//    }
+    @Test
+    void postBookmark() throws Exception {
+        // given
+        Bookmark bookmark = new Bookmark(user, post);
+        setField(bookmark, "id", 3L);
+
+        given(postService.postBookmark(any(), anyLong()))
+                .willReturn(bookmark);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/posts/{post-id}/bookmark", post.getId())
+                        .header(HttpHeaders.AUTHORIZATION, "")
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.user").value(user.getId()))
+                .andExpect(jsonPath("$.post").value(post.getId()))
+                .andExpect(jsonPath("$.bookmark").value(bookmark.getId()))
+                .andDo(document("posts/bookmark",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
+                        ),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("bookmark").type(JsonFieldType.NUMBER).description("북마크 식별자")
+                        )
+                ));
+
+    }
+
+    @Test
+    void postReport() throws Exception {
+        // given
+        ReportedPost report = new ReportedPost(user, post);
+        setField(report, "id", 3L);
+
+        given(postService.postReport(any(), anyLong()))
+                .willReturn(report);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/posts/{post-id}/report", post.getId())
+                        .header(HttpHeaders.AUTHORIZATION, "")
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.user").value(user.getId()))
+                .andExpect(jsonPath("$.post").value(post.getId()))
+                .andExpect(jsonPath("$.report").value(report.getId()))
+                .andDo(document("posts/report",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
+                        ),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("report").type(JsonFieldType.NUMBER).description("신고글 식별자")
+                        )
+                ));
+
+    }
+
+    @Test
+    void postLike() throws Exception {
+        // given
+        Like like = new Like(user, post);
+        setField(like, "id", 3L);
+        setField(post, "user", user);
+        setField(post, "likeCount", 1L);
+
+        given(postService.postLike(any(), anyLong()))
+                .willReturn(post);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/posts/{post-id}/like", post.getId())
+                        .header(HttpHeaders.AUTHORIZATION, "")
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.user").value(user.getId()))
+                .andExpect(jsonPath("$.post").value(post.getId()))
+                .andExpect(jsonPath("$.like").value(post.getLikeCount()))
+                .andDo(document("posts/like",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
+                        ),
+                        pathParameters(
+                                parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("post").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("like").type(JsonFieldType.NUMBER).description("좋아요 개수")
+                        )
+                ));
+
+    }
 
 }

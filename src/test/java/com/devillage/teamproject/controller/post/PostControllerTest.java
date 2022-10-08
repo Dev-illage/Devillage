@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.post;
 
+import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.*;
@@ -33,6 +34,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
+import static com.devillage.teamproject.util.TestConstants.COMMENT_CONTENT;
+import static com.devillage.teamproject.util.TestConstants.ID1;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -75,33 +78,27 @@ class PostControllerTest implements Reflection {
         setField(user, "id", 1L);
         setField(post, "id", 2L);
     }
-//
+
 //    @WithMockUser
 //    @Test
 //    public void postPost() throws Exception {
 //        //given
-//        PostDto.Post postDto = newInstance(PostDto.Post.class);
-//        Category category = newInstance(Category.class);
-//        PostTag postTag = newInstance(PostTag.class);
-//        Tag tag = newInstance(Tag.class);
+//        PostDto.Post postDto = PostDto.Post.builder()
+//                .title("안녕하세요.")
+//                .content(COMMENT_CONTENT)
+//                .tags(List.of("tag1","tag2"))
+//                .category(CategoryType.NOTICE)
+//                .build();
 //
-//        setField(postDto, "category", CategoryType.NOTICE);
-//        setField(postDto, "title", "Mockito 관련 질문입니다.");
-//        setField(postDto, "tags", List.of(postTag));
-//        setField(postDto, "content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
-//        setField(category, "categoryType", CategoryType.NOTICE);
-//        setField(postTag, "tag", tag);
-//        setField(tag, "id", 1L);
-//        setField(tag, "name", "mvcTest");
+//        String content = objectMapper.writeValueAsString(postDto);
 //
-//        given(postService.savePost(any(Post.class), any(CategoryType.class), Mockito.anyList(), Mockito.anyString())).willReturn(post);
-//
-//        String content = objectMapper.writeValueAsString(post);
+//        given(postService.savePost(any(Post.class), any(CategoryType.class), Mockito.anyList(), Mockito.anyLong())).willReturn(postDto.toEntity());
 //
 //        //when
 //        ResultActions actions =
 //                mockMvc.perform(
 //                        post("/posts")
+//                                .header(AUTHORIZATION_HEADER, "token")
 //                                .accept(MediaType.APPLICATION_JSON)
 //                                .contentType(MediaType.APPLICATION_JSON)
 //                                .content(content)

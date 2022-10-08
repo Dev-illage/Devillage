@@ -146,7 +146,9 @@ public class PostDto {
     }
 
     @Getter
+    @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
     public static class Post {
         private CategoryType category;
         private String title;

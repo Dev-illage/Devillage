@@ -39,6 +39,10 @@ public class User extends AuditingEntity {
     @EqualsAndHashCode.Include
     private String nickName;
 
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
     @OneToMany(mappedBy = "user")
     private List<UserRoles> userRoles = new ArrayList<>();
 
@@ -59,6 +63,10 @@ public class User extends AuditingEntity {
 
     @ToString.Include
     private String statusMessage;
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
+    }
 
     private Boolean authenticatedMail;
 

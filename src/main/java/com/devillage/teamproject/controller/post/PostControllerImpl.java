@@ -4,6 +4,7 @@ import com.devillage.teamproject.dto.*;
 import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
+import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.security.util.JwtConstants;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public SingleResponseDto<PostDto.Response.PostDetail> getPost(Long postId) {
+    public SingleResponseDto<PostDto.Response.PostDetail> getPost(AuthDto.UserInfo userInfo, Long postId) {
         Post post = postService.getPost(postId);
         return SingleResponseDto.of(PostDto.Response.PostDetail.of(post));
     }

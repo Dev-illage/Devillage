@@ -4,7 +4,8 @@ import com.devillage.teamproject.dto.FileDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/files")
+@RestController
+@RequestMapping("/files")
 public interface FileController {
 
     @PostMapping

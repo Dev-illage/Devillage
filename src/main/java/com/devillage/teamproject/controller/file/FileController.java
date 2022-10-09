@@ -20,7 +20,7 @@ public interface FileController {
     @ResponseStatus(HttpStatus.OK)
     FileDto.Response getFile(@PathVariable("file-id") Long id, @AccessToken AuthDto.UserInfo userInfo);
 
-    @DeleteMapping
+    @DeleteMapping("/{file-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteFile();
+    void deleteFile(@AccessToken AuthDto.UserInfo userInfo, @PathVariable("file-id") Long fileId);
 }

@@ -46,8 +46,8 @@ public class LocalImageController implements FileController {
     }
 
     @Override
-    public void deleteFile() {
-
+    public void deleteFile(AuthDto.UserInfo userInfo, Long fileId) {
+        fileService.deleteFile(fileId, userInfo.getId());
     }
 
     @GetMapping()

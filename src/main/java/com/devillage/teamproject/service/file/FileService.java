@@ -14,7 +14,7 @@ public interface FileService {
 
     List<File> findFiles();
 
-    void deleteFile();
+    void deleteFile(Long fileId, Long userId);
 
     File findFileWithFilename(String filename);
 

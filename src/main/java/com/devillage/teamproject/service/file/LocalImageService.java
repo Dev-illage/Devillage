@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,8 +62,12 @@ public class LocalImageService implements FileService {
 
     @Override
     @Transactional
-    public void deleteFile() {
-
+    public void deleteFile(Long fileId, Long userId) {
+        File file = findVerifiedFile(fileId);
+        if (!Objects.equals(file.getOwner().getId(), userId)) {
+            throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
+        }
+        fileRepository.delete(file);
     }
 
     public File parseMultipartFile(MultipartFile multipartFile) {

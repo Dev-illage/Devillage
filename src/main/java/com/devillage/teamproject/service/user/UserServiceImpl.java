@@ -1,12 +1,16 @@
 package com.devillage.teamproject.service.user;
 
+import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.entity.Block;
+import com.devillage.teamproject.entity.Like;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.entity.enums.UserStatus;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
+import com.devillage.teamproject.repository.post.LikeRepository;
 import com.devillage.teamproject.repository.user.BlockRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +29,7 @@ import java.util.regex.Pattern;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
     private final BlockRepository blockRepository;
     private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
@@ -77,15 +82,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updatePassword(Long id,String password){
-        String validPassword =  validatePassword(password);
-        User user = findVerifiedUser(id);
+    public boolean updatePassword(Long userId,AuthDto.UserInfo userInfo,String password, String updatePassword){
+        String validPassword =  validatePassword(updatePassword);
+        User user = findVerifiedUser(userInfo.getId());
+        checkUserPassword(userId,password,userInfo.getId());
 
         if(user.getOauthProvider()!=null){
             throw new BusinessLogicException(ExceptionCode.CAN_NOT_UPDATE_PASSWORD);
         }
-        user.updatePassword(passwordEncoder,validPassword);
-
+        user.updatePassword(validPassword);
         return true;
     }
 
@@ -124,4 +129,9 @@ public class UserServiceImpl implements UserService {
         return password;
     }
 
+    public boolean postLikeExist(Long userId,Long postId){
+        List<Like> findLikes = likeRepository.findByUserIdAndPostId(userId, postId);
+        if(findLikes.isEmpty()) return false;
+        return true;
+    }
 }

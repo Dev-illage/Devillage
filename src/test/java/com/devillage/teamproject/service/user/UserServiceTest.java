@@ -27,7 +27,10 @@ import java.util.Optional;
 import static com.devillage.teamproject.security.util.JwtConstants.ACCESS_TOKEN_EXPIRE_COUNT;
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
@@ -162,6 +165,45 @@ public class UserServiceTest implements Reflection {
 //        assertThrows(BusinessLogicException.class, () -> user.getOauthProvider().equals(null));
 //        assertEquals(updatedPassword,user.getPassword());
 //    }
+
+    @Test
+    public void editUser() throws Exception {
+        // given
+        User user1 = newInstance(User.class);
+        setField(user1, "id", ID1);
+        setField(user1, "nickName", NICKNAME1);
+        User user2 = newInstance(User.class);
+        setField(user2, "id", ID2);
+        setField(user2, "nickName", NICKNAME2);
+
+        String newNickname = NICKNAME1 + "abc";
+        String newStatusMessage = STATUS_MESSAGE1 + "abc";
+        String alreadyExistNickName = NICKNAME2 + "abc";
+
+        given(userRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
+        given(userRepository.findById(user1.getId()))
+                .willReturn(Optional.of(user1));
+        given(userRepository.findById(user2.getId()))
+                .willReturn(Optional.of(user2));
+
+        given(userRepository.existsByNickName(anyString()))
+                .willReturn(false);
+        given(userRepository.existsByNickName(alreadyExistNickName))
+                .willReturn(true);
+
+        // when
+        userService.editUser(user1.getId(), newNickname, null);
+        userService.editUser(user2.getId(), null, newStatusMessage);
+
+        // then
+        assertThat(user1.getNickName()).isEqualTo(newNickname);
+        assertThat(user2.getStatusMessage()).isEqualTo(newStatusMessage);
+        assertThrows(BusinessLogicException.class,
+                () -> userService.editUser(3L, null, null));
+        assertThrows(BusinessLogicException.class,
+                () -> userService.editUser(user1.getId(), alreadyExistNickName, null));
+    }
 
 }
 

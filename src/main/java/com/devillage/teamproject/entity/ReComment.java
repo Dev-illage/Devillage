@@ -35,7 +35,7 @@ public class ReComment extends AuditingEntity {
     private Comment comment;
 
     @OneToMany(mappedBy = "reComment")
-    private List<ReComment> reComments = new ArrayList<>();
+    private List<ReCommentLike> reCommentLikes = new ArrayList<>();
 
     public static ReComment createReComment(User user, Comment comment, String content) {
         return ReComment.builder()

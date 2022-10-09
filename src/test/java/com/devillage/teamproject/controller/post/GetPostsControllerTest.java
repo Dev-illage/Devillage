@@ -2,6 +2,7 @@ package com.devillage.teamproject.controller.post;
 
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
+import com.devillage.teamproject.entity.enums.FileType;
 import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import com.devillage.teamproject.service.post.PostService;
@@ -94,10 +95,11 @@ public class GetPostsControllerTest implements Reflection {
         setField(postsFile, "file", file);
         setField(file, "id", 1L);
         setField(file, "originalFilename", "originalFilename");
+        setField(file, "filename", "filename");
         setField(file, "fileSize", 1234L);
         setField(file, "localPath", "/localPath/file");
         setField(file, "remotePath", "/remotePath/file");
-        setField(file, "type", "type");
+        setField(file, "fileType", FileType.IMAGE);
         setField(file, "owner", user);
 
         setField(post, "title", "제목");
@@ -137,12 +139,12 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].tags[0].tagId").value(tag.getId()))
                 .andExpect(jsonPath("$.data[0].tags[0].name").value(tag.getName()))
                 .andExpect(jsonPath("$.data[0].files[0].id").value(file.getId()))
-                .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFilename()))
+                .andExpect(jsonPath("$.data[0].files[0].originalFilename").value(file.getOriginalFilename()))
                 .andExpect(jsonPath("$.data[0].files[0].fileSize").value(file.getFileSize()))
                 .andExpect(jsonPath("$.data[0].files[0].localPath").value(file.getLocalPath()))
                 .andExpect(jsonPath("$.data[0].files[0].remotePath").value(file.getRemotePath()))
-                .andExpect(jsonPath("$.data[0].files[0].type").value(file.getType()))
-                .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getOwner().getId()))
+                .andExpect(jsonPath("$.data[0].files[0].fileType").value(file.getFileType().toString()))
+                .andExpect(jsonPath("$.data[0].files[0].ownerUserId").value(file.getOwner().getId()))
                 .andExpect(jsonPath("$.pageInfo.page").value(page))
                 .andExpect(jsonPath("$.pageInfo.size").value(size))
                 .andDo(document("posts/getPostsByCategory",
@@ -165,12 +167,13 @@ public class GetPostsControllerTest implements Reflection {
                                 fieldWithPath("data[].tags[].name").type(JsonFieldType.STRING).description("태그 이름"),
                                 fieldWithPath("data[].files").type(JsonFieldType.ARRAY).description("게시글 파일"),
                                 fieldWithPath("data[].files[].id").type(JsonFieldType.NUMBER).description("파일 식별자"),
-                                fieldWithPath("data[].files[].originalFileName").type(JsonFieldType.STRING).description("파일 이름"),
-                                fieldWithPath("data[].files[].fileSize").type(JsonFieldType.NUMBER).description("파일 이름"),
+                                fieldWithPath("data[].files[].originalFilename").type(JsonFieldType.STRING).description("파일 원본 이름"),
+                                fieldWithPath("data[].files[].filename").type(JsonFieldType.STRING).description("파일 원본 이름"),
+                                fieldWithPath("data[].files[].fileSize").type(JsonFieldType.NUMBER).description("파일 용량"),
                                 fieldWithPath("data[].files[].localPath").type(JsonFieldType.STRING).description("파일 로컬 경로"),
                                 fieldWithPath("data[].files[].remotePath").type(JsonFieldType.STRING).description("파일 리모트 경로"),
-                                fieldWithPath("data[].files[].type").type(JsonFieldType.STRING).description("파일 타입"),
-                                fieldWithPath("data[].files[].userId").type(JsonFieldType.NUMBER).description("파일 생성자"),
+                                fieldWithPath("data[].files[].fileType").type(JsonFieldType.STRING).description("파일 타입"),
+                                fieldWithPath("data[].files[].ownerUserId").type(JsonFieldType.NUMBER).description("파일 생성자"),
                                 fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 생성일시"),
                                 fieldWithPath("data[].lastModifiedAt").type(JsonFieldType.STRING).description("게시글 수정일시"),
 
@@ -207,12 +210,12 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].tags[0].tagId").value(tag.getId()))
                 .andExpect(jsonPath("$.data[0].tags[0].name").value(tag.getName()))
                 .andExpect(jsonPath("$.data[0].files[0].id").value(file.getId()))
-                .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFilename()))
+                .andExpect(jsonPath("$.data[0].files[0].originalFilename").value(file.getOriginalFilename()))
                 .andExpect(jsonPath("$.data[0].files[0].fileSize").value(file.getFileSize()))
                 .andExpect(jsonPath("$.data[0].files[0].localPath").value(file.getLocalPath()))
                 .andExpect(jsonPath("$.data[0].files[0].remotePath").value(file.getRemotePath()))
-                .andExpect(jsonPath("$.data[0].files[0].type").value(file.getType()))
-                .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getOwner().getId()))
+                .andExpect(jsonPath("$.data[0].files[0].fileType").value(file.getFileType().toString()))
+                .andExpect(jsonPath("$.data[0].files[0].ownerUserId").value(file.getOwner().getId()))
                 .andExpect(jsonPath("$.pageInfo.page").value(page))
                 .andExpect(jsonPath("$.pageInfo.size").value(size))
                 .andDo(document("posts/getPostsBySearch",
@@ -235,12 +238,13 @@ public class GetPostsControllerTest implements Reflection {
                                 fieldWithPath("data[].tags[].name").type(JsonFieldType.STRING).description("태그 이름"),
                                 fieldWithPath("data[].files").type(JsonFieldType.ARRAY).description("게시글 파일"),
                                 fieldWithPath("data[].files[].id").type(JsonFieldType.NUMBER).description("파일 식별자"),
-                                fieldWithPath("data[].files[].originalFileName").type(JsonFieldType.STRING).description("파일 이름"),
-                                fieldWithPath("data[].files[].fileSize").type(JsonFieldType.NUMBER).description("파일 이름"),
+                                fieldWithPath("data[].files[].originalFilename").type(JsonFieldType.STRING).description("파일 이름"),
+                                fieldWithPath("data[].files[].filename").type(JsonFieldType.STRING).description("파일 이름"),
+                                fieldWithPath("data[].files[].fileSize").type(JsonFieldType.NUMBER).description("파일 용량"),
                                 fieldWithPath("data[].files[].localPath").type(JsonFieldType.STRING).description("파일 로컬 경로"),
                                 fieldWithPath("data[].files[].remotePath").type(JsonFieldType.STRING).description("파일 리모트 경로"),
-                                fieldWithPath("data[].files[].type").type(JsonFieldType.STRING).description("파일 타입"),
-                                fieldWithPath("data[].files[].userId").type(JsonFieldType.NUMBER).description("파일 생성자"),
+                                fieldWithPath("data[].files[].fileType").type(JsonFieldType.STRING).description("파일 타입"),
+                                fieldWithPath("data[].files[].ownerUserId").type(JsonFieldType.NUMBER).description("파일 생성자"),
                                 fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 생성일시"),
                                 fieldWithPath("data[].lastModifiedAt").type(JsonFieldType.STRING).description("게시글 수정일시"),
 
@@ -276,12 +280,12 @@ public class GetPostsControllerTest implements Reflection {
                 .andExpect(jsonPath("$.data[0].tags[0].tagId").value(tag.getId()))
                 .andExpect(jsonPath("$.data[0].tags[0].name").value(tag.getName()))
                 .andExpect(jsonPath("$.data[0].files[0].id").value(file.getId()))
-                .andExpect(jsonPath("$.data[0].files[0].originalFileName").value(file.getOriginalFilename()))
+                .andExpect(jsonPath("$.data[0].files[0].originalFilename").value(file.getOriginalFilename()))
                 .andExpect(jsonPath("$.data[0].files[0].fileSize").value(file.getFileSize()))
                 .andExpect(jsonPath("$.data[0].files[0].localPath").value(file.getLocalPath()))
                 .andExpect(jsonPath("$.data[0].files[0].remotePath").value(file.getRemotePath()))
-                .andExpect(jsonPath("$.data[0].files[0].type").value(file.getType()))
-                .andExpect(jsonPath("$.data[0].files[0].userId").value(file.getOwner().getId()))
+                .andExpect(jsonPath("$.data[0].files[0].fileType").value(file.getFileType().toString()))
+                .andExpect(jsonPath("$.data[0].files[0].ownerUserId").value(file.getOwner().getId()))
                 .andExpect(jsonPath("$.pageInfo.page").value(page))
                 .andExpect(jsonPath("$.pageInfo.size").value(size))
                 .andDo(document("posts/getPostsByBookmark",
@@ -306,12 +310,13 @@ public class GetPostsControllerTest implements Reflection {
                                 fieldWithPath("data[].tags[].name").type(JsonFieldType.STRING).description("태그 이름"),
                                 fieldWithPath("data[].files").type(JsonFieldType.ARRAY).description("게시글 파일"),
                                 fieldWithPath("data[].files[].id").type(JsonFieldType.NUMBER).description("파일 식별자"),
-                                fieldWithPath("data[].files[].originalFileName").type(JsonFieldType.STRING).description("파일 이름"),
-                                fieldWithPath("data[].files[].fileSize").type(JsonFieldType.NUMBER).description("파일 이름"),
+                                fieldWithPath("data[].files[].originalFilename").type(JsonFieldType.STRING).description("파일 이름"),
+                                fieldWithPath("data[].files[].filename").type(JsonFieldType.STRING).description("파일 이름"),
+                                fieldWithPath("data[].files[].fileSize").type(JsonFieldType.NUMBER).description("파일 용량"),
                                 fieldWithPath("data[].files[].localPath").type(JsonFieldType.STRING).description("파일 로컬 경로"),
                                 fieldWithPath("data[].files[].remotePath").type(JsonFieldType.STRING).description("파일 리모트 경로"),
-                                fieldWithPath("data[].files[].type").type(JsonFieldType.STRING).description("파일 타입"),
-                                fieldWithPath("data[].files[].userId").type(JsonFieldType.NUMBER).description("파일 생성자"),
+                                fieldWithPath("data[].files[].fileType").type(JsonFieldType.STRING).description("파일 타입"),
+                                fieldWithPath("data[].files[].ownerUserId").type(JsonFieldType.NUMBER).description("파일 생성자"),
                                 fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("게시글 생성일시"),
                                 fieldWithPath("data[].lastModifiedAt").type(JsonFieldType.STRING).description("게시글 수정일시"),
 

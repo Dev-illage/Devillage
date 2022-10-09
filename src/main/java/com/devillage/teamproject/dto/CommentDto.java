@@ -46,7 +46,9 @@ public class CommentDto {
         private List<ReCommentResponse> reComments = new ArrayList<>();
         private LocalDateTime createdAt;
         private LocalDateTime lastModifiedAt;
+        private Boolean isLiked;
 
+        @Deprecated
         public static ResponseWithReComment of(Comment comment) {
             return comment.getCommentStatus() == CommentStatus.DELETED ?
                     ResponseWithReComment.builder()
@@ -68,6 +70,36 @@ public class CommentDto {
                             ).collect(Collectors.toList()))
                             .createdAt(comment.getCreatedAt())
                             .lastModifiedAt(comment.getLastModifiedAt())
+                            .build();
+        }
+
+        public static ResponseWithReComment of(Comment comment, Long userId) {
+            return comment.getCommentStatus() == CommentStatus.DELETED ?
+                    ResponseWithReComment.builder()
+                            .commentId(comment.getId())
+                            .userId(null)
+                            .content(null)
+                            .reComments(comment.getReComments().stream().map(
+                                    ReCommentResponse::of
+                            ).collect(Collectors.toList()))
+                            .createdAt(comment.getCreatedAt())
+                            .lastModifiedAt(comment.getLastModifiedAt())
+                            .isLiked(
+                                    comment.getCommentLikes().stream().map(
+                                            commentLike -> commentLike.getUser().getId()
+                                    ).collect(Collectors.toList()).contains(userId)
+                            )
+                            .build() :
+                    ResponseWithReComment.builder()
+                            .commentId(comment.getId())
+                            .userId(comment.getUser().getId())
+                            .content(comment.getContent())
+                            .reComments(comment.getReComments().stream().map(
+                                    ReCommentResponse::of
+                            ).collect(Collectors.toList()))
+                            .createdAt(comment.getCreatedAt())
+                            .lastModifiedAt(comment.getLastModifiedAt())
+                            .isLiked(false)
                             .build();
         }
     }
@@ -122,6 +154,7 @@ public class CommentDto {
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime lastModifiedAt;
+        private Boolean isLiked;
 
         public static ReCommentResponse of(ReComment reComment) {
             return ReCommentResponse.builder()
@@ -130,8 +163,25 @@ public class CommentDto {
                     .content(reComment.getContent())
                     .createdAt(reComment.getCreatedAt())
                     .lastModifiedAt(reComment.getLastModifiedAt())
+                    .isLiked(false)
                     .build();
         }
+
+        public static ReCommentResponse of(ReComment reComment, Long userId) {
+            return ReCommentResponse.builder()
+                    .reCommentId(reComment.getId())
+                    .userId(reComment.getUser().getId())
+                    .content(reComment.getContent())
+                    .createdAt(reComment.getCreatedAt())
+                    .lastModifiedAt(reComment.getLastModifiedAt())
+                    .isLiked(
+                            reComment.getReCommentLikes().stream().map(
+                                    reCommentLike -> reCommentLike.getUser().getId()
+                            ).collect(Collectors.toList()).contains(userId)
+                    )
+                    .build();
+        }
+
     }
 
     @Getter

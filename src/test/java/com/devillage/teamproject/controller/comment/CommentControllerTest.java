@@ -175,7 +175,8 @@ class CommentControllerTest {
                                 fieldWithPath("userId").description("댓글 쓴 사람 식별자"),
                                 fieldWithPath("content").description("대댓글 내용"),
                                 fieldWithPath("createdAt").description("대댓글 쓴 날짜"),
-                                fieldWithPath("lastModifiedAt").description("대댓글을 마지막으로 수정한 날짜")
+                                fieldWithPath("lastModifiedAt").description("대댓글을 마지막으로 수정한 날짜"),
+                                fieldWithPath("isLiked").description("좋아요 여부")
                         )
                 ));
 
@@ -288,7 +289,8 @@ class CommentControllerTest {
                                 fieldWithPath("userId").description("대댓글 작성자 식별자"),
                                 fieldWithPath("content").description("대댓글 내용"),
                                 fieldWithPath("createdAt").description("대댓글 작성일시"),
-                                fieldWithPath("lastModifiedAt").description("대댓글 수정일시")
+                                fieldWithPath("lastModifiedAt").description("대댓글 수정일시"),
+                                fieldWithPath("isLiked").description("좋아요 여부")
                         )
                 ));
     }
@@ -334,12 +336,13 @@ class CommentControllerTest {
                                 fieldWithPath("data[].reComments").type(JsonFieldType.ARRAY).description("대댓글"),
                                 fieldWithPath("data[].createdAt").description("작성시간"),
                                 fieldWithPath("data[].lastModifiedAt").description("수정 시간"),
+                                fieldWithPath("data[].isLiked").description("좋아요 여부"),
                                 fieldWithPath("data[].reComments[].reCommentId").type(JsonFieldType.NUMBER).description("대댓글 식별자"),
                                 fieldWithPath("data[].reComments[].userId").type(JsonFieldType.NUMBER).description("작성자 식별자"),
                                 fieldWithPath("data[].reComments[].content").type(JsonFieldType.STRING).description("대댓글 내용"),
                                 fieldWithPath("data[].reComments[].createdAt").description("작성 시간"),
                                 fieldWithPath("data[].reComments[].lastModifiedAt").description("수정 시간"),
-
+                                fieldWithPath("data[].reComments[].isLiked").description("좋아요 여부"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
                                 fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("페이지"),
                                 fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("사이즈"),

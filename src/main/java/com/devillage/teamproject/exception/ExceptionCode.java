@@ -26,6 +26,7 @@ public enum ExceptionCode {
     FILE_EMPTY(400, "file is empty"),
     FILE_NAME_NOT_VALID(400, "file name is not valid"),
     CONTENT_TYPE_NOT_ACCEPTABLE(400, "this content type is not acceptable"),
+    FILE_NOT_FOUND(404, "file not found"),
     ;
 
     private final int status;

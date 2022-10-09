@@ -44,8 +44,8 @@ public class LocalImageService implements FileService {
     }
 
     @Override
-    public File findFile() {
-        return null;
+    public File findFile(Long fileId) {
+        return findVerifiedFile(fileId);
     }
 
     @Override
@@ -136,5 +136,19 @@ public class LocalImageService implements FileService {
 
         return fileExtension.equals("jpg") || fileExtension.equals("jpeg") || fileExtension.equals("png") ||
                 fileExtension.equals("heic") || fileExtension.equals("heif");
+    }
+
+    @Override
+    public File findFileWithFilename(String filename) {
+        return fileRepository.findByFilename(filename).orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.FILE_NOT_FOUND)
+        );
+    }
+
+    @Override
+    public File findVerifiedFile(Long fileId) {
+        return fileRepository.findById(fileId).orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.FILE_NOT_FOUND)
+        );
     }
 }

@@ -4,6 +4,7 @@ import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.security.config.SecurityConfig;
+import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -31,6 +33,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+
+import javax.annotation.PostConstruct;
 
 import static com.devillage.teamproject.security.util.JwtConstants.*;
 import static com.devillage.teamproject.util.TestConstants.*;

@@ -4,6 +4,7 @@ import com.devillage.teamproject.dto.*;
 import com.devillage.teamproject.entity.Bookmark;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
+import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.security.util.JwtConstants;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class PostControllerImpl implements PostController {
     private final PostService postService;
 
     @Override
-    public PostDto.Response postPost(AuthDto.UserInfo userInfo, PostDto.Post request) {
+    public PostDto.Response postPost(@AccessToken AuthDto.UserInfo userInfo, PostDto.Post request) {
         Post savedPost = postService.savePost(request.toEntity(), request.getCategory(), request.getTags(), userInfo.getId());
         return PostDto.Response.of(savedPost);
     }

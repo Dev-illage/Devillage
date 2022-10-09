@@ -22,7 +22,7 @@ public enum ExceptionCode {
     ID_DOES_NOT_MATCH(409, "Id does not match"),
 
     USER_RESIGNED(422, "Resigned User"),
-    USER_AUTHORIZED(403, "Unauthorized user"),
+    USER_UNAUTHORIZED(403, "Unauthorized user"),
     FILE_EMPTY(400, "file is empty"),
     FILE_NAME_NOT_VALID(400, "file name is not valid"),
     CONTENT_TYPE_NOT_ACCEPTABLE(400, "this content type is not acceptable"),

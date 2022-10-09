@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -79,7 +78,7 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long commentId, String token) {
         Comment comment = findVerifiedComment(commentId);
         if (!Objects.equals(comment.getUser().getId(), jwtTokenUtil.getUserId(token))) {
-            throw new BusinessLogicException(ExceptionCode.USER_AUTHORIZED);
+            throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
         }
         if (comment.getReComments().size() == 0) {
             commentRepository.delete(comment);

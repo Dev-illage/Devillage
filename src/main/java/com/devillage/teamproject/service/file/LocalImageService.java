@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,7 +70,8 @@ public class LocalImageService implements FileService {
             throw new BusinessLogicException(ExceptionCode.FILE_EMPTY);
         }
 
-        String path = "images";
+        String path = "images" + java.io.File.separator + LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         java.io.File dir = new java.io.File(path);
         if (!dir.exists()) {
             boolean mkdirResult = dir.mkdirs();

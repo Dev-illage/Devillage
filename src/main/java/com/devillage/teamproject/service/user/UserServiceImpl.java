@@ -42,8 +42,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User editUser(User user) {
-        return null;
+    public void editUser(Long userId, String nickName, String statusMessage) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        User user = optionalUser.orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+
+        if (nickName != null) {
+            if (userRepository.existsByNickName(nickName)) {
+                throw new BusinessLogicException(ExceptionCode.NICKNAME_ALREADY_EXISTS);
+            }
+            user.setNickName(nickName);
+        }
+
+        if (statusMessage != null) {
+            user.setStatusMessage(statusMessage);
+        }
     }
 
     @Override

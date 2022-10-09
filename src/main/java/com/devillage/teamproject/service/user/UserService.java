@@ -10,7 +10,7 @@ public interface UserService {
 
     User findUser(String token);
 
-    User editUser(User user);
+    void editUser(Long userId, String nickName, String statusMessage);
 
     List<User> findUsers(int page, int size);
 

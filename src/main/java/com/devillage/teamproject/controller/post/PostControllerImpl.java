@@ -43,7 +43,7 @@ public class PostControllerImpl implements PostController {
 
         Bookmark bookmark = postService.postBookmark(userInfo.getId(), postId);
         return PostDto.Response.BookmarkDto.of(
-                bookmark.getUser().getId(),
+                userInfo.getId(),
                 bookmark.getPost().getId(),
                 bookmark.getId());
     }
@@ -53,7 +53,7 @@ public class PostControllerImpl implements PostController {
 
         ReportedPost reportedPost = postService.postReport(userInfo.getId(), postId);
         return PostDto.Response.ReportDto.of(
-                reportedPost.getUser().getId(),
+                userInfo.getId(),
                 reportedPost.getPost().getId(),
                 reportedPost.getId());
     }
@@ -63,7 +63,7 @@ public class PostControllerImpl implements PostController {
 
         Post post = postService.postLike(userInfo.getId(), postId);
         return PostDto.Response.LikeDto.of(
-                post.getUser().getId(),
+                userInfo.getId(),
                 post.getId(),
                 post.getLikeCount());
     }

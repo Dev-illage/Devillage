@@ -12,7 +12,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
+import java.util.UUID;
 
+import static com.devillage.teamproject.util.TestConstants.NICKNAME1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -95,6 +97,28 @@ class UserRepositoryTest implements Reflection {
         // then
         assertThat(user1.getBookmarks().size()).isEqualTo(3);
         assertThat(user1.getBookmarks().size()).isEqualTo(savedUser.getBookmarks().size());
+
+    }
+
+    @Test
+    public void existsByNickName() throws Exception {
+        // given
+        User user = newInstance(User.class);
+        setField(user, "nickName", NICKNAME1);
+        String nickNameNotInDB =
+                ("a" + UUID.randomUUID().toString().replaceAll("-", ""))
+                        .substring(0, 10);
+        System.out.println(nickNameNotInDB);
+
+        userRepository.save(user);
+
+        // when
+        boolean expectedTrue = userRepository.existsByNickName(NICKNAME1);
+        boolean expectedFalse = userRepository.existsByNickName(nickNameNotInDB);
+
+        // then
+        assertThat(expectedTrue).isEqualTo(true);
+        assertThat(expectedFalse).isEqualTo(false);
 
     }
 

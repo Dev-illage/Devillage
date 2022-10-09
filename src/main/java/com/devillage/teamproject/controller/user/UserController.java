@@ -18,11 +18,10 @@ public interface UserController {
     SingleResponseDto postBlock(@PathVariable("user-id") Long targetId,
                                 @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
-    @PostMapping("/profile/{user-id}")
+    @PatchMapping("/profile")
     @ResponseStatus(HttpStatus.OK)
-    Long postProfile(@PathVariable("user-id") Long id,
-                     @RequestBody String password,
-                     @AccessToken AuthDto.UserInfo userInfo);
+    Long patchProfile(@AccessToken AuthDto.UserInfo userInfo,
+                      @RequestBody UserDto.PatchProfile patchProfile);
 
     @PatchMapping("/pwd/{user-id}")
     @ResponseStatus(HttpStatus.OK)

@@ -31,11 +31,11 @@ public class UserDto {
         }
     }
 
-    //TODO : PatchProfile 임시 작성, 구현 시 주석 삭제
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class PatchProfile {
-
+        private String nickName;
+        private String statusMessage;
     }
 
     @Getter

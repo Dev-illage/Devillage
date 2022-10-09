@@ -26,8 +26,9 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public Long postProfile(Long id, String password, AuthDto.UserInfo userInfo) {
-        return userService.checkUserPassword(id, password, userInfo.getId());
+    public Long patchProfile(AuthDto.UserInfo userInfo, UserDto.PatchProfile patchProfile) {
+        userService.editUser(userInfo.getId(), patchProfile.getNickName(), patchProfile.getStatusMessage());
+        return userInfo.getId();
     }
 
     @Override

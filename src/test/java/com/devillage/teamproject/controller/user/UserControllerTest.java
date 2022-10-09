@@ -1,10 +1,10 @@
 package com.devillage.teamproject.controller.user;
 
+
 import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
-import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
@@ -17,29 +17,24 @@ import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static com.devillage.teamproject.security.util.JwtConstants.*;
+import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -246,7 +241,7 @@ class UserControllerTest implements Reflection {
 
         // when
         ResultActions actions = mockMvc.perform(
-                patch("/users/pwd/{user-id}",userId)
+                patch("/users/pwd/{user-id}", userId)
                         .header(AUTHORIZATION_HEADER, token)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -260,4 +255,39 @@ class UserControllerTest implements Reflection {
                 .andReturn();
     }
 
+    @Test
+    public void patchProfile() throws Exception {
+        // given
+        UserDto.PatchProfile patchProfile = newInstance(UserDto.PatchProfile.class);
+        setField(patchProfile, "nickName", NICKNAME1);
+        setField(patchProfile, "statusMessage", STATUS_MESSAGE1);
+
+        String json = objectMapper.writeValueAsString(patchProfile);
+
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
+
+        doNothing().when(userService).editUser(ID1, NICKNAME1, STATUS_MESSAGE1);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                patch("/users/profile")
+                        .header(AUTHORIZATION_HEADER, token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(content().string(String.valueOf(ID1)))
+                .andDo(
+                        document("patch-user",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName(AUTHORIZATION_HEADER).description("Access Token")
+                                ),
+                                responseBody())
+                );
     }
+
+}

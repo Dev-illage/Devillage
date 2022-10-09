@@ -38,7 +38,8 @@ public class Post extends AuditingEntity {
     @EqualsAndHashCode.Include
     private Long likeCount;
 
-    public Post(String title, String content) {
+    public Post(Long id, String title, String content) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.clicks = 0L;

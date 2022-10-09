@@ -22,19 +22,15 @@ public class PostDto {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
-        private String category;
-        private String title;
-        private List<TagDto.Response> tag;
-        private String content;
+        private Long postId;
+//        private String category;
+//        private String title;
+//        private List<TagDto.Response> tag;
+//        private String content;
 
         public static Response of(com.devillage.teamproject.entity.Post post){
             return Response.builder()
-                    .category(post.getCategory().getCategoryType().name())
-                    .title(post.getTitle())
-                    .tag(post.getTags().stream()
-                            .map(postTag -> TagDto.Response.of(postTag.getTag()))
-                            .collect(Collectors.toList()))
-                    .content(post.getContent())
+                    .postId(post.getId())
                     .build();
         }
 
@@ -52,7 +48,10 @@ public class PostDto {
             private List<TagDto.Response> tag;
             private UserDto.AuthorInfo author;
             private Long like;
+            private boolean postLike;
+            private boolean bookmarkLike;
             private List<Comment> commentList;
+            private boolean commentLike;
 
             public static PostDetail of(com.devillage.teamproject.entity.Post post){
                 return PostDetail.builder()
@@ -68,7 +67,10 @@ public class PostDto {
                                 .collect(Collectors.toList()))
                         .author(UserDto.AuthorInfo.of(post.getUser()))
                         .like(post.getLikeCount())
+//                        .postLike(post.getUser().pa)
+//                        .bookmarkLike(post.getUser().getBookmarks())
                         .commentList(post.getComments())
+//                        .commentLike()
                         .build();
             }
 
@@ -150,6 +152,7 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class Post {
+        private Long postId;
         private CategoryType category;
         private String title;
         private List<String> tags;
@@ -157,6 +160,7 @@ public class PostDto {
 
         public com.devillage.teamproject.entity.Post toEntity() {
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
+                    this.postId,
                     this.title,
                     this.content
             );
@@ -166,7 +170,10 @@ public class PostDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
     public static class Patch {
+        private Long postId;
         private CategoryType category;
         private String title;
         private List<String> tags;
@@ -174,11 +181,19 @@ public class PostDto {
 
         public com.devillage.teamproject.entity.Post toEntity() {
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
+                    this.postId,
                     this.title,
                     this.content
             );
             return post;
         }
+//        public static Response of(com.devillage.teamproject.entity.Post post){
+//            return Response.builder()
+//                    .postId(post.getId())
+//                    .title(post.getTitle())
+//                    .content(post.getContent())
+//                    .build();
+//        }
 
     }
 }

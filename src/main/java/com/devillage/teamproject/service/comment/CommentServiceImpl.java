@@ -64,7 +64,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment likeComment(Long postId,Long commentId,String token) {
+    public Comment likeComment(Long postId, Long commentId, String token) {
         Long userId = jwtTokenUtil.getUserId(token);
         User user = userService.findVerifiedUser(userId);
         Post post = postService.findVerifyPost(postId);
@@ -73,14 +73,13 @@ public class CommentServiceImpl implements CommentService {
         Long count = commentLikeRepository.countByCommentId(commentId);
         List<CommentLike> commentLikes = commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(commentId, userId, postId);
 
-        if(!commentLikes.isEmpty()){
+        if (!commentLikes.isEmpty()) {
             commentLikeRepository.deleteAll();
-            count-=1;
-        }
-        else {
-            CommentLike commentLike = new CommentLike(user,comment,post);
+            count -= 1;
+        } else {
+            CommentLike commentLike = new CommentLike(user, comment, post);
             user.addCommentLike(commentLike);
-            count+=1;
+            count += 1;
 
         }
 
@@ -95,7 +94,10 @@ public class CommentServiceImpl implements CommentService {
         postService.getPost(postId);
         Page<Comment> commentPage = commentRepository.findAllByPostId(postId, PageRequest.of(page, size));
         commentPage.getContent().stream().forEach(
-                Comment::getReComments
+                comment -> {
+                    comment.getCommentLikes();
+                    comment.getReComments().forEach(ReComment::getReCommentLikes);
+                }
         );
         return commentPage;
     }
@@ -163,7 +165,6 @@ public class CommentServiceImpl implements CommentService {
 
         reCommentRepository.deleteById(reCommentId);
     }
-
 
 
     public Comment findVerifiedComment(Long commentId) {

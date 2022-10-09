@@ -1,5 +1,6 @@
 package com.devillage.teamproject.entity;
 
+import com.devillage.teamproject.entity.enums.FileType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,7 +38,8 @@ public class File extends AuditingEntity {
 
     @ToString.Include
     @EqualsAndHashCode.Include
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private FileType fileType;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_user_id")
@@ -60,6 +62,7 @@ public class File extends AuditingEntity {
         file.filename = filename;
         file.fileSize = fileSize;
         file.localPath = localPath;
+        file.fileType = FileType.IMAGE;
         return file;
     }
 }

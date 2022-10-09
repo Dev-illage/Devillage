@@ -8,6 +8,8 @@ import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/users")
 public interface UserController {
 
@@ -24,8 +26,8 @@ public interface UserController {
 
     @PatchMapping("/pwd/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    boolean postPassword(@AccessToken AuthDto.UserInfo userInfo,
-                         @RequestBody String password);
+    boolean patchPassword(@PathVariable("user-id") Long id,@AccessToken AuthDto.UserInfo userInfo,
+                         @RequestBody UserDto.PasswordDto passwordDto);
 
 
     @GetMapping("/profile")

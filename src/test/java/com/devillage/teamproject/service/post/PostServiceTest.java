@@ -4,7 +4,11 @@ import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import com.devillage.teamproject.exception.BusinessLogicException;
+import com.devillage.teamproject.exception.ExceptionCode;
+import com.devillage.teamproject.repository.category.CategoryRepository;
 import com.devillage.teamproject.repository.post.PostRepository;
+import com.devillage.teamproject.repository.posttag.PostTagRepository;
+import com.devillage.teamproject.repository.tag.TagRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
@@ -15,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +43,15 @@ public class PostServiceTest implements Reflection {
     private UserRepository userRepository;
 
     @Mock
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private PostTagRepository postTagRepository;
+
+    @Mock
+    private TagRepository tagRepository;
+
+    @Mock
     private UserService userService;
 
     @InjectMocks
@@ -51,35 +65,75 @@ public class PostServiceTest implements Reflection {
     public PostServiceTest() throws Exception {
     }
 
-//    @Test
-//    @DisplayName("수정이 필요한 테스트 입니다.(빌드 오류)")
-//    public void savePost() throws Exception {
-//        //given
-//        Category category = newInstance(Category.class);
-//        PostTag postTag = newInstance(PostTag.class);
-//        Tag tag = newInstance(Tag.class);
-//
-//        setField(user, "id", 1L);
-//        setField(user,"nickName","dodan");
-//        setField(post, "id", 1L);
-//        setField(post, "category", category);
-//        setField(post, "tags", new ArrayList<>());
-//        setField(category, "id", 1L);
-//        setField(category, "categoryType", CategoryType.NOTICE);
-//        setField(postTag, "tag", tag);
-//        setField(tag, "id", 1L);
-//        setField(tag, "name", "mvcTest");
-//
-//        Post testPost = Post.builder().category(category).title("title").tags(List.of(postTag)).content("contents").build();
-//
-//        given(postRepository.save(Mockito.any(Post.class))).willReturn(testPost);
-//
-//        //when
-//        Post savedPost = postService.savePost(testPost,testPost.getCategory().getCategoryType(),List.of(tag.getName()),user.getId());
-//
-//        //then
-//        assertThat(post.getTitle()).isEqualTo(savedPost.getTitle());
-//    }
+    @Test
+    public void savePost() throws Exception {
+        //given
+        Category category = newInstance(Category.class);
+        PostTag postTag = newInstance(PostTag.class);
+        Tag tag = newInstance(Tag.class);
+
+        setField(user, "id", 1L);
+        setField(user,"nickName","dodan");
+        setField(post, "id", 1L);
+        setField(post, "category", category);
+        setField(post, "tags", new ArrayList<>());
+        setField(post, "title", "titleTest");
+        setField(category, "id", 1L);
+        setField(category, "categoryType", CategoryType.NOTICE);
+        setField(postTag,"id",1L);
+        setField(postTag, "tag", tag);
+        setField(tag, "id", 1L);
+        setField(tag, "name", "mvcTest");
+
+        given(userRepository.findById(Mockito.anyLong())).willReturn(Optional.of(user));
+        given(categoryRepository.findCategoriesByCategoryType(Mockito.any(CategoryType.class))).willReturn(category);
+        given(postTagRepository.save(Mockito.any(PostTag.class))).willReturn(postTag);
+        given(tagRepository.save(Mockito.any(Tag.class))).willReturn(tag);
+
+        //when
+        Post savedPost = postService.savePost(post,post.getCategory().getCategoryType(),List.of(tag.getName()),user.getId());
+
+        //then
+        assertThat(post.getTitle()).isEqualTo(savedPost.getTitle());
+        assertThat(post.getCategory()).isEqualTo(savedPost.getCategory());
+        assertThat(post.getContent()).isEqualTo(savedPost.getContent());
+    }
+
+    @Test
+    public void editPost() throws Exception {
+        //given
+        Category category = newInstance(Category.class);
+        PostTag postTag = newInstance(PostTag.class);
+        Tag tag = newInstance(Tag.class);
+
+        setField(user, "id", 1L);
+        setField(user,"nickName","dodan");
+        setField(post, "id", 1L);
+        setField(post, "category", category);
+        setField(post, "tags", new ArrayList<>());
+        setField(post, "title", "titleTest");
+        setField(category, "id", 1L);
+        setField(category, "categoryType", CategoryType.NOTICE);
+        setField(postTag,"id",1L);
+        setField(postTag, "tag", tag);
+        setField(tag, "id", 1L);
+        setField(tag, "name", "mvcTest");
+
+
+        given(postRepository.findById(postId)).willReturn(Optional.of(post));
+        given(userRepository.findById(Mockito.anyLong())).willReturn(Optional.of(user));
+        given(categoryRepository.findCategoriesByCategoryType(Mockito.any(CategoryType.class))).willReturn(category);
+        given(postTagRepository.save(Mockito.any(PostTag.class))).willReturn(postTag);
+        given(tagRepository.save(Mockito.any(Tag.class))).willReturn(tag);
+
+        //when
+        Post editedPost = postService.editPost(post,post.getCategory().getCategoryType(),List.of(tag.getName()),user.getId(),postId);
+
+        //then
+        assertThat(post.getTitle()).isEqualTo(editedPost.getTitle());
+        assertThat(post.getCategory()).isEqualTo(editedPost.getCategory());
+        assertThat(post.getContent()).isEqualTo(editedPost.getContent());
+    }
 
     @Test
     public void userNotFound() {

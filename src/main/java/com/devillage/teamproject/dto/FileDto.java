@@ -28,6 +28,7 @@ public class FileDto {
                     .id(file.getId())
                     .originalFilename(file.getOriginalFilename())
                     .filename(file.getFilename())
+                    .fileSize(file.getFileSize())
                     .localPath(file.getLocalPath())
                     .remotePath(file.getRemotePath())
                     .fileType(file.getFileType())

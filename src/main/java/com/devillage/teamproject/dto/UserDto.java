@@ -80,5 +80,15 @@ public class UserDto {
                     .build();
         }
     }
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Builder
+    public static class PasswordDto {
+        private String password;
+        private String updatePassword;
+
+    }
+
 
 }

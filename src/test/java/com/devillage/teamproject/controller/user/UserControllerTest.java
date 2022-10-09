@@ -1,5 +1,7 @@
 package com.devillage.teamproject.controller.user;
 
+
+import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
@@ -219,19 +221,23 @@ class UserControllerTest implements Reflection {
     }
 
     @Test
-    public void updatePassword() throws Exception {
+    public void updatePassword() throws Exception{
+        UserDto.PasswordDto passwordDto = UserDto.PasswordDto.builder().build();
         User user = newInstance(User.class);
-        setField(user, "id", ID1);
-        setField(user, "email", EMAIL2);
-        setField(user, "nickName", NICKNAME1);
-        setField(user, "password", PASSWORD1);
+        setField(user,"id",ID1);
+        setField(user,"email",EMAIL2);
+        setField(user,"nickName",NICKNAME1);
+        setField(user,"password",PASSWORD1);
+        AuthDto.UserInfo userInfo = AuthDto.UserInfo.builder().id(user.getId()).build();
 
         String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL2, ID1, TestConstants.ROLES);
 
         Long userId = user.getId();
-        String password = "aasssssad##!!";
+        String updatePassword = "aasssssad##!!";
 
-        when(userService.updatePassword(userId, password)).thenReturn(true);
+        String content = objectMapper.writeValueAsString(passwordDto);
+
+        when(userService.updatePassword(userId,userInfo,user.getPassword(),updatePassword)).thenReturn(true);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -239,7 +245,7 @@ class UserControllerTest implements Reflection {
                         .header(AUTHORIZATION_HEADER, token)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(password)
+                        .content(content)
         );
 
         // then

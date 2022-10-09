@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.post;
 
+import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.dto.UserDto;
@@ -42,6 +43,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -79,38 +81,73 @@ class PostControllerTest implements Reflection {
         setField(post, "id", 2L);
     }
 
-//    @WithMockUser
-//    @Test
-//    public void postPost() throws Exception {
-//        //given
-//        PostDto.Post postDto = PostDto.Post.builder()
-//                .title("안녕하세요.")
-//                .content(COMMENT_CONTENT)
-//                .tags(List.of("tag1","tag2"))
-//                .category(CategoryType.NOTICE)
-//                .build();
-//
-//        String content = objectMapper.writeValueAsString(postDto);
-//
-//        given(postService.savePost(any(Post.class), any(CategoryType.class), Mockito.anyList(), Mockito.anyLong())).willReturn(postDto.toEntity());
-//
-//        //when
-//        ResultActions actions =
-//                mockMvc.perform(
-//                        post("/posts")
-//                                .header(AUTHORIZATION_HEADER, "token")
-//                                .accept(MediaType.APPLICATION_JSON)
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(content)
-//                );
-//
-//        //then
-//        MvcResult result = actions
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.title").value(post.getTitle()))
-//                .andExpect(jsonPath("$.content").value(post.getContent()))
-//                .andReturn();
-//    }
+    @WithMockUser
+    @Test
+    public void postPost() throws Exception {
+        //given
+        PostDto.Post postDto = PostDto.Post.builder()
+                .postId(post.getId())
+                .title("안녕하세요.")
+                .content(COMMENT_CONTENT)
+                .tags(List.of("tag1","tag2"))
+                .category(CategoryType.NOTICE)
+                .build();
+
+        String content = objectMapper.writeValueAsString(postDto);
+
+        given(postService.savePost(any(Post.class), any(CategoryType.class), Mockito.anyList(), Mockito.isNull())).willReturn(postDto.toEntity());
+
+        //when
+        ResultActions actions =
+                mockMvc.perform(
+                        post("/posts")
+                                .header(AUTHORIZATION_HEADER, "token")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content)
+                );
+
+        //then
+        MvcResult result = actions
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.postId").value(post.getId()))
+                .andReturn();
+    }
+
+    @WithMockUser
+    @Test
+    public void patchPost() throws Exception {
+        //given
+//        setField(post,"title","수정 전 title");
+//        setField(post,"content","수정 전 content");
+        PostDto.Patch patchDto = PostDto.Patch.builder()
+                .postId(post.getId())
+                .title("안녕하세요.")
+                .content(COMMENT_CONTENT)
+                .tags(List.of("tag1","tag2"))
+                .category(CategoryType.NOTICE)
+                .build();
+
+        String content = objectMapper.writeValueAsString(patchDto);
+
+        given(postService.editPost(any(Post.class), any(CategoryType.class), Mockito.anyList(), Mockito.isNull(),Mockito.anyLong())).willReturn(patchDto.toEntity());
+
+        //when
+        ResultActions actions =
+                mockMvc.perform(
+                        patch("/posts/{post-id}",post.getId())
+                                .header(AUTHORIZATION_HEADER, "token")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content)
+                );
+
+        //then
+        MvcResult result = actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.postId").value(post.getId()))
+                .andReturn();
+    }
 
     @WithMockUser
     @Test

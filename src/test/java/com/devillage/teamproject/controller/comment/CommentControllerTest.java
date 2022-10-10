@@ -38,8 +38,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {CommentController.class, ResultJwtArgumentResolver.class})
@@ -299,8 +298,6 @@ class CommentControllerTest {
     @DisplayName("getAllComments")
     public void getAllComments() throws Exception {
         // given
-        int page = 1;
-        int size = 10;
         Post post = Post.builder().id(ID1).build();
         User user = User.builder().id(ID1).build();
         Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).user(user).post(post).build();
@@ -315,7 +312,10 @@ class CommentControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/posts/{post-id}/comments", post.getId())
+                        .param("page", "1")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, "some-token")
         );
 
         // then
@@ -323,10 +323,16 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.data").isArray())
                 .andDo(document(
                         "get-comments",
-                        preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestParameters(
+                                parameterWithName("page").description("페이지 번호, 1부터 시작, 생략시 1").optional(),
+                                parameterWithName("size").description("페이지 크기 생략시 10").optional()
+                        ),
                         pathParameters(
                                 parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰, 비회원조회시 생략").optional()
                         ),
                         responseFields(
                                 fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),

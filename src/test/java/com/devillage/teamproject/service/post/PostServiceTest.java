@@ -145,7 +145,7 @@ public class PostServiceTest implements Reflection {
         assertThrows(BusinessLogicException.class,
                 () -> postService.postBookmark(userId, postId));
         assertThrows(BusinessLogicException.class,
-                () -> postService.postReport(userId, postId));
+                () -> postService.postReport(userId, postId, 1, ""));
         assertThrows(BusinessLogicException.class,
                 () -> postService.postLike(userId, postId));
     }
@@ -163,7 +163,7 @@ public class PostServiceTest implements Reflection {
         assertThrows(BusinessLogicException.class,
                 () -> postService.postBookmark(userId, postId));
         assertThrows(BusinessLogicException.class,
-                () -> postService.postReport(userId, postId));
+                () -> postService.postReport(userId, postId, 1, ""));
         assertThrows(BusinessLogicException.class,
                 () -> postService.postLike(userId, postId));
     }

@@ -13,7 +13,7 @@ public interface CommentController {
 
     @PostMapping("/{post-id}/comments")
     @ResponseStatus(HttpStatus.CREATED)
-    CommentDto.Response postComment(CommentDto.Post request, @PathVariable("post-id") Long postId,
+    CommentDto.Response postComment(@RequestBody CommentDto.Post request, @PathVariable("post-id") Long postId,
                                     @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @PostMapping("/{post-id}/comments/{comment-id}")

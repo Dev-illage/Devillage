@@ -2,10 +2,12 @@ package com.devillage.teamproject.controller.post;
 
 import com.devillage.teamproject.dto.*;
 import com.devillage.teamproject.entity.Bookmark;
+import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
 import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.security.util.JwtConstants;
+import com.devillage.teamproject.service.comment.CommentService;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class PostControllerImpl implements PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @Override
     public PostDto.Response postPost(@AccessToken AuthDto.UserInfo userInfo, PostDto.Post request) {
@@ -29,7 +32,8 @@ public class PostControllerImpl implements PostController {
     @Override
     public SingleResponseDto<PostDto.Response.PostDetail> getPost(AuthDto.UserInfo userInfo, Long postId) {
         Post post = postService.getPost(postId);
-        return SingleResponseDto.of(PostDto.Response.PostDetail.of(post));
+        Page<Comment> commentPage = commentService.findComments(postId, 1, 10);
+        return SingleResponseDto.of(PostDto.Response.PostDetail.of(post, commentPage, userInfo.getId()));
     }
 
     @Override

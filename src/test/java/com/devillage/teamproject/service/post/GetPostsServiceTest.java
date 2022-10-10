@@ -1,16 +1,13 @@
 package com.devillage.teamproject.service.post;
 
-import com.devillage.teamproject.entity.Bookmark;
-import com.devillage.teamproject.entity.Post;
-import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.repository.post.PostRepository;
-import com.devillage.teamproject.repository.user.UserRepository;
-import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.repository.posttag.PostTagRepository;
+import com.devillage.teamproject.repository.tag.TagRepository;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,9 +18,9 @@ import org.springframework.data.domain.*;
 import java.util.List;
 import java.util.Optional;
 
+import static com.devillage.teamproject.util.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +28,12 @@ public class GetPostsServiceTest implements Reflection {
 
     @Mock
     private PostRepository postRepository;
+
+    @Mock
+    private TagRepository tagRepository;
+
+    @Mock
+    private PostTagRepository postTagRepository;
 
     @Mock
     private UserService userService;
@@ -67,6 +70,49 @@ public class GetPostsServiceTest implements Reflection {
         assertThat(findPosts).isEqualTo(posts);
         assertThrows(BusinessLogicException.class,
                 () -> postService.getPostsByCategory(notExistCategory, page, size));
+    }
+
+    @Test
+    public void getPostsByTag() throws Exception {
+        // given
+        String existTagName = TAGNAME1;
+        String notExistTagName = TAGNAME2;
+        Tag tag = newInstance(Tag.class);
+        PostTag postTag1 = newInstance(PostTag.class);
+        PostTag postTag2 = newInstance(PostTag.class);
+        Post post1 = newInstance(Post.class);
+        Post post2 = newInstance(Post.class);
+
+        setField(postTag1, "post", post1);
+        setField(postTag2, "post", post2);
+        setField(postTag1, "tag", tag);
+        setField(postTag2, "tag", tag);
+
+        int page = 1;
+        int size = 5;
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
+        Page<PostTag> postTags = new PageImpl<>(List.of(postTag1, postTag2), pageable, 2L);
+        Page<Post> posts = new PageImpl<>(List.of(post1, post2), pageable, 2L);
+
+        given(tagRepository.findTagByName(existTagName))
+                .willReturn(Optional.ofNullable(tag));
+        given(tagRepository.findTagByName(notExistTagName))
+                .willReturn(Optional.empty());
+        given(postTagRepository.findByTag(tag, pageable))
+                .willReturn(postTags);
+
+        // when
+        Page<Post> postsByTag = postService.getPostsByTag(existTagName, page, size);
+
+        // then
+        assertThat(postsByTag.getNumber()).isEqualTo(posts.getNumber());
+        assertThat(postsByTag.getSize()).isEqualTo(posts.getSize());
+        assertThat(postsByTag.getTotalPages()).isEqualTo(posts.getTotalPages());
+        assertThat(postsByTag.getTotalElements()).isEqualTo(posts.getTotalElements());
+        assertThat(postsByTag.getContent()).isEqualTo(posts.getContent());
+        assertThrows(BusinessLogicException.class,
+                () -> postService.getPostsByTag(notExistTagName, page, size));
     }
 
     @Test

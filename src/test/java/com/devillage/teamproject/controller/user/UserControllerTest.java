@@ -1,6 +1,8 @@
 package com.devillage.teamproject.controller.user;
 
+
 import com.devillage.teamproject.dto.AuthDto;
+import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.security.config.SecurityConfig;
@@ -15,21 +17,18 @@ import com.devillage.teamproject.util.security.WithMockCustomUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -37,12 +36,14 @@ import org.springframework.test.web.servlet.ResultActions;
 import javax.annotation.PostConstruct;
 
 import static com.devillage.teamproject.security.util.JwtConstants.*;
+
+import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -72,6 +73,7 @@ class UserControllerTest implements Reflection {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
 
     @Test
     @DisplayName("getProfile")
@@ -195,61 +197,65 @@ class UserControllerTest implements Reflection {
 
     }
 
-    @Test
-    @DisplayName("Post /user/profile/{id} 테스트")
-    public void userPasswordVerifiedTest() throws Exception {
-        //given
-        User testUser = AuthTestUtils.createTestUser(EMAIL1, NICKNAME1, PASSWORD1);
-        given(userService.checkUserPassword(anyLong(), anyString(), anyLong())).willReturn(ID1);
-
-        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
-
-        String password = PASSWORD1;
-        String json = objectMapper.writeValueAsString(password);
-
-        //when
-        ResultActions actions = mockMvc.perform(post("/users/profile/{id}", ID1)
-                .header(AUTHORIZATION_HEADER, token)
-                .content(json));
-
-        //then
-        actions.andExpect(status().isOk())
-                .andDo(
-                        document("post-user/profile",
-                                preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
-                                requestHeaders(
-                                        headerWithName(AUTHORIZATION_HEADER).description("Access Token")
-                                ),
-                                pathParameters(
-                                        parameterWithName("id").description("user key")
-                                ),
-                                responseBody())
-                );
-    }
+//    @Test
+//    @DisplayName("Post /user/profile/{id} 테스트")
+//    public void userPasswordVerifiedTest() throws Exception {
+//        //given
+//        User testUser = AuthTestUtils.createTestUser(EMAIL1, NICKNAME1, PASSWORD1);
+//        given(userService.checkUserPassword(anyLong(), anyString(), anyLong())).willReturn(ID1);
+//
+//        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
+//
+//        String password = PASSWORD1;
+//        String json = objectMapper.writeValueAsString(password);
+//
+//        //when
+//        ResultActions actions = mockMvc.perform(post("/users/profile/{id}", ID1)
+//                .header(AUTHORIZATION_HEADER, token)
+//                .content(json));
+//
+//        //then
+//        actions.andExpect(status().isOk())
+//                .andDo(
+//                        document("post-user/profile",
+//                                preprocessRequest(prettyPrint()),
+//                                preprocessResponse(prettyPrint()),
+//                                requestHeaders(
+//                                        headerWithName(AUTHORIZATION_HEADER).description("Access Token")
+//                                ),
+//                                pathParameters(
+//                                        parameterWithName("id").description("user key")
+//                                ),
+//                                responseBody())
+//                );
+//    }
 
     @Test
     public void updatePassword() throws Exception{
+        UserDto.PasswordDto passwordDto = UserDto.PasswordDto.builder().build();
         User user = newInstance(User.class);
         setField(user,"id",ID1);
         setField(user,"email",EMAIL2);
         setField(user,"nickName",NICKNAME1);
         setField(user,"password",PASSWORD1);
+        AuthDto.UserInfo userInfo = AuthDto.UserInfo.builder().id(user.getId()).build();
 
         String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL2, ID1, TestConstants.ROLES);
 
         Long userId = user.getId();
-        String password = "aasssssad##!!";
+        String updatePassword = "aasssssad##!!";
 
-        when(userService.updatePassword(userId,password)).thenReturn(true);
+        String content = objectMapper.writeValueAsString(passwordDto);
+
+        when(userService.updatePassword(userId,userInfo,user.getPassword(),updatePassword)).thenReturn(true);
 
         // when
         ResultActions actions = mockMvc.perform(
-                patch("/users/pwd/{user-id}",userId)
+                patch("/users/pwd/{user-id}", userId)
                         .header(AUTHORIZATION_HEADER, token)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(password)
+                        .content(content)
         );
 
         // then
@@ -259,4 +265,39 @@ class UserControllerTest implements Reflection {
                 .andReturn();
     }
 
+    @Test
+    public void patchProfile() throws Exception {
+        // given
+        UserDto.PatchProfile patchProfile = newInstance(UserDto.PatchProfile.class);
+        setField(patchProfile, "nickName", NICKNAME1);
+        setField(patchProfile, "statusMessage", STATUS_MESSAGE1);
+
+        String json = objectMapper.writeValueAsString(patchProfile);
+
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
+
+        doNothing().when(userService).editUser(ID1, NICKNAME1, STATUS_MESSAGE1);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                patch("/users/profile")
+                        .header(AUTHORIZATION_HEADER, token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andExpect(content().string(String.valueOf(ID1)))
+                .andDo(
+                        document("patch-user",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName(AUTHORIZATION_HEADER).description("Access Token")
+                                ),
+                                responseBody())
+                );
     }
+
+}

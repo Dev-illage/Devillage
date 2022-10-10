@@ -1,5 +1,6 @@
 package com.devillage.teamproject.service.user;
 
+import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
 
@@ -10,7 +11,7 @@ public interface UserService {
 
     User findUser(String token);
 
-    User editUser(User user);
+    void editUser(Long userId, String nickName, String statusMessage);
 
     List<User> findUsers(int page, int size);
 
@@ -23,5 +24,5 @@ public interface UserService {
     Long checkUserPassword(Long id, String password, Long tokenId
     );
 
-    boolean updatePassword(Long userId,String password);
+    boolean updatePassword(Long userId, AuthDto.UserInfo userInfo, String password, String updatePassword);
 }

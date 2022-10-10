@@ -19,6 +19,7 @@ public enum ExceptionCode {
 
     EXISTING_USER(409, "Existing User"),
     ALREADY_REPORTED(409, "Already reported"),
+    NICKNAME_ALREADY_EXISTS(409, "Nickname already exists"),
     ID_DOES_NOT_MATCH(409, "Id does not match"),
 
     USER_RESIGNED(422, "Resigned User"),

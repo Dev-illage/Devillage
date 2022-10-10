@@ -8,6 +8,8 @@ import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.service.user.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class UserControllerImpl implements UserController {
     private final UserService userService;
@@ -24,13 +26,14 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public Long postProfile(Long id, String password, AuthDto.UserInfo userInfo) {
-        return userService.checkUserPassword(id, password, userInfo.getId());
+    public Long patchProfile(AuthDto.UserInfo userInfo, UserDto.PatchProfile patchProfile) {
+        userService.editUser(userInfo.getId(), patchProfile.getNickName(), patchProfile.getStatusMessage());
+        return userInfo.getId();
     }
 
     @Override
-    public boolean postPassword(AuthDto.UserInfo userInfo, String password) {
-        userService.updatePassword(userInfo.getId(),password);
+    public boolean patchPassword(Long id,AuthDto.UserInfo userInfo, UserDto.PasswordDto passwordDto) {
+        userService.updatePassword(id,userInfo,passwordDto.getPassword(), passwordDto.getUpdatePassword());
         return true;
     }
 

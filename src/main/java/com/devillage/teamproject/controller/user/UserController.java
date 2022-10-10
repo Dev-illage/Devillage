@@ -8,6 +8,8 @@ import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/users")
 public interface UserController {
 
@@ -16,16 +18,15 @@ public interface UserController {
     SingleResponseDto postBlock(@PathVariable("user-id") Long targetId,
                                 @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
-    @PostMapping("/profile/{user-id}")
+    @PatchMapping("/profile")
     @ResponseStatus(HttpStatus.OK)
-    Long postProfile(@PathVariable("user-id") Long id,
-                     @RequestBody String password,
-                     @AccessToken AuthDto.UserInfo userInfo);
+    Long patchProfile(@AccessToken AuthDto.UserInfo userInfo,
+                      @RequestBody UserDto.PatchProfile patchProfile);
 
     @PatchMapping("/pwd/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    boolean postPassword(@AccessToken AuthDto.UserInfo userInfo,
-                         @RequestBody String password);
+    boolean patchPassword(@PathVariable("user-id") Long id,@AccessToken AuthDto.UserInfo userInfo,
+                         @RequestBody UserDto.PasswordDto passwordDto);
 
 
     @GetMapping("/profile")

@@ -4,6 +4,7 @@ import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
+import com.devillage.teamproject.service.comment.CommentService;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.util.Reflection;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,6 +62,9 @@ public class GetPostsControllerTest implements Reflection {
 
     @MockBean
     PostService postService;
+
+    @MockBean
+    CommentService commentService;
 
     @MockBean
     ResultJwtArgumentResolver resultJwtArgumentResolver;

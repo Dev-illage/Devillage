@@ -7,6 +7,7 @@ import com.devillage.teamproject.entity.enums.CategoryType;
 import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.service.comment.CommentService;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.util.Reflection;
 import com.devillage.teamproject.util.TestConstants;
@@ -21,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -63,6 +65,9 @@ class PostControllerTest implements Reflection {
 
     @MockBean
     PostService postService;
+
+    @MockBean
+    CommentService commentService;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
@@ -180,9 +185,17 @@ class PostControllerTest implements Reflection {
         post.setDate();
         Long id = post.getId();
 
+        Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).user(user).post(post).build();
+        ReComment reComment1_1 = ReComment.builder().id(ID1).content(COMMENT_CONTENT).user(user).comment(comment1).build();
+        comment1.getReComments().add(reComment1_1);
+        Comment comment2 = Comment.builder().id(ID2).content(COMMENT_CONTENT).user(user).post(post).build();
+        Comment comment3 = Comment.builder().id(ID2 + 1).content(COMMENT_CONTENT).user(user).post(post).build();
+
         String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
 
         given(postService.getPost(any(long.class))).willReturn(post);
+        given(commentService.findComments(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt()))
+                .willReturn(new PageImpl<>(List.of(comment1, comment2, comment3)));
 
         //when
         ResultActions actions =

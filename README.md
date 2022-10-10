@@ -1,3 +1,9 @@
+## URL
+
+![Uploading image.png…]()
+
+https://dev-illage.com/ (준비중)
+
 ## 개발 목표
 
 1. 기본적인 CRUD 및 좋아요, 댓글, 대댓글, 북마크, 이미지 업로드 등 커뮤니티형 웹 어플리케이션에서 지원하는 기본적인 기능 구현
@@ -18,10 +24,14 @@ Java, SpringBoot
 
 #### 디펜던시
 
-SpringDataJPA, SpringDataRedis, Oauth2, Spring-Validation, LOMBOK
+SpringDataJPA, SpringDataRedis, Oauth2, Spring-Validation, LOMBOK <br />
 SpringRestDocs, Spring Security, MySQL, QueryDSL
 
 ### 프론트엔드
+
+#### 프론트엔드 github
+
+https://github.com/yangddoddi/devillage-front
 
 #### 언어 및 프레임워크
 
@@ -29,7 +39,7 @@ Javascript(React.js)
 
 #### 라이브러리
 
-React.js, ReduxToolkit, Toast-Editor, antd, axios, jwt-decode
+React.js, ReduxToolkit, Toast-Editor, antd, axios, jwt-decode <br />
 Redux-persist, SASS, react-cookie, react-router-dom, 
 
 ### AWS

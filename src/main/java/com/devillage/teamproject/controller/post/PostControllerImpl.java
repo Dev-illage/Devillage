@@ -6,12 +6,10 @@ import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
 import com.devillage.teamproject.security.resolver.AccessToken;
-import com.devillage.teamproject.security.util.JwtConstants;
 import com.devillage.teamproject.service.comment.CommentService;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.stream.Collectors;
@@ -53,9 +51,10 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public PostDto.Response.ReportDto postReport(AuthDto.UserInfo userInfo, Long postId) {
+    public PostDto.Response.ReportDto postReport(AuthDto.UserInfo userInfo, Long postId, ReportDto reportDto) {
 
-        ReportedPost reportedPost = postService.postReport(userInfo.getId(), postId);
+        ReportedPost reportedPost = postService.postReport(
+                userInfo.getId(), postId, reportDto.getReportType(), reportDto.getContent());
         return PostDto.Response.ReportDto.of(
                 userInfo.getId(),
                 reportedPost.getPost().getId(),

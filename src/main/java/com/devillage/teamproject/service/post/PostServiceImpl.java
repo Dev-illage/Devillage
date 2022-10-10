@@ -137,6 +137,11 @@ public class PostServiceImpl implements PostService {
             throw new BusinessLogicException(ExceptionCode.CATEGORY_NOT_FOUND);
         }
 
+        if (category.toUpperCase().equals(CategoryType.ALL.name())) {
+            return postRepository.findAll(
+                    PageRequest.of(page - 1, size, Sort.by("id").descending()));
+        }
+
         return postRepository.findByCategory_CategoryType(
                 CategoryType.valueOf(category.toUpperCase()),
                 PageRequest.of(page - 1, size, Sort.by("id").descending()));

@@ -230,40 +230,40 @@ class UserControllerTest implements Reflection {
 //                );
 //    }
 
-    @Test
-    public void updatePassword() throws Exception{
-        UserDto.PasswordDto passwordDto = UserDto.PasswordDto.builder().build();
-        User user = newInstance(User.class);
-        setField(user,"id",ID1);
-        setField(user,"email",EMAIL2);
-        setField(user,"nickName",NICKNAME1);
-        setField(user,"password",PASSWORD1);
-        AuthDto.UserInfo userInfo = AuthDto.UserInfo.builder().id(user.getId()).build();
-
-        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL2, ID1, TestConstants.ROLES);
-
-        Long userId = user.getId();
-        String updatePassword = "aasssssad##!!";
-
-        String content = objectMapper.writeValueAsString(passwordDto);
-
-        when(userService.updatePassword(userInfo,user.getPassword(),updatePassword)).thenReturn(true);
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                patch("/users/pwd/{user-id}", userId)
-                        .header(AUTHORIZATION_HEADER, token)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-
-        // then
-        MvcResult result = actions
-                .andExpect(status().isOk())
-                .andExpect(content().string("true"))
-                .andReturn();
-    }
+//    @Test
+//    public void updatePassword() throws Exception{
+//        UserDto.PasswordDto passwordDto = UserDto.PasswordDto.builder().build();
+//        User user = newInstance(User.class);
+//        setField(user,"id",ID1);
+//        setField(user,"email",EMAIL2);
+//        setField(user,"nickName",NICKNAME1);
+//        setField(user,"password",PASSWORD1);
+//        AuthDto.UserInfo userInfo = AuthDto.UserInfo.builder().id(user.getId()).build();
+//
+//        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL2, ID1, TestConstants.ROLES);
+//
+//        Long userId = user.getId();
+//        String updatePassword = "aasssssad##!!";
+//
+//        String content = objectMapper.writeValueAsString(passwordDto);
+//
+//        when(userService.updatePassword(userInfo,user.getPassword(),updatePassword)).thenReturn(true);
+//
+//        // when
+//        ResultActions actions = mockMvc.perform(
+//                patch("/users/pwd/{user-id}", userId)
+//                        .header(AUTHORIZATION_HEADER, token)
+//                        .accept(MediaType.APPLICATION_JSON)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(content)
+//        );
+//
+//        // then
+//        MvcResult result = actions
+//                .andExpect(status().isOk())
+//                .andExpect(content().string("true"))
+//                .andReturn();
+//    }
 
     @Test
     public void patchProfile() throws Exception {

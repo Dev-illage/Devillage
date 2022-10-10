@@ -34,12 +34,8 @@ import java.util.List;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.*;
-<<<<<<< HEAD
-import static org.mockito.ArgumentMatchers.*;
-=======
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
->>>>>>> 1fdd15f163b6a79395285e9eb6da70ee8f6da44a
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -73,12 +69,6 @@ class PostControllerTest implements Reflection {
 
     @Autowired
     ObjectMapper objectMapper = new ObjectMapper();
-
-<<<<<<< HEAD
-=======
-    @Autowired
-    JwtTokenUtil jwtTokenUtil;
->>>>>>> 1fdd15f163b6a79395285e9eb6da70ee8f6da44a
 
     User user = newInstance(User.class);
     Post post = newInstance(Post.class);
@@ -269,11 +259,7 @@ class PostControllerTest implements Reflection {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/posts/{post-id}/report", post.getId())
-<<<<<<< HEAD
-                        .header(HttpHeaders.AUTHORIZATION, "token")
-=======
                         .header(AUTHORIZATION_HEADER, token)
->>>>>>> 1fdd15f163b6a79395285e9eb6da70ee8f6da44a
         );
 
         // then
@@ -307,11 +293,7 @@ class PostControllerTest implements Reflection {
         setField(post, "user", user);
         setField(post, "likeCount", 1L);
 
-<<<<<<< HEAD
-        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL2, ID1, TestConstants.ROLES);
-=======
         String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
->>>>>>> 1fdd15f163b6a79395285e9eb6da70ee8f6da44a
 
         given(postService.postLike(any(), anyLong()))
                 .willReturn(post);
@@ -319,13 +301,9 @@ class PostControllerTest implements Reflection {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/posts/{post-id}/like", post.getId())
-<<<<<<< HEAD
-                        .header(HttpHeaders.AUTHORIZATION, token)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-=======
                         .header(AUTHORIZATION_HEADER, token)
->>>>>>> 1fdd15f163b6a79395285e9eb6da70ee8f6da44a
         );
 
         // then

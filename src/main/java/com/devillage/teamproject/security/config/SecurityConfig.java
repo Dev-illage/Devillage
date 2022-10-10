@@ -1,5 +1,6 @@
 package com.devillage.teamproject.security.config;
 
+import com.devillage.teamproject.security.authorization.CustomAccessDinedHandler;
 import com.devillage.teamproject.security.oauth.CustomOauth2Service;
 import com.devillage.teamproject.security.oauth.CustomSuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class SecurityConfig {
     private final AuthenticationConfig authenticationConfig;
     private final CustomSuccessHandler customSuccessHandler;
     private final CustomOauth2Service customOauth2Service;
+    private final CustomAccessDinedHandler customAccessDinedHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -53,6 +55,9 @@ public class SecurityConfig {
                 .mvcMatchers(GET, "/test/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(GET, "/docs/*").permitAll()
                 .anyRequest().denyAll()
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(customAccessDinedHandler)
                 .and()
                 .oauth2Login()
                 .successHandler(customSuccessHandler)

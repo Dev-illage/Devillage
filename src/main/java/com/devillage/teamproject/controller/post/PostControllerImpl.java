@@ -21,7 +21,7 @@ public class PostControllerImpl implements PostController {
     private final PostService postService;
 
     @Override
-    public PostDto.Response postPost(AuthDto.UserInfo userInfo, PostDto.Post request) {
+    public PostDto.Response postPost(@AccessToken AuthDto.UserInfo userInfo, PostDto.Post request) {
         Post savedPost = postService.savePost(request.toEntity(), request.getCategory(), request.getTags(), userInfo.getId());
         return PostDto.Response.of(savedPost);
     }

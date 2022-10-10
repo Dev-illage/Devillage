@@ -30,6 +30,7 @@ public class TestConstants {
     public final static Long WRONG_ID = 50000L;
     public final static List<String> ROLES = Collections.singletonList("ROLE_USER");
     public final static String COMMENT_CONTENT = "잘 읽었습니다!";
+    public final static String JWT = "JWT_FOR_TEST";
     public final static String TAGNAME1 = "자바";
     public final static String TAGNAME2 = "스프링";
 }

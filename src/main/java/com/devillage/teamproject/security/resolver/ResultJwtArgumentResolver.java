@@ -36,7 +36,8 @@ public class ResultJwtArgumentResolver implements HandlerMethodArgumentResolver 
         log.info("accessToken = {}", accessToken);
 
         if ( accessToken==null ) {
-            throw new BusinessLogicException(MALFORMED_JWT_EXCEPTION);
+//            throw new BusinessLogicException(MALFORMED_JWT_EXCEPTION);
+            return null;
         }
 
         String token = jwtTokenUtil.splitToken(accessToken);

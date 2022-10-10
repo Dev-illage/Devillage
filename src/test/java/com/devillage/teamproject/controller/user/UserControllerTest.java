@@ -5,6 +5,8 @@ import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.security.config.SecurityConfig;
+import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
@@ -15,8 +17,11 @@ import com.devillage.teamproject.util.security.WithMockCustomUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,6 +32,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+
+import javax.annotation.PostConstruct;
+
+import static com.devillage.teamproject.security.util.JwtConstants.*;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
 import static com.devillage.teamproject.util.TestConstants.*;
@@ -64,6 +73,7 @@ class UserControllerTest implements Reflection {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
 
     @Test
     @DisplayName("getProfile")
@@ -187,38 +197,38 @@ class UserControllerTest implements Reflection {
 
     }
 
-    @Test
-    @DisplayName("Post /user/profile/{id} 테스트")
-    public void userPasswordVerifiedTest() throws Exception {
-        //given
-        User testUser = AuthTestUtils.createTestUser(EMAIL1, NICKNAME1, PASSWORD1);
-        given(userService.checkUserPassword(anyLong(), anyString(), anyLong())).willReturn(ID1);
-
-        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
-
-        String password = PASSWORD1;
-        String json = objectMapper.writeValueAsString(password);
-
-        //when
-        ResultActions actions = mockMvc.perform(post("/users/profile/{id}", ID1)
-                .header(AUTHORIZATION_HEADER, token)
-                .content(json));
-
-        //then
-        actions.andExpect(status().isOk())
-                .andDo(
-                        document("post-user/profile",
-                                preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
-                                requestHeaders(
-                                        headerWithName(AUTHORIZATION_HEADER).description("Access Token")
-                                ),
-                                pathParameters(
-                                        parameterWithName("id").description("user key")
-                                ),
-                                responseBody())
-                );
-    }
+//    @Test
+//    @DisplayName("Post /user/profile/{id} 테스트")
+//    public void userPasswordVerifiedTest() throws Exception {
+//        //given
+//        User testUser = AuthTestUtils.createTestUser(EMAIL1, NICKNAME1, PASSWORD1);
+//        given(userService.checkUserPassword(anyLong(), anyString(), anyLong())).willReturn(ID1);
+//
+//        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
+//
+//        String password = PASSWORD1;
+//        String json = objectMapper.writeValueAsString(password);
+//
+//        //when
+//        ResultActions actions = mockMvc.perform(post("/users/profile/{id}", ID1)
+//                .header(AUTHORIZATION_HEADER, token)
+//                .content(json));
+//
+//        //then
+//        actions.andExpect(status().isOk())
+//                .andDo(
+//                        document("post-user/profile",
+//                                preprocessRequest(prettyPrint()),
+//                                preprocessResponse(prettyPrint()),
+//                                requestHeaders(
+//                                        headerWithName(AUTHORIZATION_HEADER).description("Access Token")
+//                                ),
+//                                pathParameters(
+//                                        parameterWithName("id").description("user key")
+//                                ),
+//                                responseBody())
+//                );
+//    }
 
     @Test
     public void updatePassword() throws Exception{

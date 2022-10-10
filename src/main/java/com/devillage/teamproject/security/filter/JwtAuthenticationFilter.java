@@ -6,6 +6,7 @@ import com.devillage.teamproject.security.token.JwtAuthenticationToken;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,10 +18,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 
 import static com.devillage.teamproject.exception.ExceptionCode.*;
 import static com.devillage.teamproject.security.util.JwtConstants.*;
 
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AuthenticationManager authenticationManager;
     private final FilterErrorManager filterErrorManager;
@@ -46,12 +49,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void checkJwt(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, String jwt) throws IOException, ServletException {
-        if (jwt==null || !StringUtils.hasLength(jwt) || !jwt.startsWith(BEARER_TYPE)) {
-            filterChain.doFilter(request, response);
-        } else {
-            getAuthentication(jwt);
-            filterChain.doFilter(request, response);
-        }
+            if (!StringUtils.hasLength(jwt) || !jwt.startsWith(BEARER_TYPE)) {
+                filterChain.doFilter(request, response);
+            } else {
+                getAuthentication(jwt);
+                filterChain.doFilter(request, response);
+            }
     }
 
     private void getAuthentication(String jwt) {

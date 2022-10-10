@@ -34,4 +34,6 @@ public interface PostService {
     void deletePost(Long postId);
 
     Post findVerifyPost(Long postId);
+
+    Long updateClicks(Post post);
 }

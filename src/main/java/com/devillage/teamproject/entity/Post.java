@@ -46,6 +46,9 @@ public class Post extends AuditingEntity {
         this.likeCount = 0L;
     }
 
+    public void setClickCount(Long clickCount){
+        this.clicks = clickCount;
+    }
     public void setLikeCount(Long num) {
         likeCount = num;
     }

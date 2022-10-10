@@ -32,7 +32,7 @@ public class PostControllerImpl implements PostController {
     @Override
     public SingleResponseDto<PostDto.Response.PostDetail> getPost(AuthDto.UserInfo userInfo, Long postId) {
         Post post = postService.getPost(postId);
-        Page<Comment> commentPage = commentService.findComments(postId, 1, 10);
+        Page<Comment> commentPage = commentService.findComments(postId, 0, 10);
         return SingleResponseDto.of(PostDto.Response.PostDetail.of(post, commentPage, userInfo.getId()));
     }
 

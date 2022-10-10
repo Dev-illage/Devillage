@@ -126,6 +126,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post getPost(Long userId) {
         Post post = findVerifyPost(userId);
+        post.setClickCount(updateClicks(post));
         return post;
     }
 
@@ -223,12 +224,17 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
+    @Override
     public Post findVerifyPost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
 
         return findPost.orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND)
         );
+    }
+    public Long updateClicks(Post post){
+        Long count = post.getClicks()+1L;
+        return count;
     }
 
 }

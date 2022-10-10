@@ -17,6 +17,7 @@ public enum ExceptionCode {
     COMMENT_NOT_FOUND(404, "Comment not found"),
     RE_COMMENT_NOT_FOUND(404, "ReComment not found"),
     TAG_NOT_FOUND(404, "Tag not found"),
+    REPORT_TYPE_NOT_FOUND(404, "ReportType not found"),
 
     EXISTING_USER(409, "Existing User"),
     ALREADY_REPORTED(409, "Already reported"),

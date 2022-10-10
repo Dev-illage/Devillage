@@ -21,6 +21,7 @@ import org.springframework.data.domain.*;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -40,23 +41,30 @@ public class GetPostsServiceTest implements Reflection {
     @Test
     public void getPostsByCategory() throws Exception {
         // given
+        String allCategory = "ALL";
         String existCategory = "FREE";
         String notExistCategory = "CATEGORY";
         int page = 1;
         int size = 1;
         Post post = newInstance(Post.class);
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
+        PageImpl<Post> allPosts = new PageImpl<>(List.of(post),
+                pageable, 1L);
         Page<Post> posts = new PageImpl<>(List.of(post),
                 pageable, 1L);
 
+        given(postRepository.findAll(pageable))
+                .willReturn(allPosts);
         given(postRepository.findByCategory_CategoryType(CategoryType.valueOf(existCategory), pageable))
                 .willReturn(posts);
 
         // when
+        Page<Post> findAllPosts = postService.getPostsByCategory(allCategory, page, size);
         Page<Post> findPosts = postService.getPostsByCategory(existCategory, page, size);
 
         // then
-        Assertions.assertThat(findPosts).isEqualTo(posts);
+        assertThat(findAllPosts).isEqualTo(allPosts);
+        assertThat(findPosts).isEqualTo(posts);
         assertThrows(BusinessLogicException.class,
                 () -> postService.getPostsByCategory(notExistCategory, page, size));
     }
@@ -99,19 +107,19 @@ public class GetPostsServiceTest implements Reflection {
         Page<Post> findPosts2 = postService.getPostsByBookmark(user.getId(), page, size2);
 
         // then
-        Assertions.assertThat(findPosts1.getContent().get(0)).isEqualTo(post3);
-        Assertions.assertThat(findPosts1.getNumber() + 1).isEqualTo(page);
-        Assertions.assertThat(findPosts1.getSize()).isEqualTo(size1);
-        Assertions.assertThat(findPosts1.getTotalPages()).isEqualTo(user.getBookmarks().size() / size1);
-        Assertions.assertThat(findPosts1.getTotalElements()).isEqualTo(user.getBookmarks().size());
+        assertThat(findPosts1.getContent().get(0)).isEqualTo(post3);
+        assertThat(findPosts1.getNumber() + 1).isEqualTo(page);
+        assertThat(findPosts1.getSize()).isEqualTo(size1);
+        assertThat(findPosts1.getTotalPages()).isEqualTo(user.getBookmarks().size() / size1);
+        assertThat(findPosts1.getTotalElements()).isEqualTo(user.getBookmarks().size());
 
-        Assertions.assertThat(findPosts2.getContent().get(0)).isEqualTo(post3);
-        Assertions.assertThat(findPosts2.getContent().get(1)).isEqualTo(post1);
-        Assertions.assertThat(findPosts2.getContent().get(2)).isEqualTo(post2);
-        Assertions.assertThat(findPosts2.getNumber() + 1).isEqualTo(page);
-        Assertions.assertThat(findPosts2.getSize()).isEqualTo(size2);
-        Assertions.assertThat(findPosts2.getTotalPages()).isEqualTo(user.getBookmarks().size() / size2);
-        Assertions.assertThat(findPosts2.getTotalElements()).isEqualTo(user.getBookmarks().size());
+        assertThat(findPosts2.getContent().get(0)).isEqualTo(post3);
+        assertThat(findPosts2.getContent().get(1)).isEqualTo(post1);
+        assertThat(findPosts2.getContent().get(2)).isEqualTo(post2);
+        assertThat(findPosts2.getNumber() + 1).isEqualTo(page);
+        assertThat(findPosts2.getSize()).isEqualTo(size2);
+        assertThat(findPosts2.getTotalPages()).isEqualTo(user.getBookmarks().size() / size2);
+        assertThat(findPosts2.getTotalElements()).isEqualTo(user.getBookmarks().size());
     }
 
 }

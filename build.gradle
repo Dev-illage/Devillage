@@ -96,6 +96,25 @@ asciidoctor {
     dependsOn test
 }
 
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    println "asciidoctor output: ${asciidoctor.outputDir}"
+    from file("build/docs/asciidoc/")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
+}
+
+bootJar {
+    enabled = true
+    dependsOn copyDocument
+    from ("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
+}
+
 // Rest Docs 설정 끝
 
 //querydsl 추가 시작

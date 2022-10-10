@@ -299,12 +299,12 @@ class CommentControllerTest {
     public void getAllComments() throws Exception {
         // given
         Post post = Post.builder().id(ID1).build();
-        User user = User.builder().id(ID1).build();
-        Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).user(user).post(post).build();
+        User user = User.builder().id(ID1).nickName("hahaNickname").build();
+        Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
         ReComment reComment1_1 = ReComment.builder().id(ID1).content(COMMENT_CONTENT).user(user).comment(comment1).build();
         comment1.getReComments().add(reComment1_1);
-        Comment comment2 = Comment.builder().id(ID2).content(COMMENT_CONTENT).user(user).post(post).build();
-        Comment comment3 = Comment.builder().id(ID2 + 1).content(COMMENT_CONTENT).user(user).post(post).build();
+        Comment comment2 = Comment.builder().id(ID2).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
+        Comment comment3 = Comment.builder().id(ID2 + 1).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
 
         given(commentService.findComments(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt()))
                 .willReturn(new PageImpl<>(List.of(comment1, comment2, comment3)));
@@ -338,8 +338,10 @@ class CommentControllerTest {
                                 fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
                                 fieldWithPath("data[].commentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
                                 fieldWithPath("data[].userId").type(JsonFieldType.NUMBER).description("작성자 식별자"),
+                                fieldWithPath("data[].nickname").type(JsonFieldType.STRING).description("작성자 닉네임"),
                                 fieldWithPath("data[].content").type(JsonFieldType.STRING).description("댓글 내용"),
                                 fieldWithPath("data[].reComments").type(JsonFieldType.ARRAY).description("대댓글"),
+                                fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("좋아요 수"),
                                 fieldWithPath("data[].createdAt").description("작성시간"),
                                 fieldWithPath("data[].lastModifiedAt").description("수정 시간"),
                                 fieldWithPath("data[].isLiked").description("좋아요 여부"),

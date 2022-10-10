@@ -184,7 +184,7 @@ class PostControllerTest implements Reflection {
         post.addUser(user);
         post.setDate();
         Long id = post.getId();
-        setField(user, "nickName", "hahaNickname");
+        setField(user, "nickName", NICKNAME1);
 
         Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
         ReComment reComment1_1 = ReComment.builder().id(ID1).content(COMMENT_CONTENT).user(user).comment(comment1).build();

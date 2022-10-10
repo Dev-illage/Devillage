@@ -138,7 +138,7 @@ class CommentControllerTest {
     @DisplayName("createReComment")
     public void createReComment() throws Exception {
         // given
-        User user = User.builder().id(ID1).build();
+        User user = User.builder().id(ID1).nickName(NICKNAME1).build();
         Comment comment = Comment.builder().id(ID1).build();
         CommentDto.ReCommentPost postDto = CommentDto.ReCommentPost.builder().content(COMMENT_CONTENT).build();
         ReComment reComment = ReComment.createReComment(user, comment, postDto.getContent());
@@ -171,8 +171,10 @@ class CommentControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("reCommentId").description("대댓글 식별자"),
-                                fieldWithPath("userId").description("댓글 쓴 사람 식별자"),
+                                fieldWithPath("userId").description("대댓글 작성자 식별자"),
+                                fieldWithPath("nickname").description("대댓글 작성자 닉네임"),
                                 fieldWithPath("content").description("대댓글 내용"),
+                                fieldWithPath("likeCount").description("좋아요 수"),
                                 fieldWithPath("createdAt").description("대댓글 쓴 날짜"),
                                 fieldWithPath("lastModifiedAt").description("대댓글을 마지막으로 수정한 날짜"),
                                 fieldWithPath("isLiked").description("좋아요 여부")
@@ -236,7 +238,7 @@ class CommentControllerTest {
     @Test
     public void patchReComment() throws Exception {
         // given
-        User user = User.builder().id(ID1).build();
+        User user = User.builder().id(ID1).nickName(NICKNAME1).build();
         Post post = Post.builder().id(ID1).user(user).build();
         CommentDto.Patch patch = CommentDto.Patch.builder().content(COMMENT_CONTENT).build();
         Comment comment = Comment.builder()
@@ -286,7 +288,9 @@ class CommentControllerTest {
                         responseFields(
                                 fieldWithPath("reCommentId").description("대댓글 식별자"),
                                 fieldWithPath("userId").description("대댓글 작성자 식별자"),
+                                fieldWithPath("nickname").description("대댓글 작성자 닉네임"),
                                 fieldWithPath("content").description("대댓글 내용"),
+                                fieldWithPath("likeCount").description("대댓글 좋아요 수"),
                                 fieldWithPath("createdAt").description("대댓글 작성일시"),
                                 fieldWithPath("lastModifiedAt").description("대댓글 수정일시"),
                                 fieldWithPath("isLiked").description("좋아요 여부")
@@ -299,7 +303,7 @@ class CommentControllerTest {
     public void getAllComments() throws Exception {
         // given
         Post post = Post.builder().id(ID1).build();
-        User user = User.builder().id(ID1).nickName("hahaNickname").build();
+        User user = User.builder().id(ID1).nickName(NICKNAME1).build();
         Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
         ReComment reComment1_1 = ReComment.builder().id(ID1).content(COMMENT_CONTENT).user(user).comment(comment1).build();
         comment1.getReComments().add(reComment1_1);
@@ -344,13 +348,15 @@ class CommentControllerTest {
                                 fieldWithPath("data[].likeCount").type(JsonFieldType.NUMBER).description("좋아요 수"),
                                 fieldWithPath("data[].createdAt").description("작성시간"),
                                 fieldWithPath("data[].lastModifiedAt").description("수정 시간"),
-                                fieldWithPath("data[].isLiked").description("좋아요 여부"),
+                                fieldWithPath("data[].isLiked").type(JsonFieldType.BOOLEAN).description("좋아요 여부"),
                                 fieldWithPath("data[].reComments[].reCommentId").type(JsonFieldType.NUMBER).description("대댓글 식별자"),
                                 fieldWithPath("data[].reComments[].userId").type(JsonFieldType.NUMBER).description("작성자 식별자"),
+                                fieldWithPath("data[].reComments[].nickname").type(JsonFieldType.STRING).description("대댓글 작성자 닉네임"),
                                 fieldWithPath("data[].reComments[].content").type(JsonFieldType.STRING).description("대댓글 내용"),
+                                fieldWithPath("data[].reComments[].likeCount").type(JsonFieldType.NUMBER).description("좋아요 수"),
                                 fieldWithPath("data[].reComments[].createdAt").description("작성 시간"),
                                 fieldWithPath("data[].reComments[].lastModifiedAt").description("수정 시간"),
-                                fieldWithPath("data[].reComments[].isLiked").description("좋아요 여부"),
+                                fieldWithPath("data[].reComments[].isLiked").type(JsonFieldType.BOOLEAN).description("좋아요 여부"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
                                 fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("페이지"),
                                 fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("사이즈"),

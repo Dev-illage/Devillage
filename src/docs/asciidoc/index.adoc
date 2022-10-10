@@ -1,0 +1,334 @@
+= Devillage 애플리케이션
+:sectnums:
+:toc: left
+:toclevels: 4
+:toc-title: Table of Contents
+:source-highlighter: prettify
+
+https://github.com/Dev-illage/Devillage
+
+***
+== 인증 AuthController
+=== 회원가입
+.curl-request
+include::{snippets}/post-auth/new/curl-request.adoc[]
+
+.http-request
+include::{snippets}/post-auth/new/http-request.adoc[]
+
+.request-body
+include::{snippets}/post-auth/new/request-body.adoc[]
+
+.request-fields
+include::{snippets}/post-auth/new/request-fields.adoc[]
+
+.http-response
+include::{snippets}/post-auth/new/http-response.adoc[]
+
+.response-body
+include::{snippets}/post-auth/new/response-body.adoc[]
+
+=== 로그인
+.curl-request
+include::{snippets}/post-auth/token/curl-request.adoc[]
+
+.http-request
+include::{snippets}/post-auth/token/http-request.adoc[]
+
+.request-body
+include::{snippets}/post-auth/token/request-body.adoc[]
+
+.request-field
+include::{snippets}/post-auth/token/request-fields.adoc[]
+
+.http-response
+include::{snippets}/post-auth/token/http-response.adoc[]
+
+.response-body
+include::{snippets}/post-auth/token/response-body.adoc[]
+
+.response-field
+include::{snippets}/post-auth/token/response-fields.adoc[]
+
+=== 리프레쉬
+.curl-request
+include::{snippets}/post-auth/token/refresh/curl-request.adoc[]
+.http-request
+include::{snippets}/post-auth/token/refresh/http-request.adoc[]
+.request-header
+include::{snippets}/post-auth/token/refresh/request-headers.adoc[]
+.http-response
+include::{snippets}/post-auth/token/refresh/http-response.adoc[]
+.response-body
+include::{snippets}/post-auth/token/refresh/response-body.adoc[]
+.response-field
+include::{snippets}/post-auth/token/refresh/response-fields.adoc[]
+
+=== 로그아웃
+.curl-request
+include::{snippets}/delete-/auth/token/curl-request.adoc[]
+.http-request
+include::{snippets}/delete-/auth/token/http-request.adoc[]
+.request-header
+include::{snippets}/delete-/auth/token/request-headers.adoc[]
+.http-response
+include::{snippets}/delete-/auth/token/http-response.adoc[]
+.response-body
+include::{snippets}/delete-/auth/token/response-body.adoc[]
+
+== 회원 UserController
+=== 회원 정보 수정 - 테스트가 없습니다.
+
+=== 회원 조회
+.curl-request
+include::{snippets}/get-user-profile/curl-request.adoc[]
+.http-request
+include::{snippets}/get-user-profile/http-request.adoc[]
+.path-parameter
+include::{snippets}/get-user-profile/path-parameters.adoc[]
+.request-header
+include::{snippets}/get-user-profile/request-headers.adoc[]
+.http-response
+include::{snippets}/get-user-profile/http-response.adoc[]
+.response-body
+include::{snippets}/get-user-profile/response-body.adoc[]
+.response-fields
+include::{snippets}/get-user-profile/response-fields.adoc[]
+
+=== 회원 탈퇴
+.curl-request
+include::{snippets}/delete-user/curl-request.adoc[]
+.http-request
+include::{snippets}/delete-user/http-request.adoc[]
+.path-parameter
+include::{snippets}/delete-user/path-parameters.adoc[]
+.request-header
+include::{snippets}/delete-user/request-headers.adoc[]
+.http-response
+include::{snippets}/delete-user/http-response.adoc[]
+
+=== 회원 패스워드 수정 - 테스트에 restdocs가 없습니다.
+
+=== 회원 차단
+.curl-request
+include::{snippets}/block-user/curl-request.adoc[]
+.http-request
+include::{snippets}/block-user/http-request.adoc[]
+.path-parameters
+include::{snippets}/block-user/path-parameters.adoc[]
+.request-headers
+include::{snippets}/block-user/request-headers.adoc[]
+.http-response
+include::{snippets}/block-user/http-response.adoc[]
+.response-body
+include::{snippets}/block-user/response-body.adoc[]
+.response-field
+include::{snippets}/block-user/response-fields.adoc[]
+
+=== 회원 차단 취소 - 테스트가 없습니다.
+.curl-request
+
+== 게시글
+=== 게시글 작성 - 테스트가 없습니다.
+=== 게시글 신고
+.curl-request
+include::{snippets}/post-report/curl-request.adoc[]
+.http-request
+include::{snippets}/post-report/http-request.adoc[]
+.path-parameters
+include::{snippets}/post-report/path-parameters.adoc[]
+.http-response
+include::{snippets}/post-report/http-response.adoc[]
+.response-body
+include::{snippets}/post-report/response-body.adoc[]
+.response-field
+include::{snippets}/post-report/response-fields.adoc[]
+
+=== 게시글 북마크 추가
+.curl-request
+include::{snippets}/post-bookmark/curl-request.adoc[]
+.http-request
+include::{snippets}/post-bookmark/http-request.adoc[]
+.path-parameters
+include::{snippets}/post-bookmark/path-parameters.adoc[]
+.http-response
+include::{snippets}/post-bookmark/http-response.adoc[]
+.response-body
+include::{snippets}/post-bookmark/response-body.adoc[]
+.response-fields
+include::{snippets}/post-bookmark/response-fields.adoc[]
+
+=== 게시글 좋아요
+.curl-request
+include::{snippets}/post-like/curl-request.adoc[]
+.http-request
+include::{snippets}/post-like/http-request.adoc[]
+.path-parameters
+include::{snippets}/post-like/path-parameters.adoc[]
+.http-response
+include::{snippets}/post-like/http-response.adoc[]
+.response-body
+include::{snippets}/post-like/response-body.adoc[]
+.response-fields
+include::{snippets}/post-like/response-fields.adoc[]
+
+=== 게시글 수정 - 테스트가 없습니다.
+=== 게시글 상세 조회 - 테스트에 restdocs가 없습니다.
+=== 게시글 검색어 조회
+.curl-request
+include::{snippets}/posts/getPostsBySearch/curl-request.adoc[]
+.http-request
+include::{snippets}/posts/getPostsBySearch/http-request.adoc[]
+.request-parameters
+include::{snippets}/posts/getPostsBySearch/request-parameters.adoc[]
+.http-response
+include::{snippets}/posts/getPostsBySearch/http-response.adoc[]
+.response-body
+include::{snippets}/posts/getPostsBySearch/response-body.adoc[]
+.response-fields
+include::{snippets}/posts/getPostsBySearch/response-fields.adoc[]
+
+=== 게시글 북마크 조회
+.curl-request
+include::{snippets}/posts/getPostsByBookmark/curl-request.adoc[]
+.http-request
+include::{snippets}/posts/getPostsByBookmark/http-request.adoc[]
+.request-parameters
+include::{snippets}/posts/getPostsByBookmark/request-parameters.adoc[]
+.http-response
+include::{snippets}/posts/getPostsByBookmark/http-response.adoc[]
+.response-body
+include::{snippets}/posts/getPostsByBookmark/response-body.adoc[]
+.response-fields
+include::{snippets}/posts/getPostsByBookmark/response-fields.adoc[]
+
+=== 게시글 카테고리 조회
+.curl-request
+include::{snippets}/posts/getPostsByCategory/curl-request.adoc[]
+.http-request
+include::{snippets}/posts/getPostsByCategory/http-request.adoc[]
+.request-parameters
+include::{snippets}/posts/getPostsByCategory/request-parameters.adoc[]
+.http-response
+include::{snippets}/posts/getPostsByCategory/http-response.adoc[]
+.response-body
+include::{snippets}/posts/getPostsByCategory/response-body.adoc[]
+.response-fields
+include::{snippets}/posts/getPostsByCategory/response-fields.adoc[]
+
+=== 게시글 삭제 - 테스트가 없습니다.
+.curl-request
+=== 게시글 북마크 취소 - 테스트가 없습니다.
+=== 게시글 좋아요 취소 - 테스트가 없습니다.
+
+== 댓글
+=== 댓글 작성
+.curl-request
+include::{snippets}/post-comment/curl-request.adoc[]
+.http-request
+include::{snippets}/post-comment/http-request.adoc[]
+.path-parameters
+include::{snippets}/post-comment/path-parameters.adoc[]
+.request-headers
+include::{snippets}/post-comment/request-headers.adoc[]
+.request-body
+include::{snippets}/post-comment/request-body.adoc[]
+.http-response
+include::{snippets}/post-comment/http-response.adoc[]
+.response-body
+include::{snippets}/post-comment/response-body.adoc[]
+.response-fields
+include::{snippets}/post-comment/response-fields.adoc[]
+
+=== 대댓글 작성
+.curl-request
+include::{snippets}/post-recomment/curl-request.adoc[]
+.http-request
+include::{snippets}/post-recomment/http-request.adoc[]
+.path-parameters
+include::{snippets}/post-recomment/path-parameters.adoc[]
+.request-headers
+include::{snippets}/post-recomment/request-headers.adoc[]
+.request-body
+include::{snippets}/post-recomment/request-body.adoc[]
+.http-response
+include::{snippets}/post-recomment/http-response.adoc[]
+.response-body
+include::{snippets}/post-recomment/response-body.adoc[]
+.response-fields
+include::{snippets}/post-recomment/response-fields.adoc[]
+
+=== 댓글 좋아요 - 테스트가 없습니다.
+=== 댓글 수정 - 회원 검증이 없습니다.
+.curl-request
+include::{snippets}/comments/patch-comment/curl-request.adoc[]
+.http-request
+include::{snippets}/comments/patch-comment/http-request.adoc[]
+.path-parameters
+include::{snippets}/comments/patch-comment/path-parameters.adoc[]
+.request-body
+include::{snippets}/comments/patch-comment/request-body.adoc[]
+.request-fields
+include::{snippets}/comments/patch-comment/request-fields.adoc[]
+.http-response
+include::{snippets}/comments/patch-comment/http-response.adoc[]
+.response-body
+include::{snippets}/comments/patch-comment/response-body.adoc[]
+.response-fields
+include::{snippets}/comments/patch-comment/response-fields.adoc[]
+
+=== 대댓글 수정
+.curl-request
+include::{snippets}/comments/patch-re-comment/curl-request.adoc[]
+.http-request
+include::{snippets}/comments/patch-re-comment/http-request.adoc[]
+.path-parameters
+include::{snippets}/comments/patch-re-comment/path-parameters.adoc[]
+.request-body
+include::{snippets}/comments/patch-re-comment/request-body.adoc[]
+.request-fields
+include::{snippets}/comments/patch-re-comment/request-fields.adoc[]
+.http-response
+include::{snippets}/comments/patch-re-comment/http-response.adoc[]
+.response-body
+include::{snippets}/comments/patch-re-comment/response-body.adoc[]
+.response-fields
+include::{snippets}/comments/patch-re-comment/response-fields.adoc[]
+
+=== 댓글 조회 - 테스트에 path parameters 누락.
+.curl-request
+include::{snippets}/get-comments/curl-request.adoc[]
+.http-request
+include::{snippets}/get-comments/http-request.adoc[]
+.path-parameters
+include::{snippets}/get-comments/path-parameters.adoc[]
+.http-response
+include::{snippets}/get-comments/http-response.adoc[]
+.response-body
+include::{snippets}/get-comments/response-body.adoc[]
+.response-field
+include::{snippets}/get-comments/response-fields.adoc[]
+
+=== 대댓글 조회 - 댓글조회에 포함
+=== 댓글 삭제
+.curl-request
+include::{snippets}/delete-comment/curl-request.adoc[]
+.http-request
+include::{snippets}/delete-comment/http-request.adoc[]
+.path-parameters
+include::{snippets}/delete-comment/path-parameters.adoc[]
+.request-headers
+include::{snippets}/delete-comment/request-headers.adoc[]
+.http-response
+include::{snippets}/delete-comment/http-response.adoc[]
+
+=== 대댓글 삭제
+.curl-request
+include::{snippets}/comments/delete-re-comment/curl-request.adoc[]
+.http-request
+include::{snippets}/comments/delete-re-comment/http-request.adoc[]
+.path-parameters
+include::{snippets}/comments/delete-re-comment/path-parameters.adoc[]
+.http-response
+include::{snippets}/comments/delete-re-comment/http-response.adoc[]
+

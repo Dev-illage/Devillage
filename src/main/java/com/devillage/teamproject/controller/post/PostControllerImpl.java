@@ -91,6 +91,17 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
+    public DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByTag(String q, int page, int size) {
+        Page<Post> posts = postService.getPostsByTag(q, page, size);
+        return DoubleResponseDto.of(
+                posts.stream()
+                        .map(PostDto.Response.SimplePostDto::of)
+                        .collect(Collectors.toList()),
+                posts
+        );
+    }
+
+    @Override
     public DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByBookmark(AuthDto.UserInfo userInfo, int page, int size) {
         Page<Post> posts = postService.getPostsByBookmark(userInfo.getId(), page, size);
         return DoubleResponseDto.of(

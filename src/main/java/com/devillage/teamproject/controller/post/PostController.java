@@ -1,8 +1,10 @@
 package com.devillage.teamproject.controller.post;
 
-import com.devillage.teamproject.dto.*;
+import com.devillage.teamproject.dto.AuthDto;
+import com.devillage.teamproject.dto.DoubleResponseDto;
+import com.devillage.teamproject.dto.PostDto;
+import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.security.resolver.AccessToken;
-import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +17,7 @@ public interface PostController {
 
     @GetMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
-    SingleResponseDto<PostDto.Response.PostDetail> getPost(@AccessToken AuthDto.UserInfo userInfo,@PathVariable("post-id") Long postId);
+    SingleResponseDto<PostDto.Response.PostDetail> getPost(@AccessToken AuthDto.UserInfo userInfo, @PathVariable("post-id") Long postId);
 
     @PostMapping("/{post-id}/bookmark")
     @ResponseStatus(HttpStatus.OK)
@@ -37,7 +39,7 @@ public interface PostController {
 
     @PatchMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
-    PostDto.Response patchPost(@AccessToken AuthDto.UserInfo userInfo,@PathVariable("post-id") Long id,
+    PostDto.Response patchPost(@AccessToken AuthDto.UserInfo userInfo, @PathVariable("post-id") Long id,
                                @RequestBody PostDto.Patch request);
 
     @GetMapping
@@ -51,6 +53,12 @@ public interface PostController {
     DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsBySearch(@RequestParam String q,
                                                                        @RequestParam int page,
                                                                        @RequestParam int size);
+
+    @GetMapping("/tag")
+    @ResponseStatus(HttpStatus.OK)
+    DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByTag(@RequestParam String q,
+                                                                    @RequestParam int page,
+                                                                    @RequestParam int size);
 
     @GetMapping("/bookmark")
     @ResponseStatus(HttpStatus.OK)

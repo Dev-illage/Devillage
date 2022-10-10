@@ -3,6 +3,8 @@ package com.devillage.teamproject.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,6 +33,9 @@ public class ReComment extends AuditingEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Comment comment;
+
+    @OneToMany(mappedBy = "reComment")
+    private List<ReCommentLike> reCommentLikes = new ArrayList<>();
 
     public static ReComment createReComment(User user, Comment comment, String content) {
         return ReComment.builder()

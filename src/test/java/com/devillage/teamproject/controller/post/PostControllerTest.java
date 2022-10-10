@@ -1,11 +1,11 @@
 package com.devillage.teamproject.controller.post;
 
 import com.devillage.teamproject.dto.PostDto;
+import com.devillage.teamproject.dto.ReportDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
-import com.devillage.teamproject.security.config.SecurityConfig;
-import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
+import com.devillage.teamproject.entity.enums.ReportType;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.comment.CommentService;
 import com.devillage.teamproject.service.post.PostService;
@@ -14,7 +14,6 @@ import com.devillage.teamproject.util.TestConstants;
 import com.devillage.teamproject.util.security.SecurityTestConfig;
 import com.devillage.teamproject.util.security.WithMockCustomUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
@@ -45,8 +43,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -261,18 +258,30 @@ class PostControllerTest implements Reflection {
     @Test
     void postReport() throws Exception {
         // given
-        ReportedPost report = new ReportedPost(user, post);
+        ReportType reportType = ReportType.AD;
+        Integer reportTypeNum = reportType.ordinal() + 1;
+        String content = "광고에요.";
+        ReportedPost report = new ReportedPost(user, post, reportType, content);
         setField(report, "id", 3L);
+
+        ReportDto reportDto = newInstance(ReportDto.class);
+        setField(reportDto, "reportType", reportTypeNum);
+        setField(reportDto, "content", content);
+
+        String json = objectMapper.writeValueAsString(reportDto);
 
         String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
 
-        given(postService.postReport(any(), anyLong()))
+        given(postService.postReport(ID1, post.getId(), reportTypeNum, content))
                 .willReturn(report);
 
         // when
         ResultActions actions = mockMvc.perform(
                 post("/posts/{post-id}/report", post.getId())
                         .header(AUTHORIZATION_HEADER, token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
         );
 
         // then
@@ -288,6 +297,10 @@ class PostControllerTest implements Reflection {
                         ),
                         pathParameters(
                                 parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("reportType").type(JsonFieldType.NUMBER).description("신고 분류"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("신고 사유")
                         ),
                         responseFields(
                                 fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),

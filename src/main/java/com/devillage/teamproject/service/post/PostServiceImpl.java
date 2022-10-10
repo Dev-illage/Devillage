@@ -2,6 +2,7 @@ package com.devillage.teamproject.service.post;
 
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
+import com.devillage.teamproject.entity.enums.ReportType;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.category.CategoryRepository;
@@ -204,17 +205,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ReportedPost postReport(Long userId, Long postId) {
+    public ReportedPost postReport(Long userId, Long postId, Integer reportType, String content) {
+
+        if (reportType == null || reportType < 1 || reportType > ReportType.values().length) {
+            throw new BusinessLogicException(ExceptionCode.REPORT_TYPE_NOT_FOUND);
+        }
+
         User user = userService.findVerifiedUser(userId);
         Post post = findVerifyPost(postId);
 
-        List<ReportedPost> findReport = reportedPostRepository.findByUserIdAndPostId(userId, postId);
+        reportedPostRepository.findByUserIdAndPostId(userId, postId)
+                .ifPresent(reportedPost -> {
+                    throw new BusinessLogicException(ExceptionCode.ALREADY_REPORTED);
+                });
 
-        if (!findReport.isEmpty()) {
-            throw new BusinessLogicException(ExceptionCode.ALREADY_REPORTED);
-        }
-
-        ReportedPost reportedPost = new ReportedPost(user, post);
+        ReportedPost reportedPost = new ReportedPost(user, post, ReportType.values()[reportType - 1], content);
         post.addReportedPosts(reportedPost);
         return reportedPost;
     }

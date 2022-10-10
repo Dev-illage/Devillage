@@ -1,9 +1,6 @@
 package com.devillage.teamproject.controller.post;
 
-import com.devillage.teamproject.dto.AuthDto;
-import com.devillage.teamproject.dto.DoubleResponseDto;
-import com.devillage.teamproject.dto.PostDto;
-import com.devillage.teamproject.dto.SingleResponseDto;
+import com.devillage.teamproject.dto.*;
 import com.devillage.teamproject.security.resolver.AccessToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +26,8 @@ public interface PostController {
     @ResponseStatus(HttpStatus.OK)
     PostDto.Response.ReportDto postReport(
             @AccessToken AuthDto.UserInfo userInfo,
-            @PathVariable("post-id") Long id);
+            @PathVariable("post-id") Long id,
+            @RequestBody ReportDto reportDto);
 
     @PostMapping("/{post-id}/like")
     @ResponseStatus(HttpStatus.OK)

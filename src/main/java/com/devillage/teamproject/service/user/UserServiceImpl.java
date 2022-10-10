@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
         if(user.getOauthProvider()!=null){
             throw new BusinessLogicException(ExceptionCode.CAN_NOT_UPDATE_PASSWORD);
         }
-        user.updatePassword(passwordEncoder, validPassword);
+        user.updatePassword(validPassword);
         return true;
     }
 

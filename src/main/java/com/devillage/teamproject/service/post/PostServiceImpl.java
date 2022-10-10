@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,13 +37,11 @@ public class PostServiceImpl implements PostService {
     private final BookmarkRepository bookmarkRepository;
     private final ReportedPostRepository reportedPostRepository;
     private final LikeRepository likeRepository;
-    private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Post savePost(Post post, CategoryType categoryType, List<String> tagValue, Long userId) {
@@ -80,7 +77,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post editPost(Post post, CategoryType categoryType, List<String> tagValue, Long userId,Long postId) {
+    public Post editPost(Post post, CategoryType categoryType, List<String> tagValue, Long userId, Long postId) {
         Post verifiedPost = findVerifyPost(postId);
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
@@ -88,9 +85,9 @@ public class PostServiceImpl implements PostService {
 
         tagValue.forEach(
                 e -> {
-                    if(tagRepository.findTagByName(e).isEmpty()){
+                    if (tagRepository.findTagByName(e).isEmpty()) {
                         Tag tag = tagRepository.save(new Tag(e));
-                        PostTag postTag = new PostTag(verifiedPost,tag);
+                        PostTag postTag = new PostTag(verifiedPost, tag);
                         postTagRepository.save(postTag);
                         verifiedPost.addPostTag(postTag);
                         verifiedPost.addCategory(category);
@@ -98,10 +95,9 @@ public class PostServiceImpl implements PostService {
                         postRepository.save(verifiedPost);
                         findUser.addPost(verifiedPost);
                         verifiedPost.addUser(findUser);
-                    }
-                    else {
+                    } else {
                         Tag tag = tagRepository.findTagByName(e).orElseThrow(IllegalArgumentException::new);
-                        PostTag postTag = new PostTag(verifiedPost,tag);
+                        PostTag postTag = new PostTag(verifiedPost, tag);
                         postTagRepository.save(postTag);
                         verifiedPost.addPostTag(postTag);
                         verifiedPost.addCategory(category);
@@ -151,6 +147,21 @@ public class PostServiceImpl implements PostService {
     public Page<Post> getPostsBySearch(String word, int page, int size) {
         return postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
                 word, word, PageRequest.of(page - 1, size, Sort.by("id").descending()));
+    }
+
+    @Override
+    public Page<Post> getPostsByTag(String tagName, int page, int size) {
+        Tag tag = tagRepository.findTagByName(tagName)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND));
+        Page<PostTag> postTags = postTagRepository.findByTag(tag,
+                PageRequest.of(page - 1, size, Sort.by("id").descending()));
+        List<Post> posts = postTags.stream()
+                .map(PostTag::getPost)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(posts,
+                PageRequest.of(page - 1, size),
+                postTags.getTotalElements());
     }
 
     @Override

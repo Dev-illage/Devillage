@@ -96,10 +96,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updatePassword(Long userId,AuthDto.UserInfo userInfo,String password, String updatePassword){
+    public boolean updatePassword(AuthDto.UserInfo userInfo,String password, String updatePassword){
         String validPassword =  validatePassword(updatePassword);
         User user = findVerifiedUser(userInfo.getId());
-        checkUserPassword(userId,password,userInfo.getId());
+        checkUserPassword(userInfo.getId(),password,userInfo.getId());
 
         if(user.getOauthProvider()!=null){
             throw new BusinessLogicException(ExceptionCode.CAN_NOT_UPDATE_PASSWORD);

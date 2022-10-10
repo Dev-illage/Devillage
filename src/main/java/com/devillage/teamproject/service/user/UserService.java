@@ -24,5 +24,5 @@ public interface UserService {
     Long checkUserPassword(Long id, String password, Long tokenId
     );
 
-    boolean updatePassword(Long userId, AuthDto.UserInfo userInfo, String password, String updatePassword);
+    boolean updatePassword(AuthDto.UserInfo userInfo, String password, String updatePassword);
 }

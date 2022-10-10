@@ -237,7 +237,7 @@ class UserControllerTest implements Reflection {
 
         String content = objectMapper.writeValueAsString(passwordDto);
 
-        when(userService.updatePassword(userId,userInfo,user.getPassword(),updatePassword)).thenReturn(true);
+        when(userService.updatePassword(userInfo,user.getPassword(),updatePassword)).thenReturn(true);
 
         // when
         ResultActions actions = mockMvc.perform(

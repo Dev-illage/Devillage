@@ -19,7 +19,7 @@ public interface PostService {
 
     Bookmark postBookmark(Long userId, Long postId);
 
-    ReportedPost postReport(Long userId, Long postId);
+    ReportedPost postReport(Long userId, Long postId, Integer reportType, String content);
 
     Post postLike(Long userId, Long postId);
 

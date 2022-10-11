@@ -181,12 +181,13 @@ class PostControllerTest implements Reflection {
         post.addUser(user);
         post.setDate();
         Long id = post.getId();
+        setField(user, "nickName", NICKNAME1);
 
-        Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).user(user).post(post).build();
+        Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
         ReComment reComment1_1 = ReComment.builder().id(ID1).content(COMMENT_CONTENT).user(user).comment(comment1).build();
         comment1.getReComments().add(reComment1_1);
-        Comment comment2 = Comment.builder().id(ID2).content(COMMENT_CONTENT).user(user).post(post).build();
-        Comment comment3 = Comment.builder().id(ID2 + 1).content(COMMENT_CONTENT).user(user).post(post).build();
+        Comment comment2 = Comment.builder().id(ID2).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
+        Comment comment3 = Comment.builder().id(ID2 + 1).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
 
         String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
 

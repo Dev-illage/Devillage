@@ -45,3 +45,8 @@ Redux-persist, SASS, react-cookie, react-router-dom,
 ### AWS
 
 EC2, S3, Route53, ELB, ElasticCache
+
+## ERD (임시)
+
+![image](https://user-images.githubusercontent.com/97802103/194982858-22b0f4aa-f46d-4ae8-8679-c5aeae977629.png)
+

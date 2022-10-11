@@ -13,6 +13,8 @@ https://dev-illage.com/ (준비중)
 5. Two-Factor 인증 구현
 6. AWS를 이용한 Https 통신 서버 운영
 7. CI/CD를 활요안 자동 배포 파이프라인 구축
+8. SpringRestDocs를 활용한 API 문서화
+9. 최대한의 Restful한 API 설계
 
 ## 기술 스택
 

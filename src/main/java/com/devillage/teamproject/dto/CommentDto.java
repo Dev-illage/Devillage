@@ -6,6 +6,7 @@ import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.entity.enums.CommentStatus;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +116,7 @@ public class CommentDto {
     @AllArgsConstructor
     @Builder
     public static class Post {
+        @NotBlank
         private String content;
 
         public Comment toEntity() {
@@ -136,6 +138,7 @@ public class CommentDto {
     @AllArgsConstructor
     @Builder
     public static class ReCommentPost {
+        @NotBlank
         private String content;
 
         public ReComment toEntity(Long postId, Long commentId) {
@@ -199,6 +202,7 @@ public class CommentDto {
     @AllArgsConstructor
     @Builder
     public static class Patch {
+        @NotBlank
         String content;
     }
 }

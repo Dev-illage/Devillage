@@ -157,6 +157,7 @@ public class CommentDto {
     public static class ReCommentResponse {
         private Long reCommentId;
         private Long userId;
+        private Long parentCommentId;
         private String nickname;
         private String content;
         private long likeCount;
@@ -181,6 +182,7 @@ public class CommentDto {
             return ReCommentResponse.builder()
                     .reCommentId(reComment.getId())
                     .userId(reComment.getUser().getId())
+                    .parentCommentId(reComment.getComment().getId())
                     .content(reComment.getContent())
                     .createdAt(reComment.getCreatedAt())
                     .lastModifiedAt(reComment.getLastModifiedAt())

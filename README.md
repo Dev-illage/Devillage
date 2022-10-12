@@ -1,6 +1,7 @@
 ## URL
 
 ![image](https://user-images.githubusercontent.com/97802103/194878762-84c284c9-c507-46ff-bcc1-92b8d743eb57.png)
+![image](https://user-images.githubusercontent.com/97802103/194982365-96b59c55-b8f4-4b46-8191-58475812c37e.png)
 
 https://dev-illage.com/ (준비중)
 
@@ -13,6 +14,8 @@ https://dev-illage.com/ (준비중)
 5. Two-Factor 인증 구현
 6. AWS를 이용한 Https 통신 서버 운영
 7. CI/CD를 활요안 자동 배포 파이프라인 구축
+8. SpringRestDocs를 활용한 API 문서화
+9. 최대한의 Restful한 API 설계
 
 ## 기술 스택
 
@@ -45,3 +48,8 @@ Redux-persist, SASS, react-cookie, react-router-dom,
 ### AWS
 
 EC2, S3, Route53, ELB, ElasticCache
+
+## ERD (임시)
+
+![image](https://user-images.githubusercontent.com/97802103/194982858-22b0f4aa-f46d-4ae8-8679-c5aeae977629.png)
+

@@ -6,6 +6,7 @@ import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.entity.enums.CommentStatus;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +43,10 @@ public class CommentDto {
     public static class ResponseWithReComment {
         private Long commentId;
         private Long userId;
+        private String nickname;
         private String content;
         private List<ReCommentResponse> reComments = new ArrayList<>();
+        private long likeCount;
         private LocalDateTime createdAt;
         private LocalDateTime lastModifiedAt;
         private Boolean isLiked;
@@ -78,10 +81,12 @@ public class CommentDto {
                     ResponseWithReComment.builder()
                             .commentId(comment.getId())
                             .userId(null)
+                            .nickname(null)
                             .content(null)
                             .reComments(comment.getReComments().stream().map(
                                     ReCommentResponse::of
                             ).collect(Collectors.toList()))
+                            .likeCount(0L)
                             .createdAt(comment.getCreatedAt())
                             .lastModifiedAt(comment.getLastModifiedAt())
                             .isLiked(
@@ -93,10 +98,12 @@ public class CommentDto {
                     ResponseWithReComment.builder()
                             .commentId(comment.getId())
                             .userId(comment.getUser().getId())
+                            .nickname(comment.getUser().getNickName())
                             .content(comment.getContent())
                             .reComments(comment.getReComments().stream().map(
                                     ReCommentResponse::of
                             ).collect(Collectors.toList()))
+                            .likeCount(comment.getCommentLikes().size())
                             .createdAt(comment.getCreatedAt())
                             .lastModifiedAt(comment.getLastModifiedAt())
                             .isLiked(false)
@@ -109,6 +116,7 @@ public class CommentDto {
     @AllArgsConstructor
     @Builder
     public static class Post {
+        @NotBlank
         private String content;
 
         public Comment toEntity() {
@@ -130,6 +138,7 @@ public class CommentDto {
     @AllArgsConstructor
     @Builder
     public static class ReCommentPost {
+        @NotBlank
         private String content;
 
         public ReComment toEntity(Long postId, Long commentId) {
@@ -151,7 +160,9 @@ public class CommentDto {
     public static class ReCommentResponse {
         private Long reCommentId;
         private Long userId;
+        private String nickname;
         private String content;
+        private long likeCount;
         private LocalDateTime createdAt;
         private LocalDateTime lastModifiedAt;
         private Boolean isLiked;
@@ -160,7 +171,9 @@ public class CommentDto {
             return ReCommentResponse.builder()
                     .reCommentId(reComment.getId())
                     .userId(reComment.getUser().getId())
+                    .nickname(reComment.getUser().getNickName())
                     .content(reComment.getContent())
+                    .likeCount(reComment.getReCommentLikes().size())
                     .createdAt(reComment.getCreatedAt())
                     .lastModifiedAt(reComment.getLastModifiedAt())
                     .isLiked(false)
@@ -189,6 +202,7 @@ public class CommentDto {
     @AllArgsConstructor
     @Builder
     public static class Patch {
+        @NotBlank
         String content;
     }
 }

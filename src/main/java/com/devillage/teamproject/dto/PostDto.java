@@ -5,6 +5,9 @@ import com.devillage.teamproject.entity.enums.CategoryType;
 import lombok.*;
 import org.springframework.data.domain.Page;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -150,10 +153,15 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class Post {
+        @NotEmpty
         private Long postId;
+        @NotBlank
         private CategoryType category;
+        @NotBlank
         private String title;
+        @NotEmpty // 일단은 오류가 나니까 막아놓지만 추후 @NotNull로 바꾸고 비어있는 리스트에 대한 처리가 필요합니다.
         private List<String> tags;
+        @NotBlank
         private String content;
 
         public com.devillage.teamproject.entity.Post toEntity() {
@@ -171,10 +179,15 @@ public class PostDto {
     @AllArgsConstructor
     @Builder
     public static class Patch {
+        @NotNull
         private Long postId;
+        @NotBlank
         private CategoryType category;
+        @NotBlank
         private String title;
+        @NotEmpty // 일단은 오류가 나니까 막아놓지만 추후 @NotNull로 바꾸고 비어있는 리스트에 대한 처리가 필요합니다.
         private List<String> tags;
+        @NotBlank
         private String content;
 
         public com.devillage.teamproject.entity.Post toEntity() {

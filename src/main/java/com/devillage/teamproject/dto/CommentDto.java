@@ -166,16 +166,7 @@ public class CommentDto {
         private Boolean isLiked;
 
         public static ReCommentResponse of(ReComment reComment) {
-            return ReCommentResponse.builder()
-                    .reCommentId(reComment.getId())
-                    .userId(reComment.getUser().getId())
-                    .nickname(reComment.getUser().getNickName())
-                    .content(reComment.getContent())
-                    .likeCount(reComment.getReCommentLikes().size())
-                    .createdAt(reComment.getCreatedAt())
-                    .lastModifiedAt(reComment.getLastModifiedAt())
-                    .isLiked(false)
-                    .build();
+            return of(reComment, null);
         }
 
         public static ReCommentResponse of(ReComment reComment, Long userId) {
@@ -183,10 +174,11 @@ public class CommentDto {
                     .reCommentId(reComment.getId())
                     .userId(reComment.getUser().getId())
                     .parentCommentId(reComment.getComment().getId())
+                    .nickname(reComment.getUser().getNickName())
                     .content(reComment.getContent())
                     .createdAt(reComment.getCreatedAt())
                     .lastModifiedAt(reComment.getLastModifiedAt())
-                    .isLiked(
+                    .isLiked(userId == null ? false :
                             reComment.getReCommentLikes().stream().map(
                                     reCommentLike -> reCommentLike.getUser().getId()
                             ).collect(Collectors.toList()).contains(userId)

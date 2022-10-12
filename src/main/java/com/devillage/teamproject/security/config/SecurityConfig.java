@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .mvcMatchers(GET,"/files/**").permitAll()
                 .mvcMatchers(POST,"/files/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(GET, "/test/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(POST,"/email/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .anyRequest().denyAll()
                 .and()
                 .oauth2Login()

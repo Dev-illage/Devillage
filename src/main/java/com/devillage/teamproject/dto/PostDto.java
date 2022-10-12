@@ -67,10 +67,7 @@ public class PostDto {
                                 .collect(Collectors.toList()))
                         .author(UserDto.AuthorInfo.of(post.getUser()))
                         .like(post.getLikeCount())
-//                        .postLike(post.getUser().pa)
-//                        .bookmarkLike(post.getUser().getBookmarks())
                         .commentList(post.getComments())
-//                        .commentLike()
                         .build();
             }
 

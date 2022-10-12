@@ -25,7 +25,7 @@ public interface UserController {
 
     @PatchMapping("/pwd/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    boolean patchPassword(@PathVariable("user-id") Long id,@AccessToken AuthDto.UserInfo userInfo,
+    boolean patchPassword(@AccessToken AuthDto.UserInfo userInfo,
                          @RequestBody UserDto.PasswordDto passwordDto);
 
 

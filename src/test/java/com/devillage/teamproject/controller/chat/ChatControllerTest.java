@@ -92,6 +92,11 @@ class ChatControllerTest implements Reflection {
 
         // then
         actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.roomName").value(room.getRoomName()))
+                .andExpect(jsonPath("$.users[0].username").value(user.getNickName()))
+                .andExpect(jsonPath("$.chats[0].type").value(chat.getMessageType().name()))
+                .andExpect(jsonPath("$.chats[0].sender").value(user.getNickName()))
+                .andExpect(jsonPath("$.chats[0].content").value("안녕하세요."))
                 .andDo(document("chat/getRoom",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),

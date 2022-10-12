@@ -42,11 +42,10 @@ public class PostDto {
             private Long clicks;
             private List<TagDto.Response> tag;
             private UserDto.AuthorInfo author;
-            private Long like;
-            private boolean postLike;
-            private boolean bookmarkLike;
+            private Long likeCount;
+            private boolean isLiked;
+            private boolean isBookmarked;
             private DoubleResponseDto<CommentDto.ResponseWithReComment> comments;
-            private boolean commentLike;
 
             public static PostDetail of(com.devillage.teamproject.entity.Post post, Page<Comment> commentPage,
                                         Long userId){
@@ -62,13 +61,16 @@ public class PostDto {
                                 .map(postTag -> TagDto.Response.of(postTag.getTag()))
                                 .collect(Collectors.toList()))
                         .author(UserDto.AuthorInfo.of(post.getUser()))
-                        .like(post.getLikeCount())
-//                        .postLike(post.getUser().pa)
-//                        .bookmarkLike(post.getUser().getBookmarks())
+                        .likeCount(post.getLikeCount())
+                        .isLiked(post.getLikes().stream().map(
+                                like -> like.getUser().getId()
+                        ).collect(Collectors.toList()).contains(userId))
+                        .isBookmarked(post.getBookmarks().stream().map(
+                                bookmark -> bookmark.getUser().getId()
+                        ).collect(Collectors.toList()).contains(userId))
                         .comments(DoubleResponseDto.of(commentPage.stream().map(
                                 comment -> CommentDto.ResponseWithReComment.of(comment, userId)
                         ).collect(Collectors.toList()), commentPage))
-//                        .commentLike()
                         .build();
             }
 

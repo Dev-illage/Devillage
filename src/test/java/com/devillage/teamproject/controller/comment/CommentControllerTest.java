@@ -172,6 +172,7 @@ class CommentControllerTest {
                         responseFields(
                                 fieldWithPath("reCommentId").description("대댓글 식별자"),
                                 fieldWithPath("userId").description("대댓글 작성자 식별자"),
+                                fieldWithPath("parentCommentId").type(JsonFieldType.NUMBER).description("부모댓글 식별자"),
                                 fieldWithPath("nickname").description("대댓글 작성자 닉네임"),
                                 fieldWithPath("content").description("대댓글 내용"),
                                 fieldWithPath("likeCount").description("좋아요 수"),
@@ -288,6 +289,7 @@ class CommentControllerTest {
                         responseFields(
                                 fieldWithPath("reCommentId").description("대댓글 식별자"),
                                 fieldWithPath("userId").description("대댓글 작성자 식별자"),
+                                fieldWithPath("parentCommentId").type(JsonFieldType.NUMBER).description("부모댓글 식별자"),
                                 fieldWithPath("nickname").description("대댓글 작성자 닉네임"),
                                 fieldWithPath("content").description("대댓글 내용"),
                                 fieldWithPath("likeCount").description("대댓글 좋아요 수"),
@@ -351,6 +353,7 @@ class CommentControllerTest {
                                 fieldWithPath("data[].isLiked").type(JsonFieldType.BOOLEAN).description("좋아요 여부"),
                                 fieldWithPath("data[].reComments[].reCommentId").type(JsonFieldType.NUMBER).description("대댓글 식별자"),
                                 fieldWithPath("data[].reComments[].userId").type(JsonFieldType.NUMBER).description("작성자 식별자"),
+                                fieldWithPath("data[].reComments[].parentCommentId").type(JsonFieldType.NUMBER).description("부모댓글 식별자"),
                                 fieldWithPath("data[].reComments[].nickname").type(JsonFieldType.STRING).description("대댓글 작성자 닉네임"),
                                 fieldWithPath("data[].reComments[].content").type(JsonFieldType.STRING).description("대댓글 내용"),
                                 fieldWithPath("data[].reComments[].likeCount").type(JsonFieldType.NUMBER).description("좋아요 수"),

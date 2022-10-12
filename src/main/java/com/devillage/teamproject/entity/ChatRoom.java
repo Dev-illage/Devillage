@@ -18,9 +18,11 @@ public class ChatRoom extends AuditingEntity {
     @Column(name="chatroom_id")
     private Long id;
 
-    @OneToMany(mappedBy = "chatroom")
-    private List<Chat> chat;
+    private String roomName;
 
     @OneToMany(mappedBy = "chatroom")
-    private List<ChatIn> chatIn;
+    private List<Chat> chats;
+
+    @OneToMany(mappedBy = "chatroom")
+    private List<ChatIn> chatIns;
 }

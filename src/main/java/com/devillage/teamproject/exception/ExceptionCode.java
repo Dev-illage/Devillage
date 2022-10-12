@@ -8,6 +8,7 @@ public enum ExceptionCode {
     UNSUPPORTED_JWT_EXCEPTION(401, "Unsupported Jwt Exception"),
     SIGNATURE_EXCEPTION(401, "Signature Exception"),
     EXPIRED_JWT_EXCEPTION(401, "Expired Jwt Exception"),
+    UNAUTHORIZED_FOR_CHATROOM_EXCEPTION(401, "Unauthorized for this chatRoom"),
 
     BLOCKED_USER(403, "Blocked User"),
 
@@ -18,6 +19,7 @@ public enum ExceptionCode {
     RE_COMMENT_NOT_FOUND(404, "ReComment not found"),
     TAG_NOT_FOUND(404, "Tag not found"),
     REPORT_TYPE_NOT_FOUND(404, "ReportType not found"),
+    CHAT_ROOM_NOT_FOUND(404, "ChatRoom not found"),
 
     EXISTING_USER(409, "Existing User"),
     ALREADY_REPORTED(409, "Already reported"),

@@ -40,6 +40,7 @@ public class SecurityTestConfig {
                 .mvcMatchers(GET,"/files/**").permitAll()
                 .mvcMatchers(POST,"/files/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(GET, "/test/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(GET, "/chat/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .anyRequest().denyAll()
                 .and()
                 .oauth2Login();

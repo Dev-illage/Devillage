@@ -74,6 +74,10 @@ dependencies {
 
     // aop
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    // chat
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    compileClasspath 'org.webjars:sockjs-client:1.5.1'
 }
 
 test {

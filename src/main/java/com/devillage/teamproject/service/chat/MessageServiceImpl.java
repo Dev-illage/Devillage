@@ -60,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
 
     private void joinUserChatRoom(User user, ChatRoom chatRoom) {
         chatInRepository.findFirstByUserAndChatroom(user, chatRoom)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.NICKNAME_ALREADY_EXISTS));
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.CHAT_IN_ALREADY_EXISTS));
         chatInRepository.save(new ChatIn(user, chatRoom));
     }
 

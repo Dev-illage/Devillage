@@ -25,6 +25,7 @@ public enum ExceptionCode {
     ALREADY_REPORTED(409, "Already reported"),
     NICKNAME_ALREADY_EXISTS(409, "Nickname already exists"),
     ID_DOES_NOT_MATCH(409, "Id does not match"),
+    ROOM_NAME_ALREADY_EXISTS(409, "RoomName already exists"),
 
     USER_RESIGNED(422, "Resigned User"),
     USER_AUTHORIZED(403, "Unauthorized user"),

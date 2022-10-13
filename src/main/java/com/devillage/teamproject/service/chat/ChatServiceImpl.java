@@ -2,6 +2,7 @@ package com.devillage.teamproject.service.chat;
 
 import com.devillage.teamproject.entity.ChatIn;
 import com.devillage.teamproject.entity.ChatRoom;
+import com.devillage.teamproject.repository.chat.ChatInRepository;
 import com.devillage.teamproject.repository.chat.ChatRoomRepository;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.exception.BusinessLogicException;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class ChatServiceImpl implements ChatService {
     private final UserService userService;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatInRepository chatInRepository;
 
     @Override
     public List<ChatRoom> getRooms() {
@@ -39,5 +41,18 @@ public class ChatServiceImpl implements ChatService {
         }
 
         return chatRoom;
+    }
+
+    @Override
+    public ChatRoom postRoom(Long userId, String roomName) {
+        User user = userService.findVerifiedUser(userId);
+        if (chatRoomRepository.existsByRoomName(roomName)) {
+            throw new BusinessLogicException(ExceptionCode.ROOM_NAME_ALREADY_EXISTS);
+        }
+        ChatRoom chatRoom = new ChatRoom(roomName);
+        ChatIn chatIn = new ChatIn(user, chatRoom);
+        chatInRepository.save(chatIn);
+
+        return chatRoomRepository.save(chatRoom);
     }
 }

@@ -42,4 +42,9 @@ public class ChatControllerImpl implements ChatController {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public String postRoom(AuthDto.UserInfo userInfo, String roomName) {
+        return chatService.postRoom(userInfo.getId(), roomName).getRoomName();
+    }
+
 }

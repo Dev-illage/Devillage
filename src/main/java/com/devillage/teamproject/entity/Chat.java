@@ -21,6 +21,10 @@ public class Chat extends AuditingEntity {
 
     @ToString.Include
     @EqualsAndHashCode.Include
+    private String nickName;
+
+    @ToString.Include
+    @EqualsAndHashCode.Include
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
 
@@ -40,5 +44,13 @@ public class Chat extends AuditingEntity {
     public void setDate() {
         setCreatedAt(LocalDateTime.now());
         setLastModifiedAt(LocalDateTime.now());
+    }
+
+    public Chat(String nickName, MessageType messageType, String content, ChatRoom chatroom, User user) {
+        this.nickName = nickName;
+        this.messageType = messageType;
+        this.content = content;
+        this.chatroom = chatroom;
+        this.user = user;
     }
 }

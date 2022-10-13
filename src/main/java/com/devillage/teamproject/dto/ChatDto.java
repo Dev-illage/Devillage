@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class ChatDto {
-    private MessageType type;
-    private String sender;
+    private MessageType messageType;
+    private String nickName;
     private String content;
     private LocalDateTime createdAt;
 
@@ -34,5 +34,11 @@ public class ChatDto {
         private String roomName;
         private List<UserDto> users;
         private List<ChatDto> chats;
+    }
+
+    @Getter
+    public static class SocketRequestDto {
+        private MessageType messageType;
+        private String content;
     }
 }

@@ -20,12 +20,14 @@ public enum ExceptionCode {
     TAG_NOT_FOUND(404, "Tag not found"),
     REPORT_TYPE_NOT_FOUND(404, "ReportType not found"),
     CHAT_ROOM_NOT_FOUND(404, "ChatRoom not found"),
+    CHAT_IN_NOT_FOUND(404, "ChatIn not found"),
 
     EXISTING_USER(409, "Existing User"),
     ALREADY_REPORTED(409, "Already reported"),
     NICKNAME_ALREADY_EXISTS(409, "Nickname already exists"),
     ID_DOES_NOT_MATCH(409, "Id does not match"),
     ROOM_NAME_ALREADY_EXISTS(409, "RoomName already exists"),
+    CHAT_IN_ALREADY_EXISTS(409, "ChatIn already exists"),
 
     USER_RESIGNED(422, "Resigned User"),
     USER_AUTHORIZED(403, "Unauthorized user"),

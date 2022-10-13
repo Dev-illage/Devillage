@@ -89,11 +89,7 @@ public class CommentDto {
                             .likeCount(0L)
                             .createdAt(comment.getCreatedAt())
                             .lastModifiedAt(comment.getLastModifiedAt())
-                            .isLiked(
-                                    comment.getCommentLikes().stream().map(
-                                            commentLike -> commentLike.getUser().getId()
-                                    ).collect(Collectors.toList()).contains(userId)
-                            )
+                            .isLiked(false)
                             .build() :
                     ResponseWithReComment.builder()
                             .commentId(comment.getId())
@@ -106,7 +102,11 @@ public class CommentDto {
                             .likeCount(comment.getCommentLikes().size())
                             .createdAt(comment.getCreatedAt())
                             .lastModifiedAt(comment.getLastModifiedAt())
-                            .isLiked(false)
+                            .isLiked(
+                                    comment.getCommentLikes().stream().map(
+                                            commentLike -> commentLike.getUser().getId()
+                                    ).collect(Collectors.toList()).contains(userId)
+                            )
                             .build();
         }
     }

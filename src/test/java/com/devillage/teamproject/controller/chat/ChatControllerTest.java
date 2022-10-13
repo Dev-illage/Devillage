@@ -32,6 +32,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -132,7 +133,6 @@ class ChatControllerTest implements Reflection {
         setField(room2, "chatIns", List.of(1, 2, 3, 4, 5));
         setField(room3, "chatIns", List.of(1, 2, 3, 4, 5, 6, 7));
 
-
         String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
 
         given(chatService.getRooms())
@@ -162,6 +162,38 @@ class ChatControllerTest implements Reflection {
                         responseFields(
                                 fieldWithPath("[].roomName").type(JsonFieldType.STRING).description("채팅방 이름"),
                                 fieldWithPath("[].numberOfUser").type(JsonFieldType.NUMBER).description("채팅방 유저 수")
+                        )
+                ));
+    }
+
+    @Test
+    public void postRoom() throws Exception {
+        // given
+        String roomName = "스프링";
+        ChatRoom chatRoom = new ChatRoom(roomName);
+
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
+
+        given(chatService.postRoom(ID1, roomName))
+                .willReturn(chatRoom);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/chat/{room-name}", roomName)
+                        .header(AUTHORIZATION_HEADER, token)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andDo(document("/chat/postRoom",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("JWT")
+                        ),
+                        pathParameters(
+                                parameterWithName("room-name").description("채팅방 이름")
                         )
                 ));
     }

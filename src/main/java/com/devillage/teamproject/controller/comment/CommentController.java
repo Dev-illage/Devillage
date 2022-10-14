@@ -8,19 +8,21 @@ import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequestMapping("/posts")
 public interface CommentController {
 
     @PostMapping("/{post-id}/comments")
     @ResponseStatus(HttpStatus.CREATED)
-    CommentDto.Response postComment(@RequestBody CommentDto.Post request, @PathVariable("post-id") Long postId,
+    CommentDto.Response postComment(@Valid @RequestBody CommentDto.Post request, @PathVariable("post-id") Long postId,
                                     @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @PostMapping("/{post-id}/comments/{comment-id}")
     @ResponseStatus(HttpStatus.CREATED)
     CommentDto.ReCommentResponse postReComment(@PathVariable("post-id") Long postId,
                                                @PathVariable("comment-id") Long commentId,
-                                               @RequestBody CommentDto.ReCommentPost request,
+                                               @Valid @RequestBody CommentDto.ReCommentPost request,
                                                @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @PostMapping("/{post-id}/comments/{comment-id}/like")
@@ -47,14 +49,14 @@ public interface CommentController {
     @ResponseStatus(HttpStatus.OK)
     CommentDto.Response patchComment(@PathVariable("post-id") Long postId,
                                      @PathVariable("comment-id") Long commentId,
-                                     @RequestBody CommentDto.Patch request);
+                                     @Valid @RequestBody CommentDto.Patch request);
 
     @PatchMapping("/{post-id}/comments/{comment-id}/{re-comment-id}")
     @ResponseStatus(HttpStatus.OK)
     CommentDto.ReCommentResponse patchReComment(@PathVariable("post-id") Long postId,
                                                 @PathVariable("comment-id") Long commentId,
                                                 @PathVariable("re-comment-id") Long reCommentId,
-                                                @RequestBody CommentDto.Patch request);
+                                                @Valid @RequestBody CommentDto.Patch request);
 
     @DeleteMapping("/{post-id}/comments/{comment-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

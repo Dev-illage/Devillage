@@ -8,6 +8,7 @@ import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/users")
@@ -21,12 +22,12 @@ public interface UserController {
     @PatchMapping("/profile")
     @ResponseStatus(HttpStatus.OK)
     Long patchProfile(@AccessToken AuthDto.UserInfo userInfo,
-                      @RequestBody UserDto.PatchProfile patchProfile);
+                      @Valid @RequestBody UserDto.PatchProfile patchProfile);
 
     @PatchMapping("/password")
     @ResponseStatus(HttpStatus.OK)
     boolean patchPassword(@AccessToken AuthDto.UserInfo userInfo,
-                         @RequestBody UserDto.PasswordDto passwordDto);
+                          @Valid @RequestBody UserDto.PasswordDto passwordDto);
 
 
     @GetMapping("/profile")

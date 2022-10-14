@@ -34,8 +34,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -89,6 +89,9 @@ class FileControllerTest {
                         requestHeaders(
                                 headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
                         ),
+                        requestPartBody(
+                          "multipartFile"
+                        ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("파일 식별자"),
                                 fieldWithPath("originalFilename").type(JsonFieldType.STRING).description("원본파일 이름"),
@@ -101,6 +104,34 @@ class FileControllerTest {
                         )
                 ));
 
+    }
+
+    @Test
+    @DisplayName("getImage")
+    public void getImage() throws Exception {
+        // given
+        User user = User.builder().id(ID1).build();
+        File file = File.builder().fileSize(1234512L).fileType(FileType.IMAGE).originalFilename("image1.jpg")
+                .remotePath("https://www.someserver.com/?q=image1.jpg")
+                .localPath("init-images/image1.jpg").filename("image1.jpg").id(ID1).owner(user).build();
+        given(fileService.findFileWithFilename(Mockito.anyString())).willReturn(file);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/files")
+                        .param("q", "filename")
+                        .accept(MediaType.IMAGE_JPEG)
+        );
+
+        // then
+        actions.andExpect(status().isOk())
+                .andDo(document(
+                        "image/get",
+                        preprocessResponse(prettyPrint()),
+                        requestParameters(
+                                parameterWithName("q").description("찾고자 하는 이미지의 파일 이름")
+                        )
+                ));
     }
 
 }

@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
@@ -172,6 +173,7 @@ class PostControllerTest implements Reflection {
         setField(post, "tags", List.of(postTag));
         setField(post, "content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
         setField(post, "clicks", 1L);
+        setField(post,"postLastModifiedAt", LocalDateTime.of(0000, 12, 31, 00, 00,00,3333));
         setField(category, "categoryType", CategoryType.NOTICE);
         setField(postTag, "tag", tag);
         setField(tag, "id", 1L);
@@ -180,8 +182,8 @@ class PostControllerTest implements Reflection {
         setField(comment, "content", "잘 봤습니다.");
         setField(authorInfo, "authorId", 1L);
         setField(authorInfo, "authorName", "강지");
-        post.addUser(user);
         post.setDate();
+        post.addUser(user);
         Long id = post.getId();
         setField(user, "nickName", NICKNAME1);
 

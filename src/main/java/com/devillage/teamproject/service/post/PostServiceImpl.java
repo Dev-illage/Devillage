@@ -83,7 +83,7 @@ public class PostServiceImpl implements PostService {
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
         Category category = categoryRepository.findCategoriesByCategoryType(categoryType);
-
+        postTagRepository.deleteAll();
         tagValue.forEach(
                 e -> {
                     if (tagRepository.findTagByName(e).isEmpty()) {

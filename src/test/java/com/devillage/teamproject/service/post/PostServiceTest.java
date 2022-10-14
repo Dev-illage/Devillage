@@ -28,10 +28,10 @@ import java.util.Optional;
 import static com.devillage.teamproject.util.TestConstants.COMMENT_CONTENT;
 import static com.devillage.teamproject.util.TestConstants.ID1;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 public class PostServiceTest implements Reflection {
@@ -204,6 +204,21 @@ public class PostServiceTest implements Reflection {
         assertEquals(testPost.getClicks(),post.getClicks());
         assertEquals(testPost.getCategory(),post.getCategory());
         assertEquals(testPost.getTags().get(0).getTag().getName(),post.getTags().get(0).getTag().getName());
+
+    }
+
+    @Test
+    public void deletePost() throws Exception{
+        //given
+        Post post = newInstance(Post.class);
+        setField(post,"id",1L);
+
+        Long postId = 1L;
+        doNothing().when(postRepository).deleteById(postId);
+        given(postRepository.findById(postId)).willReturn(Optional.of(post));
+
+        //when then
+        assertDoesNotThrow(() -> postService.deletePost(postId));
 
     }
 

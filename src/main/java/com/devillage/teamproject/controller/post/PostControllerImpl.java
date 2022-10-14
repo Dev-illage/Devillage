@@ -117,7 +117,7 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public void deletePost(Long id) {
-
+    public void deletePost(AuthDto.UserInfo userInfo,Long postId) {
+        postService.deletePost(postId);
     }
 }

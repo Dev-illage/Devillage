@@ -3,7 +3,9 @@ package com.devillage.teamproject.dto;
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.Modifying;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -58,7 +60,7 @@ public class PostDto {
                         .category(post.getCategory().getCategoryType().name())
                         .createdAt(post.getCreatedAt())
                         .content(post.getContent())
-                        .isModified(post.getLastModifiedAt().isAfter(post.getCreatedAt()))
+                        .isModified(post.getPostLastModifiedAt().isAfter(post.getCreatedAt()))
                         .clicks(post.getClicks())
                         .tag(post.getTags().stream()
                                 .map(postTag -> TagDto.Response.of(postTag.getTag()))

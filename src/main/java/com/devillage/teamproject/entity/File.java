@@ -10,6 +10,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@AllArgsConstructor
+@Builder
 public class File extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

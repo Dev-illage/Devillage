@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface FileController {
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     FileDto.Response postFile(@AccessToken AuthDto.UserInfo userInfo,
                               @RequestPart MultipartFile multipartFile, HttpServletRequest request);
 

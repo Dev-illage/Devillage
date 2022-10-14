@@ -92,7 +92,7 @@ public class PostServiceImpl implements PostService {
                         postTagRepository.save(postTag);
                         verifiedPost.addPostTag(postTag);
                         verifiedPost.addCategory(category);
-                        post.editPost(verifiedPost);
+                        verifiedPost.editPost(post);
                         postRepository.save(verifiedPost);
                         findUser.addPost(verifiedPost);
                         verifiedPost.addUser(findUser);
@@ -102,7 +102,7 @@ public class PostServiceImpl implements PostService {
                         postTagRepository.save(postTag);
                         verifiedPost.addPostTag(postTag);
                         verifiedPost.addCategory(category);
-                        post.editPost(verifiedPost);
+                        verifiedPost.editPost(post);
                         postRepository.save(verifiedPost);
                         findUser.addPost(verifiedPost);
                         verifiedPost.addUser(findUser);

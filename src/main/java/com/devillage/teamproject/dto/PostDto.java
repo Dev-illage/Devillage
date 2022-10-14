@@ -149,6 +149,18 @@ public class PostDto {
                 return new LikeDto(userId, postId, likeId);
             }
         }
+        @Getter
+        @AllArgsConstructor(access = AccessLevel.PROTECTED)
+        public static class CommentLikeDto {
+            private final Long userId;
+            private final Long postId;
+            private final Long commentId;
+            private final Long likeCount;
+
+            public static CommentLikeDto of(Long userId, Long postId, Long commentId, Long likeId) {
+                return new CommentLikeDto(userId, postId,commentId, likeId);
+            }
+        }
 
     }
 

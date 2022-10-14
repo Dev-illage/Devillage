@@ -266,7 +266,7 @@ class CommentServiceTest implements Reflection {
         given(commentLikeRepository.countByCommentId(commentId)).willReturn(0L);
 
         //when
-        Comment compareComment = commentService.likeComment(commentId,userId,"token");
+        Comment compareComment = commentService.likeComment(userId,postId,commentId);
 
         //then
         assertThat(compareComment).isEqualTo(comment);

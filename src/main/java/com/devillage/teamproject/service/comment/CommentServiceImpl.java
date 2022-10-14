@@ -64,28 +64,25 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment likeComment(Long postId, Long commentId, String token) {
-        Long userId = jwtTokenUtil.getUserId(token);
+    public Comment likeComment(Long userId,Long postId, Long commentId) {
         User user = userService.findVerifiedUser(userId);
         Post post = postService.findVerifyPost(postId);
         Comment comment = findVerifiedComment(commentId);
 
+        List<CommentLike> commentLikes = commentLikeRepository.findByCommentIdAndUserIdAndPostId(commentId, userId, postId);
         Long count = commentLikeRepository.countByCommentId(commentId);
-        List<CommentLike> commentLikes = commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(commentId, userId, postId);
 
         if (!commentLikes.isEmpty()) {
-            commentLikeRepository.deleteAll();
-            count -= 1;
+            commentLikeRepository.deleteAll(commentLikes);
+            count -= 1L;
         } else {
             CommentLike commentLike = new CommentLike(user, comment, post);
             user.addCommentLike(commentLike);
-            count += 1;
+            post.addCommentLike(commentLike);
+            count += 1L;
 
         }
-
         comment.setLikeCount(count);
-//        Long result = comment.getLikeCount();
-//        commentRepository.save(comment);
         return comment;
     }
 

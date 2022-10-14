@@ -67,5 +67,5 @@ public interface PostController {
 
     @DeleteMapping("/{post-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deletePost(@PathVariable("post-id") Long id);
+    void deletePost(@AccessToken AuthDto.UserInfo userInfo,@PathVariable("post-id") Long id);
 }

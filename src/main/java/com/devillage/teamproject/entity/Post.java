@@ -1,6 +1,8 @@
 package com.devillage.teamproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,12 +40,17 @@ public class Post extends AuditingEntity {
     @EqualsAndHashCode.Include
     private Long likeCount;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime postLastModifiedAt;
+
     public Post(Long id, String title, String content) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.clicks = 0L;
         this.likeCount = 0L;
+        this.postLastModifiedAt = LocalDateTime.of(9999, 12, 31, 00, 00,00,3333);
     }
 
     public void setClickCount(Long clickCount){
@@ -80,22 +87,19 @@ public class Post extends AuditingEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private final List<ReportedPost> reportedPosts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private final List<Like> likes = new ArrayList<>();
+
     public void addReportedPosts(ReportedPost reportedPost) {
         reportedPosts.add(reportedPost);
     }
-
-    //외부 접근용(PostDto.Response) 생성자 추가
-//    public Post(Category category, String title, List<PostTag> tags, String content){
-//        this.category =category;
-//        this.title = title;
-//        this.content = content;
-//    }
 
     public void editPost(Post post){
         this.category = post.getCategory();
         this.content = post.getContent();
         this.title = post.getTitle();
         this.tags = post.getTags();
+        this.postLastModifiedAt = LocalDateTime.now();
     }
 
     public void addPostTag(PostTag postTag) {

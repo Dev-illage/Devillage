@@ -4,15 +4,16 @@ import com.devillage.teamproject.entity.enums.CommentStatus;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-@AllArgsConstructor
 @Builder
 public class Comment extends AuditingEntity {
     @Id
@@ -47,6 +48,19 @@ public class Comment extends AuditingEntity {
 
     @OneToMany(mappedBy = "comment")
     private List<CommentLike> commentLikes = new ArrayList<>();
+
+    @Builder
+    public Comment(Long id, String content, User user, Post post, Long likeCount, CommentStatus commentStatus, List<CommentLike> commentLikes) {
+        this.id = id;
+        this.content = content;
+        this.user = user;
+        this.post = post;
+        this.likeCount = Optional.ofNullable(likeCount).orElse(0L);
+        this.commentStatus = Optional.ofNullable(commentStatus).orElse(CommentStatus.VALID);
+        this.commentLikes = Optional.ofNullable(commentLikes).orElse(new ArrayList<>());
+        this.setCreatedAt(LocalDateTime.now());
+        this.setLastModifiedAt(LocalDateTime.now());
+    }
 
     public static Comment createComment(Comment comment, User user, Post post) {
         Comment newComment = Comment.builder()

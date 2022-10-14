@@ -3,6 +3,7 @@ package com.devillage.teamproject.controller.comment;
 import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.dto.DoubleResponseDto;
+import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
@@ -27,8 +28,8 @@ public interface CommentController {
 
     @PostMapping("/{post-id}/comments/{comment-id}/like")
     @ResponseStatus(HttpStatus.OK)
-    public boolean likeComment(@PathVariable("post-id") Long postId,
-                  @PathVariable("comment-id") Long commentId,@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
+    PostDto.Response.CommentLikeDto likeComment(@AccessToken AuthDto.UserInfo userInfo,@PathVariable("post-id") Long postId,
+                                                @PathVariable("comment-id") Long commentId);
 
     @GetMapping("/{post-id}/comments/{comment-id}")
     @ResponseStatus(HttpStatus.OK)

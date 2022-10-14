@@ -13,7 +13,7 @@ public interface CommentService {
 
     Comment editComment(Long postId, Long commentId, String content);
 
-    Comment likeComment(Long postId,Long commentId,String token);
+    Comment likeComment(Long userId,Long postId,Long commentId);
 
     Page<Comment> findComments(Long postId, int page, int size);
 

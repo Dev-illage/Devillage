@@ -41,12 +41,12 @@ public class Comment extends AuditingEntity {
 
     @ToString.Include
     @EqualsAndHashCode.Include
-    private Long likeCount = 0L;
+    private Long likeCount;
 
     @Enumerated(EnumType.STRING)
     private CommentStatus commentStatus;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<CommentLike> commentLikes = new ArrayList<>();
 
     @Builder
@@ -76,7 +76,7 @@ public class Comment extends AuditingEntity {
     }
 
     public void setLikeCount(Long count) {
-        this.likeCount = count;
+        likeCount = count;
     }
 
     public void deleteComment() {

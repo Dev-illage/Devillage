@@ -1,5 +1,6 @@
 package com.devillage.teamproject.entity;
 
+import com.devillage.teamproject.entity.enums.FileType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,6 +10,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@AllArgsConstructor
+@Builder
 public class File extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +22,9 @@ public class File extends AuditingEntity {
 
     @ToString.Include
     @EqualsAndHashCode.Include
-    private String originalFileName;
+    private String originalFilename;
+
+    private String filename;
 
     @ToString.Include
     @EqualsAndHashCode.Include
@@ -35,11 +40,12 @@ public class File extends AuditingEntity {
 
     @ToString.Include
     @EqualsAndHashCode.Include
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private FileType fileType;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "owner_user_id")
+    private User owner;
 
     public static File ofOauth2UserPicture(String path) {
         File file = new File();
@@ -48,6 +54,18 @@ public class File extends AuditingEntity {
     }
 
     public void addUser(User user) {
-        this.user = user;
+        this.owner = user;
+    }
+
+    public static File createLocalImage(String originalFilename, String filename, Long fileSize,
+                                        String localPath, StringBuffer requestURL) {
+        File file = new File();
+        file.originalFilename = originalFilename;
+        file.filename = filename;
+        file.fileSize = fileSize;
+        file.localPath = localPath;
+        file.fileType = FileType.IMAGE;
+        file.remotePath = requestURL.append("?q=").append(file.getFilename()).toString();
+        return file;
     }
 }

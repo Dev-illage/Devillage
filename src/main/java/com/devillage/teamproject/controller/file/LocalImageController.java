@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Optional;
 
+@RestController
 public class LocalImageController implements FileController {
 
     private final FileService fileService;
@@ -41,6 +44,9 @@ public class LocalImageController implements FileController {
     @Override
     public FileDto.Response getFile(Long id, AuthDto.UserInfo userInfo) {
         File findFile = fileService.findFile(id);
+        if (userInfo == null) {
+            throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
+        }
         if (!Objects.equals(findFile.getOwner().getId(), userInfo.getId())) {
             throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
         }

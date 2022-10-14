@@ -64,6 +64,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public Comment likeComment(Long userId,Long postId, Long commentId) {
         User user = userService.findVerifiedUser(userId);
         Post post = postService.findVerifyPost(postId);
@@ -73,7 +74,7 @@ public class CommentServiceImpl implements CommentService {
         Long count = commentLikeRepository.countByCommentId(commentId);
 
         if (!commentLikes.isEmpty()) {
-            commentLikeRepository.deleteAll(commentLikes);
+            commentLikeRepository.deleteByCommentIdAndUserIdAndPostId(commentId,userId,postId);
             count -= 1L;
         } else {
             CommentLike commentLike = new CommentLike(user, comment, post);

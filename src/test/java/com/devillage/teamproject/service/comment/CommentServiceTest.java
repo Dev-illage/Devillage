@@ -257,11 +257,11 @@ class CommentServiceTest implements Reflection {
         Long userId = 1L;
         Long postId = 1L;
 
-        List<CommentLike> commentLikes = commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(commentId,userId,postId);
+        List<CommentLike> commentLikes = commentLikeRepository.findByCommentIdAndUserIdAndPostId(commentId,userId,postId);
 
         given(jwtTokenUtil.getUserId(anyString())).willReturn(userId);
         given(commentRepository.findById(commentId)).willReturn(Optional.of(comment));
-        given(commentLikeRepository.findByCommentIdAndAndUserIdAndPostId(anyLong(),anyLong(),anyLong())).willReturn(new ArrayList<>());
+        given(commentLikeRepository.findByCommentIdAndUserIdAndPostId(anyLong(),anyLong(),anyLong())).willReturn(new ArrayList<>());
         given(userService.findVerifiedUser(userId)).willReturn(user);
         given(commentLikeRepository.countByCommentId(commentId)).willReturn(0L);
 

@@ -50,7 +50,7 @@ public class Post extends AuditingEntity {
         this.content = content;
         this.clicks = 0L;
         this.likeCount = 0L;
-        this.postLastModifiedAt = LocalDateTime.of(9999, 12, 31, 00, 00,00,3333);
+        this.postLastModifiedAt = LocalDateTime.of(0000, 12, 31, 00, 00,00,3333);
     }
 
     public void setClickCount(Long clickCount){

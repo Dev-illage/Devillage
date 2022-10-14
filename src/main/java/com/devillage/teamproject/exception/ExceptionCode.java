@@ -25,9 +25,13 @@ public enum ExceptionCode {
     ID_DOES_NOT_MATCH(409, "Id does not match"),
 
     USER_RESIGNED(422, "Resigned User"),
-    USER_AUTHORIZED(403, "Unauthorized user"),
     NOT_VALID_PASSWORD(404,"Not valid password"),
-    CAN_NOT_UPDATE_PASSWORD(400,"Can not update password")
+    CAN_NOT_UPDATE_PASSWORD(400,"Can not update password"),
+    USER_UNAUTHORIZED(403, "Unauthorized user"),
+    FILE_EMPTY(400, "file is empty"),
+    FILE_NAME_NOT_VALID(400, "file name is not valid"),
+    CONTENT_TYPE_NOT_ACCEPTABLE(400, "this content type is not acceptable"),
+    FILE_NOT_FOUND(404, "file not found"),
     ;
 
     private final int status;

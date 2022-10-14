@@ -157,9 +157,9 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class Post {
-        @NotEmpty
+        @NotNull
         private Long postId;
-        @NotBlank
+        @NotNull
         private CategoryType category;
         @NotBlank
         private String title;
@@ -185,7 +185,7 @@ public class PostDto {
     public static class Patch {
         @NotNull
         private Long postId;
-        @NotBlank
+        @NotNull
         private CategoryType category;
         @NotBlank
         private String title;

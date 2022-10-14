@@ -20,13 +20,15 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowCredentials(true)
                 .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("https://dev-illage.com")
                 .exposedHeaders("*")
                 .allowedMethods(
                         HttpMethod.GET.name(),
                         HttpMethod.PATCH.name(),
                         HttpMethod.DELETE.name(),
                         HttpMethod.PUT.name(),
-                        HttpMethod.POST.name()
+                        HttpMethod.POST.name(),
+                        HttpMethod.OPTIONS.name()
                 );
     }
 

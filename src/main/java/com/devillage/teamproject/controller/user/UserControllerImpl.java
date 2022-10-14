@@ -33,7 +33,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public boolean patchPassword(AuthDto.UserInfo userInfo, UserDto.PasswordDto passwordDto) {
-        userService.updatePassword(userInfo.getId(),userInfo,passwordDto.getPassword(), passwordDto.getUpdatePassword());
+        userService.updatePassword(userInfo,passwordDto.getPassword(), passwordDto.getUpdatePassword());
         return true;
     }
 

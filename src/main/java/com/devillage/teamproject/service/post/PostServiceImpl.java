@@ -2,6 +2,7 @@ package com.devillage.teamproject.service.post;
 
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
+import com.devillage.teamproject.entity.enums.ReportType;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.category.CategoryRepository;
@@ -25,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,13 +38,11 @@ public class PostServiceImpl implements PostService {
     private final BookmarkRepository bookmarkRepository;
     private final ReportedPostRepository reportedPostRepository;
     private final LikeRepository likeRepository;
-    private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Post savePost(Post post, CategoryType categoryType, List<String> tagValue, Long userId) {
@@ -80,7 +78,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post editPost(Post post, CategoryType categoryType, List<String> tagValue, Long userId,Long postId) {
+    public Post editPost(Post post, CategoryType categoryType, List<String> tagValue, Long userId, Long postId) {
         Post verifiedPost = findVerifyPost(postId);
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
@@ -88,9 +86,9 @@ public class PostServiceImpl implements PostService {
 
         tagValue.forEach(
                 e -> {
-                    if(tagRepository.findTagByName(e).isEmpty()){
+                    if (tagRepository.findTagByName(e).isEmpty()) {
                         Tag tag = tagRepository.save(new Tag(e));
-                        PostTag postTag = new PostTag(verifiedPost,tag);
+                        PostTag postTag = new PostTag(verifiedPost, tag);
                         postTagRepository.save(postTag);
                         verifiedPost.addPostTag(postTag);
                         verifiedPost.addCategory(category);
@@ -98,10 +96,9 @@ public class PostServiceImpl implements PostService {
                         postRepository.save(verifiedPost);
                         findUser.addPost(verifiedPost);
                         verifiedPost.addUser(findUser);
-                    }
-                    else {
+                    } else {
                         Tag tag = tagRepository.findTagByName(e).orElseThrow(IllegalArgumentException::new);
-                        PostTag postTag = new PostTag(verifiedPost,tag);
+                        PostTag postTag = new PostTag(verifiedPost, tag);
                         postTagRepository.save(postTag);
                         verifiedPost.addPostTag(postTag);
                         verifiedPost.addCategory(category);
@@ -126,6 +123,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post getPost(Long userId) {
         Post post = findVerifyPost(userId);
+        post.setClickCount(updateClicks(post));
         return post;
     }
 
@@ -137,6 +135,11 @@ public class PostServiceImpl implements PostService {
             throw new BusinessLogicException(ExceptionCode.CATEGORY_NOT_FOUND);
         }
 
+        if (category.toUpperCase().equals(CategoryType.ALL.name())) {
+            return postRepository.findAll(
+                    PageRequest.of(page - 1, size, Sort.by("id").descending()));
+        }
+
         return postRepository.findByCategory_CategoryType(
                 CategoryType.valueOf(category.toUpperCase()),
                 PageRequest.of(page - 1, size, Sort.by("id").descending()));
@@ -146,6 +149,21 @@ public class PostServiceImpl implements PostService {
     public Page<Post> getPostsBySearch(String word, int page, int size) {
         return postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
                 word, word, PageRequest.of(page - 1, size, Sort.by("id").descending()));
+    }
+
+    @Override
+    public Page<Post> getPostsByTag(String tagName, int page, int size) {
+        Tag tag = tagRepository.findTagByName(tagName)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND));
+        Page<PostTag> postTags = postTagRepository.findByTag(tag,
+                PageRequest.of(page - 1, size, Sort.by("id").descending()));
+        List<Post> posts = postTags.stream()
+                .map(PostTag::getPost)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(posts,
+                PageRequest.of(page - 1, size),
+                postTags.getTotalElements());
     }
 
     @Override
@@ -187,17 +205,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ReportedPost postReport(Long userId, Long postId) {
+    public ReportedPost postReport(Long userId, Long postId, Integer reportType, String content) {
+
+        if (reportType == null || reportType < 1 || reportType > ReportType.values().length) {
+            throw new BusinessLogicException(ExceptionCode.REPORT_TYPE_NOT_FOUND);
+        }
+
         User user = userService.findVerifiedUser(userId);
         Post post = findVerifyPost(postId);
 
-        List<ReportedPost> findReport = reportedPostRepository.findByUserIdAndPostId(userId, postId);
+        reportedPostRepository.findByUserIdAndPostId(userId, postId)
+                .ifPresent(reportedPost -> {
+                    throw new BusinessLogicException(ExceptionCode.ALREADY_REPORTED);
+                });
 
-        if (!findReport.isEmpty()) {
-            throw new BusinessLogicException(ExceptionCode.ALREADY_REPORTED);
-        }
-
-        ReportedPost reportedPost = new ReportedPost(user, post);
+        ReportedPost reportedPost = new ReportedPost(user, post, ReportType.values()[reportType - 1], content);
         post.addReportedPosts(reportedPost);
         return reportedPost;
     }
@@ -223,12 +245,17 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
+    @Override
     public Post findVerifyPost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
 
         return findPost.orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND)
         );
+    }
+    public Long updateClicks(Post post){
+        Long count = post.getClicks()+1L;
+        return count;
     }
 
 }

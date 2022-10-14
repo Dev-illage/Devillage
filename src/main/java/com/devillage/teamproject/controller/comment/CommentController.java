@@ -1,7 +1,9 @@
 package com.devillage.teamproject.controller.comment;
 
+import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.dto.DoubleResponseDto;
+import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,7 @@ public interface CommentController {
 
     @PostMapping("/{post-id}/comments")
     @ResponseStatus(HttpStatus.CREATED)
-    CommentDto.Response postComment(CommentDto.Post request, @PathVariable("post-id") Long postId,
+    CommentDto.Response postComment(@RequestBody CommentDto.Post request, @PathVariable("post-id") Long postId,
                                     @RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
     @PostMapping("/{post-id}/comments/{comment-id}")
@@ -70,5 +72,6 @@ public interface CommentController {
     @ResponseStatus(HttpStatus.OK)
     DoubleResponseDto getComments(@PathVariable("post-id") Long postId,
                                   @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                  @RequestParam(value = "size", required = false, defaultValue = "10") Integer size);
+                                  @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
+                                  @AccessToken AuthDto.UserInfo userInfo);
 }

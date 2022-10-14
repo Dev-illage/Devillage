@@ -1,15 +1,16 @@
 package com.devillage.teamproject.controller.post;
 
-import com.devillage.teamproject.dto.AuthDto;
-import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.dto.PostDto;
+import com.devillage.teamproject.dto.ReportDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.*;
 import com.devillage.teamproject.entity.enums.CategoryType;
-import com.devillage.teamproject.security.config.SecurityConfig;
-import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
+import com.devillage.teamproject.entity.enums.ReportType;
+import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.service.comment.CommentService;
 import com.devillage.teamproject.service.post.PostService;
 import com.devillage.teamproject.util.Reflection;
+import com.devillage.teamproject.util.TestConstants;
 import com.devillage.teamproject.util.security.SecurityTestConfig;
 import com.devillage.teamproject.util.security.WithMockCustomUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,11 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -31,12 +30,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
-import static com.devillage.teamproject.util.TestConstants.COMMENT_CONTENT;
-import static com.devillage.teamproject.util.TestConstants.ID1;
+import static com.devillage.teamproject.util.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -46,15 +43,14 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {PostController.class, ResultJwtArgumentResolver.class})
+@WebMvcTest(controllers = {PostController.class, JwtTokenUtil.class})
 @WithMockCustomUser
 @Import(SecurityTestConfig.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -68,7 +64,10 @@ class PostControllerTest implements Reflection {
     PostService postService;
 
     @MockBean
-    ResultJwtArgumentResolver resultJwtArgumentResolver;
+    CommentService commentService;
+
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     ObjectMapper objectMapper = new ObjectMapper();
@@ -76,9 +75,9 @@ class PostControllerTest implements Reflection {
     User user = newInstance(User.class);
     Post post = newInstance(Post.class);
 
-    PostControllerTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-        setField(user, "id", 1L);
-        setField(post, "id", 2L);
+    PostControllerTest() throws Exception {
+        setField(user, "id", ID1);
+        setField(post, "id", ID2);
     }
 
     @WithMockUser
@@ -89,19 +88,22 @@ class PostControllerTest implements Reflection {
                 .postId(post.getId())
                 .title("안녕하세요.")
                 .content(COMMENT_CONTENT)
-                .tags(List.of("tag1","tag2"))
+                .tags(List.of("tag1", "tag2"))
                 .category(CategoryType.NOTICE)
                 .build();
 
+
         String content = objectMapper.writeValueAsString(postDto);
 
-        given(postService.savePost(any(Post.class), any(CategoryType.class), Mockito.anyList(), Mockito.isNull())).willReturn(postDto.toEntity());
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
+
+        given(postService.savePost(any(Post.class), any(CategoryType.class), Mockito.anyList(), Mockito.anyLong())).willReturn(postDto.toEntity());
 
         //when
         ResultActions actions =
                 mockMvc.perform(
                         post("/posts")
-                                .header(AUTHORIZATION_HEADER, "token")
+                                .header(AUTHORIZATION_HEADER, token)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content)
@@ -124,19 +126,21 @@ class PostControllerTest implements Reflection {
                 .postId(post.getId())
                 .title("안녕하세요.")
                 .content(COMMENT_CONTENT)
-                .tags(List.of("tag1","tag2"))
+                .tags(List.of("tag1", "tag2"))
                 .category(CategoryType.NOTICE)
                 .build();
 
         String content = objectMapper.writeValueAsString(patchDto);
 
-        given(postService.editPost(any(Post.class), any(CategoryType.class), Mockito.anyList(), Mockito.isNull(),Mockito.anyLong())).willReturn(patchDto.toEntity());
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
+
+        given(postService.editPost(any(Post.class), any(CategoryType.class), Mockito.anyList(), Mockito.anyLong(), Mockito.anyLong())).willReturn(patchDto.toEntity());
 
         //when
         ResultActions actions =
                 mockMvc.perform(
-                        patch("/posts/{post-id}",post.getId())
-                                .header(AUTHORIZATION_HEADER, "token")
+                        patch("/posts/{post-id}", post.getId())
+                                .header(AUTHORIZATION_HEADER, token)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content)
@@ -177,13 +181,25 @@ class PostControllerTest implements Reflection {
         post.addUser(user);
         post.setDate();
         Long id = post.getId();
+        setField(user, "nickName", NICKNAME1);
+
+        Comment comment1 = Comment.builder().id(ID1).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
+        ReComment reComment1_1 = ReComment.builder().id(ID1).content(COMMENT_CONTENT).user(user).comment(comment1).build();
+        comment1.getReComments().add(reComment1_1);
+        Comment comment2 = Comment.builder().id(ID2).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
+        Comment comment3 = Comment.builder().id(ID2 + 1).content(COMMENT_CONTENT).user(user).post(post).commentLikes(List.of()).build();
+
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
 
         given(postService.getPost(any(long.class))).willReturn(post);
+        given(commentService.findComments(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt()))
+                .willReturn(new PageImpl<>(List.of(comment1, comment2, comment3)));
 
         //when
         ResultActions actions =
                 mockMvc.perform(
                         get("/posts/{post-id}", id)
+                                .header(AUTHORIZATION_HEADER, token)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                 );
@@ -209,10 +225,12 @@ class PostControllerTest implements Reflection {
         given(postService.postBookmark(any(), anyLong()))
                 .willReturn(bookmark);
 
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
+
         // when
         ResultActions actions = mockMvc.perform(
                 post("/posts/{post-id}/bookmark", post.getId())
-                        .header(HttpHeaders.AUTHORIZATION, "")
+                        .header(AUTHORIZATION_HEADER, token)
         );
 
         // then
@@ -241,16 +259,30 @@ class PostControllerTest implements Reflection {
     @Test
     void postReport() throws Exception {
         // given
-        ReportedPost report = new ReportedPost(user, post);
+        ReportType reportType = ReportType.AD;
+        Integer reportTypeNum = reportType.ordinal() + 1;
+        String content = "광고에요.";
+        ReportedPost report = new ReportedPost(user, post, reportType, content);
         setField(report, "id", 3L);
 
-        given(postService.postReport(any(), anyLong()))
+        ReportDto reportDto = newInstance(ReportDto.class);
+        setField(reportDto, "reportType", reportTypeNum);
+        setField(reportDto, "content", content);
+
+        String json = objectMapper.writeValueAsString(reportDto);
+
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
+
+        given(postService.postReport(ID1, post.getId(), reportTypeNum, content))
                 .willReturn(report);
 
         // when
         ResultActions actions = mockMvc.perform(
                 post("/posts/{post-id}/report", post.getId())
-                        .header(HttpHeaders.AUTHORIZATION, "")
+                        .header(AUTHORIZATION_HEADER, token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
         );
 
         // then
@@ -266,6 +298,10 @@ class PostControllerTest implements Reflection {
                         ),
                         pathParameters(
                                 parameterWithName("post-id").description("게시글 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("reportType").type(JsonFieldType.NUMBER).description("신고 분류"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("신고 사유")
                         ),
                         responseFields(
                                 fieldWithPath("user").type(JsonFieldType.NUMBER).description("회원 식별자"),
@@ -284,13 +320,17 @@ class PostControllerTest implements Reflection {
         setField(post, "user", user);
         setField(post, "likeCount", 1L);
 
+        String token = BEARER + jwtTokenUtil.createAccessToken(EMAIL1, ID1, TestConstants.ROLES);
+
         given(postService.postLike(any(), anyLong()))
                 .willReturn(post);
 
         // when
         ResultActions actions = mockMvc.perform(
                 post("/posts/{post-id}/like", post.getId())
-                        .header(HttpHeaders.AUTHORIZATION, "")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, token)
         );
 
         // then

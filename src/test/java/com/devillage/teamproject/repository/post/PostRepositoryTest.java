@@ -62,6 +62,8 @@ class PostRepositoryTest implements Reflection {
         setField(post3, "category", category2);
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
 
+        long prevAllSize = postRepository.findAll(pageable)
+                .getTotalElements();
         long prevFreesSize = postRepository.findByCategory_CategoryType(free, pageable)
                 .getTotalElements();
         long prevNoticesSize = postRepository.findByCategory_CategoryType(notice, pageable)
@@ -74,10 +76,12 @@ class PostRepositoryTest implements Reflection {
         postRepository.save(post3);
 
         // when
+        Page<Post> allPosts = postRepository.findAll(pageable);
         Page<Post> frees = postRepository.findByCategory_CategoryType(free, pageable);
         Page<Post> notices = postRepository.findByCategory_CategoryType(notice, pageable);
 
         // then
+        assertThat(allPosts.getTotalElements() - prevAllSize).isEqualTo(3);
         assertThat(frees.getTotalElements() - prevFreesSize).isEqualTo(2);
         assertThat(notices.getTotalElements() - prevNoticesSize).isEqualTo(1);
     }

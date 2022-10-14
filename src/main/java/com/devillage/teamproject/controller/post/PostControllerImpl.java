@@ -2,14 +2,14 @@ package com.devillage.teamproject.controller.post;
 
 import com.devillage.teamproject.dto.*;
 import com.devillage.teamproject.entity.Bookmark;
+import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
 import com.devillage.teamproject.security.resolver.AccessToken;
-import com.devillage.teamproject.security.util.JwtConstants;
+import com.devillage.teamproject.service.comment.CommentService;
 import com.devillage.teamproject.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.stream.Collectors;
@@ -19,9 +19,10 @@ import java.util.stream.Collectors;
 public class PostControllerImpl implements PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @Override
-    public PostDto.Response postPost(AuthDto.UserInfo userInfo, PostDto.Post request) {
+    public PostDto.Response postPost(@AccessToken AuthDto.UserInfo userInfo, PostDto.Post request) {
         Post savedPost = postService.savePost(request.toEntity(), request.getCategory(), request.getTags(), userInfo.getId());
         return PostDto.Response.of(savedPost);
     }
@@ -29,7 +30,8 @@ public class PostControllerImpl implements PostController {
     @Override
     public SingleResponseDto<PostDto.Response.PostDetail> getPost(AuthDto.UserInfo userInfo, Long postId) {
         Post post = postService.getPost(postId);
-        return SingleResponseDto.of(PostDto.Response.PostDetail.of(post));
+        Page<Comment> commentPage = commentService.findComments(postId, 1, 10);
+        return SingleResponseDto.of(PostDto.Response.PostDetail.of(post, commentPage, userInfo.getId()));
     }
 
     @Override
@@ -49,9 +51,10 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
-    public PostDto.Response.ReportDto postReport(AuthDto.UserInfo userInfo, Long postId) {
+    public PostDto.Response.ReportDto postReport(AuthDto.UserInfo userInfo, Long postId, ReportDto reportDto) {
 
-        ReportedPost reportedPost = postService.postReport(userInfo.getId(), postId);
+        ReportedPost reportedPost = postService.postReport(
+                userInfo.getId(), postId, reportDto.getReportType(), reportDto.getContent());
         return PostDto.Response.ReportDto.of(
                 userInfo.getId(),
                 reportedPost.getPost().getId(),
@@ -82,6 +85,17 @@ public class PostControllerImpl implements PostController {
     @Override
     public DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsBySearch(String q, int page, int size) {
         Page<Post> posts = postService.getPostsBySearch(q, page, size);
+        return DoubleResponseDto.of(
+                posts.stream()
+                        .map(PostDto.Response.SimplePostDto::of)
+                        .collect(Collectors.toList()),
+                posts
+        );
+    }
+
+    @Override
+    public DoubleResponseDto<PostDto.Response.SimplePostDto> getPostsByTag(String q, int page, int size) {
+        Page<Post> posts = postService.getPostsByTag(q, page, size);
         return DoubleResponseDto.of(
                 posts.stream()
                         .map(PostDto.Response.SimplePostDto::of)

@@ -19,7 +19,7 @@ public interface PostService {
 
     Bookmark postBookmark(Long userId, Long postId);
 
-    ReportedPost postReport(Long userId, Long postId);
+    ReportedPost postReport(Long userId, Long postId, Integer reportType, String content);
 
     Post postLike(Long userId, Long postId);
 
@@ -27,9 +27,13 @@ public interface PostService {
 
     Page<Post> getPostsBySearch(String word, int page, int size);
 
+    Page<Post> getPostsByTag(String tag, int page, int size);
+
     Page<Post> getPostsByBookmark(Long userId, int page, int size);
 
     void deletePost(Long postId);
 
     Post findVerifyPost(Long postId);
+
+    Long updateClicks(Post post);
 }

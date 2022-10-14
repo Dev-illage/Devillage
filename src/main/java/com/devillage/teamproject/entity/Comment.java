@@ -45,6 +45,9 @@ public class Comment extends AuditingEntity {
     @Enumerated(EnumType.STRING)
     private CommentStatus commentStatus;
 
+    @OneToMany(mappedBy = "comment")
+    private List<CommentLike> commentLikes = new ArrayList<>();
+
     public static Comment createComment(Comment comment, User user, Post post) {
         Comment newComment = Comment.builder()
                 .content(comment.getContent())

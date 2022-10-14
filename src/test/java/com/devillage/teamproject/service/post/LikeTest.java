@@ -5,8 +5,6 @@ import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.repository.post.LikeRepository;
 import com.devillage.teamproject.repository.post.PostRepository;
-import com.devillage.teamproject.repository.user.UserRepository;
-import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
 import org.assertj.core.api.Assertions;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,9 +28,6 @@ class LikeTest implements Reflection {
 
     @Mock
     private LikeRepository likeRepository;
-
-    @Mock
-    private JwtTokenUtil jwtTokenUtil;
 
     @Mock
     private UserService userService;

@@ -4,6 +4,8 @@ import com.devillage.teamproject.entity.Block;
 import com.devillage.teamproject.entity.User;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 @Getter
@@ -34,7 +36,10 @@ public class UserDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class PatchProfile {
+        @NotBlank
+        @Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$")
         private String nickName;
+        @NotBlank
         private String statusMessage;
     }
 
@@ -85,7 +90,11 @@ public class UserDto {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @Builder
     public static class PasswordDto {
+        @NotBlank
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$")
         private String password;
+        @NotBlank
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$")
         private String updatePassword;
 
     }

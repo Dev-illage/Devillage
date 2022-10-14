@@ -1,5 +1,6 @@
 package com.devillage.teamproject.controller.comment;
 
+import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.dto.DoubleResponseDto;
 import com.devillage.teamproject.entity.Comment;
@@ -9,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -72,10 +72,10 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public DoubleResponseDto getComments(Long postId, Integer page, Integer size) {
+    public DoubleResponseDto getComments(Long postId, Integer page, Integer size, AuthDto.UserInfo userInfo) {
         Page<Comment> commentPage = commentService.findComments(postId, page - 1, size);
         return DoubleResponseDto.of(commentPage.stream().map(
-                CommentDto.ResponseWithReComment::of
+                comment -> CommentDto.ResponseWithReComment.of(comment, userInfo.getId())
         ).collect(Collectors.toList()), commentPage);
     }
 }

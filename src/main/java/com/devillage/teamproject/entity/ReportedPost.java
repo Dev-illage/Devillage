@@ -1,5 +1,6 @@
 package com.devillage.teamproject.entity;
 
+import com.devillage.teamproject.entity.enums.ReportType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,6 +20,11 @@ public class ReportedPost extends AuditingEntity {
 
     @ToString.Include
     @EqualsAndHashCode.Include
+    @Enumerated(EnumType.STRING)
+    private ReportType reportType;
+
+    @ToString.Include
+    @EqualsAndHashCode.Include
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,8 +35,10 @@ public class ReportedPost extends AuditingEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public ReportedPost(User user, Post post) {
+    public ReportedPost(User user, Post post, ReportType reportType, String content) {
         this.user = user;
         this.post = post;
+        this.reportType = reportType;
+        this.content = content;
     }
 }

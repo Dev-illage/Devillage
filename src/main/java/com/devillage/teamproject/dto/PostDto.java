@@ -1,15 +1,13 @@
 package com.devillage.teamproject.dto;
 
-import com.devillage.teamproject.entity.*;
+import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import lombok.*;
+import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,10 +48,11 @@ public class PostDto {
             private Long like;
             private boolean postLike;
             private boolean bookmarkLike;
-            private List<Comment> commentList;
+            private DoubleResponseDto<CommentDto.ResponseWithReComment> comments;
             private boolean commentLike;
 
-            public static PostDetail of(com.devillage.teamproject.entity.Post post){
+            public static PostDetail of(com.devillage.teamproject.entity.Post post, Page<Comment> commentPage,
+                                        Long userId){
                 return PostDetail.builder()
                         .key(post.getId())
                         .title(post.getTitle())
@@ -67,7 +66,9 @@ public class PostDto {
                                 .collect(Collectors.toList()))
                         .author(UserDto.AuthorInfo.of(post.getUser()))
                         .like(post.getLikeCount())
-                        .commentList(post.getComments())
+                        .comments(DoubleResponseDto.of(commentPage.stream().map(
+                                comment -> CommentDto.ResponseWithReComment.of(comment, userId)
+                        ).collect(Collectors.toList()), commentPage))
                         .build();
             }
 
@@ -149,10 +150,15 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class Post {
+        @NotEmpty
         private Long postId;
+        @NotBlank
         private CategoryType category;
+        @NotBlank
         private String title;
+        @NotEmpty // 일단은 오류가 나니까 막아놓지만 추후 @NotNull로 바꾸고 비어있는 리스트에 대한 처리가 필요합니다.
         private List<String> tags;
+        @NotBlank
         private String content;
 
         public com.devillage.teamproject.entity.Post toEntity() {
@@ -170,10 +176,15 @@ public class PostDto {
     @AllArgsConstructor
     @Builder
     public static class Patch {
+        @NotNull
         private Long postId;
+        @NotBlank
         private CategoryType category;
+        @NotBlank
         private String title;
+        @NotEmpty // 일단은 오류가 나니까 막아놓지만 추후 @NotNull로 바꾸고 비어있는 리스트에 대한 처리가 필요합니다.
         private List<String> tags;
+        @NotBlank
         private String content;
 
         public com.devillage.teamproject.entity.Post toEntity() {

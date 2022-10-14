@@ -22,7 +22,7 @@ public interface AuthController {
 
     @PostMapping("/token/refresh")
     @ResponseStatus(HttpStatus.OK)
-    AuthDto.Token postRefresh(@RequestHeader(REFRESH_HEADER) String refreshToken);
+    AuthDto.Token postRefresh(String refreshToken);
 
     @DeleteMapping("/token")
     @ResponseStatus(HttpStatus.NO_CONTENT)

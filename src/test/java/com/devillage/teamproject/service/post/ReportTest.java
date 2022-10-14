@@ -3,6 +3,7 @@ package com.devillage.teamproject.service.post;
 import com.devillage.teamproject.entity.Post;
 import com.devillage.teamproject.entity.ReportedPost;
 import com.devillage.teamproject.entity.User;
+import com.devillage.teamproject.entity.enums.ReportType;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.post.ReportedPostRepository;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -56,36 +58,66 @@ class ReportTest implements Reflection {
                 .willReturn(Optional.of(post));
 
         given(reportRepository.findByUserIdAndPostId(userId, postId))
-                .willReturn(new ArrayList<>());
+                .willReturn(Optional.empty());
 
         given(userService.findVerifiedUser(userId))
                 .willReturn(user);
 
         // when
-        ReportedPost findReportedPost = postService.postReport(userId, postId);
+        ReportedPost findReportedPost = postService.postReport(userId, postId, 1, "");
 
         // then
-        Assertions.assertThat(findReportedPost.getPost()).isEqualTo(post);
-        Assertions.assertThat(findReportedPost.getUser()).isEqualTo(user);
+        assertThat(findReportedPost.getPost()).isEqualTo(post);
+        assertThat(findReportedPost.getUser()).isEqualTo(user);
     }
 
     @Test
     void alreadyReportedPost() {
         // given
-        ReportedPost report = new ReportedPost(user, post);
+        ReportedPost report = new ReportedPost(user, post, ReportType.AD, "");
 
         given(postRepository.findById(postId))
                 .willReturn(Optional.of(post));
 
         given(reportRepository.findByUserIdAndPostId(userId, postId))
-                .willReturn(List.of(report));
+                .willReturn(Optional.of(report));
 
         given(userService.findVerifiedUser(userId))
                 .willReturn(user);
 
         // when / then
         assertThrows(BusinessLogicException.class,
-                () -> postService.postReport(userId, postId));
+                () -> postService.postReport(userId, postId, 1, ""));
+    }
+
+    @Test
+    public void reportType() throws Exception {
+        // given
+        Integer reportTypeNum = 1;
+        ReportType reportType = ReportType.values()[reportTypeNum - 1];
+        String content = "욕했어요.";
+
+        given(postRepository.findById(postId))
+                .willReturn(Optional.of(post));
+
+        given(reportRepository.findByUserIdAndPostId(userId, postId))
+                .willReturn(Optional.empty());
+
+        given(userService.findVerifiedUser(userId))
+                .willReturn(user);
+
+        // when
+        ReportedPost reportedPost = postService.postReport(userId, postId, reportTypeNum, content);
+
+        // then
+        assertThat(reportedPost.getReportType()).isEqualTo(reportType);
+        assertThat(reportedPost.getContent()).isEqualTo(content);
+        assertThrows(BusinessLogicException.class,
+                () -> postService.postReport(userId, postId, null, ""));
+        assertThrows(BusinessLogicException.class,
+                () -> postService.postReport(userId, postId, 0, ""));
+        assertThrows(BusinessLogicException.class,
+                () -> postService.postReport(userId, postId, ReportType.values().length + 1, ""));
     }
 
 }

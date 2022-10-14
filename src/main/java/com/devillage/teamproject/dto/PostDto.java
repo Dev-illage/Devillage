@@ -66,12 +66,9 @@ public class PostDto {
                                 .collect(Collectors.toList()))
                         .author(UserDto.AuthorInfo.of(post.getUser()))
                         .like(post.getLikeCount())
-//                        .postLike(post.getUser().pa)
-//                        .bookmarkLike(post.getUser().getBookmarks())
                         .comments(DoubleResponseDto.of(commentPage.stream().map(
                                 comment -> CommentDto.ResponseWithReComment.of(comment, userId)
                         ).collect(Collectors.toList()), commentPage))
-//                        .commentLike()
                         .build();
             }
 

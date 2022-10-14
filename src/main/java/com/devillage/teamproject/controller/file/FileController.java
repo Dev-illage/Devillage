@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/files")
 public interface FileController {
@@ -14,7 +16,7 @@ public interface FileController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     FileDto.Response postFile(@AccessToken AuthDto.UserInfo userInfo,
-                  @RequestPart MultipartFile multipartFile);
+                              @RequestPart MultipartFile multipartFile, HttpServletRequest request);
 
     @GetMapping("/{file-id}")
     @ResponseStatus(HttpStatus.OK)

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,13 +27,14 @@ public class LocalImageController implements FileController {
 
     private final FileService fileService;
 
-    public LocalImageController(FileService fileService) {
+    public LocalImageController(FileService fileService, HttpServletRequest request) {
         this.fileService = fileService;
     }
 
     @Override
-    public FileDto.Response postFile(AuthDto.UserInfo userInfo, MultipartFile multipartFile) {
-        File savedFile = fileService.saveFile(userInfo.getId(), multipartFile);
+    public FileDto.Response postFile(AuthDto.UserInfo userInfo, MultipartFile multipartFile,
+                                     HttpServletRequest request) {
+        File savedFile = fileService.saveFile(userInfo.getId(), multipartFile, request.getRequestURL());
         return FileDto.Response.of(savedFile);
     }
 

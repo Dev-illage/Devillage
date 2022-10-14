@@ -56,13 +56,14 @@ public class File extends AuditingEntity {
     }
 
     public static File createLocalImage(String originalFilename, String filename, Long fileSize,
-                                        String localPath) {
+                                        String localPath, StringBuffer requestURL) {
         File file = new File();
         file.originalFilename = originalFilename;
         file.filename = filename;
         file.fileSize = fileSize;
         file.localPath = localPath;
         file.fileType = FileType.IMAGE;
+        file.remotePath = requestURL.append("?q=").append(file.getFilename()).toString();
         return file;
     }
 }

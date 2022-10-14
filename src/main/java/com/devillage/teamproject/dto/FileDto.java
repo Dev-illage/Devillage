@@ -7,8 +7,6 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FileDto {
-
-    //TODO : 임시 작성, 구현 시 주석 삭제
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,6 +31,40 @@ public class FileDto {
                     .remotePath(file.getRemotePath())
                     .fileType(file.getFileType())
                     .ownerUserId(file.getOwner().getId())
+                    .build();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class PostResponse {
+        private Long id;
+        private String filename;
+        private String remotePath;
+
+        public static PostResponse of(File file) {
+            return PostResponse.builder()
+                    .id(file.getId())
+                    .filename(file.getFilename())
+                    .remotePath(file.getRemotePath())
+                    .build();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SimpleResponse {
+        private String filename;
+        private String remotePath;
+
+        public static SimpleResponse of(File file) {
+            return SimpleResponse.builder()
+                    .filename(file.getFilename())
+                    .remotePath(file.getRemotePath())
                     .build();
         }
     }

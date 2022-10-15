@@ -6,7 +6,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 
-@MessageMapping("/message")
 public interface MessageController {
 
     @MessageMapping("/{roomName}")

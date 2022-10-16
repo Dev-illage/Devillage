@@ -24,7 +24,7 @@ import java.util.UUID;
  * https://owin2828.github.io/devlog/2020/01/09/etc-2.html
  */
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @Slf4j
 public class LocalImageService implements FileService {
     private final FileRepository fileRepository;
@@ -36,7 +36,6 @@ public class LocalImageService implements FileService {
     }
 
     @Override
-    @Transactional
     public File saveFile(Long ownerUserId, MultipartFile multipartFile, StringBuffer requestURL) {
         User owner = userService.findVerifiedUser(ownerUserId);
         File file = parseMultipartFile(multipartFile, requestURL);
@@ -45,23 +44,23 @@ public class LocalImageService implements FileService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public File findFile(Long fileId) {
         return findVerifiedFile(fileId);
     }
 
     @Override
-    @Transactional
     public File editFile() {
         return null;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<File> findFiles() {
         return null;
     }
 
     @Override
-    @Transactional
     public void deleteFile(Long fileId, Long userId) {
         File file = findVerifiedFile(fileId);
         if (!Objects.equals(file.getOwner().getId(), userId)) {
@@ -144,6 +143,7 @@ public class LocalImageService implements FileService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public File findFileWithFilename(String filename) {
         return fileRepository.findByFilename(filename).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.FILE_NOT_FOUND)
@@ -151,6 +151,7 @@ public class LocalImageService implements FileService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public File findVerifiedFile(Long fileId) {
         return fileRepository.findById(fileId).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.FILE_NOT_FOUND)

@@ -88,7 +88,7 @@ class PostControllerTest implements Reflection {
     public void postPost() throws Exception {
         //given
         PostDto.Post postDto = PostDto.Post.builder()
-                .postId(post.getId())
+//                .postId(post.getId())
                 .title("안녕하세요.")
                 .content(COMMENT_CONTENT)
                 .tags(List.of("tag1", "tag2"))

@@ -147,8 +147,8 @@ public class User extends AuditingEntity {
         this.pwdLastModifiedAt = LocalDateTime.now();
     }
 
-    public void updatePassword(String password){
-        this.password = password;
+    public void updatePassword(PasswordEncoder passwordEncoder,String update){
+        this.password = passwordEncoder.encode(update);
     }
 
     public void passwordEncryption(PasswordEncoder passwordEncoder) {

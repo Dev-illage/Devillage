@@ -95,6 +95,7 @@ public class UserServiceImpl implements UserService {
         return block;
     }
 
+    @Transactional
     @Override
     public boolean updatePassword(AuthDto.UserInfo userInfo,String password, String updatePassword){
         String validPassword =  validatePassword(updatePassword);
@@ -104,7 +105,8 @@ public class UserServiceImpl implements UserService {
         if(user.getOauthProvider()!=null){
             throw new BusinessLogicException(ExceptionCode.CAN_NOT_UPDATE_PASSWORD);
         }
-        user.updatePassword(validPassword);
+        user.updatePassword(passwordEncoder,validPassword);
+        System.out.println(user.getPassword());
         return true;
     }
 

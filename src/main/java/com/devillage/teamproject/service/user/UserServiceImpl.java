@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -35,18 +35,17 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    @Transactional
     public User joinUser(User user) {
         return null;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findUser(String token) {
         return findVerifiedUser(jwtTokenUtil.getUserId(token));
     }
 
     @Override
-    @Transactional
     public void editUser(Long userId, String nickName, String statusMessage) {
         Optional<User> optionalUser = userRepository.findById(userId);
 
@@ -71,14 +70,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void deleteUser(String token) {
         User findUser = findVerifiedUser(jwtTokenUtil.getUserId(token));
         findUser.deleteUser();
     }
 
     @Override
-    @Transactional
     public Block blockUser(Long destUserId, String token) {
         Long srcUserId = jwtTokenUtil.getUserId(token);
         Optional<Block> optionalBlock = blockRepository.findBySrcUserIdAndDestUserId(srcUserId, destUserId);
@@ -111,6 +108,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findVerifiedUser(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         User findUser = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));

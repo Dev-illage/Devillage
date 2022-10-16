@@ -18,10 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
@@ -33,7 +32,6 @@ public class CommentServiceImpl implements CommentService {
     private final UserService userService;
 
     @Override
-    @Transactional
     public Comment createComment(Comment comment, String token) {
         User user = userService.findVerifiedUser(jwtTokenUtil.getUserId(token));
         Post post = postService.getPost(comment.getPost().getId());
@@ -41,12 +39,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Comment findComment() {
         return null;
     }
 
     @Override
-    @Transactional
     public Comment editComment(Long postId, Long commentId, String content) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
 
@@ -64,7 +62,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
     public Comment likeComment(Long userId,Long postId, Long commentId) {
         User user = userService.findVerifiedUser(userId);
         Post post = postService.findVerifyPost(postId);
@@ -88,6 +85,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Comment> findComments(Long postId, int page, int size) {
         postService.getPost(postId);
         Page<Comment> commentPage = commentRepository.findAllByPostId(postId, PageRequest.of(page, size));
@@ -101,11 +99,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
     public void deleteComment(Long commentId, String token) {
         Comment comment = findVerifiedComment(commentId);
         if (!Objects.equals(comment.getUser().getId(), jwtTokenUtil.getUserId(token))) {
-            throw new BusinessLogicException(ExceptionCode.USER_AUTHORIZED);
+            throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
         }
         if (comment.getReComments().size() == 0) {
             commentRepository.delete(comment);
@@ -116,7 +113,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
     public ReComment createReComment(ReComment reComment, String token) {
         Comment comment = findVerifiedComment(reComment.getComment().getId());
         User user = userService.findVerifiedUser(jwtTokenUtil.getUserId(token));
@@ -124,7 +120,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
     public ReComment editReComment(Long postId, Long commentId, Long reCommentId, String content) {
         Optional<ReComment> optionalReComment = reCommentRepository.findById(reCommentId);
 
@@ -143,12 +138,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ReComment> findReComments() {
         return null;
     }
 
     @Override
-    @Transactional
     public void deleteReComment(Long postId, Long commentId, Long reCommentId) {
         Optional<ReComment> optionalReComment = reCommentRepository.findById(reCommentId);
 
@@ -165,6 +160,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Transactional(readOnly = true)
     public Comment findVerifiedComment(Long commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
         return optionalComment.orElseThrow(() -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND));

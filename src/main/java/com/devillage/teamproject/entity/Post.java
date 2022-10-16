@@ -71,10 +71,10 @@ public class Post extends AuditingEntity {
     @OneToMany(mappedBy = "post")
     private final List<PostsFile> postsFile = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostTag> tags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private final List<Comment> comments = new ArrayList<>();
 
     public void addComment(Comment comment) {

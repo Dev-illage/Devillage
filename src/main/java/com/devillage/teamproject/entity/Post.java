@@ -98,10 +98,8 @@ public class Post extends AuditingEntity {
     }
 
     public void editPost(Post post){
-        this.category = post.getCategory();
         this.content = post.getContent();
         this.title = post.getTitle();
-        this.tags = post.getTags();
         this.postLastModifiedAt = LocalDateTime.now();
     }
 

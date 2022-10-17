@@ -34,7 +34,7 @@ public enum ExceptionCode {
     CAN_NOT_UPDATE_PASSWORD(400,"Can not update password"),
 
     NOT_VALID_AUTH_KEY(404,"Not valid authKey"),
-    FAIL_TO_SEND_EMAIL(400,"Fail to send an Email")
+    FAIL_TO_SEND_EMAIL(400,"Fail to send an Email"),
 
     USER_UNAUTHORIZED(403, "Unauthorized user"),
     FILE_EMPTY(400, "file is empty"),

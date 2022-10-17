@@ -15,7 +15,7 @@ public interface FileController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     FileDto.Response postFile(@AccessToken AuthDto.UserInfo userInfo,
-                              @RequestPart MultipartFile multipartFile, HttpServletRequest request);
+                              @RequestPart("file") MultipartFile data, HttpServletRequest request);
 
     @GetMapping("/{file-id}")
     @ResponseStatus(HttpStatus.OK)

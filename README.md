@@ -28,7 +28,7 @@
 
 |양은찬(FE/BE)|김경근(BE)|조규원(BE)|강지원(BE)|
 |:--:|:--:|:--:|:--:|
-|<img src="https://avatars.githubusercontent.com/u/97802103?v=4" width="200px" height="200px">|<img src="https://avatars.githubusercontent.com/u/97646802?v=4" width="200px" height="200px">|<img src="https://avatars.githubusercontent.com/u/54241806?v=4" width="200px" height="200px">|<img src="https://user-images.githubusercontent.com/102658715/196131971-c2e4bd73-0865-4960-9b1a-3da4fcdb7183.PNG" width="200px" height="200px">|
+|<img src="https://avatars.githubusercontent.com/u/97802103?v=4" width="180px">|<img src="https://avatars.githubusercontent.com/u/97646802?v=4" width="180px">|<img src="https://avatars.githubusercontent.com/u/54241806?v=4" width="180px">|<img src="https://user-images.githubusercontent.com/102658715/196131971-c2e4bd73-0865-4960-9b1a-3da4fcdb7183.PNG" width="180px">|
 |[@yangddoddi](https://github.com/yangddoddi)|[@kkg5](https://github.com/kkg5)|[@Qone2](https://github.com/Qone2)|[@gangdodan](https://github.com/gangdodan)|
 
 

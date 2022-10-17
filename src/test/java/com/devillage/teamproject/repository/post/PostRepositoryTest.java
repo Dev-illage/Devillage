@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -64,9 +63,9 @@ class PostRepositoryTest implements Reflection {
 
         long prevAllSize = postRepository.findAll(pageable)
                 .getTotalElements();
-        long prevFreesSize = postRepository.findByCategory_CategoryType(free, pageable)
+        long prevFreesSize = postRepository.findDistinctByCategory_CategoryType(free, pageable)
                 .getTotalElements();
-        long prevNoticesSize = postRepository.findByCategory_CategoryType(notice, pageable)
+        long prevNoticesSize = postRepository.findDistinctByCategory_CategoryType(notice, pageable)
                 .getTotalElements();
 
         categoryRepository.save(category1);
@@ -77,8 +76,8 @@ class PostRepositoryTest implements Reflection {
 
         // when
         Page<Post> allPosts = postRepository.findAll(pageable);
-        Page<Post> frees = postRepository.findByCategory_CategoryType(free, pageable);
-        Page<Post> notices = postRepository.findByCategory_CategoryType(notice, pageable);
+        Page<Post> frees = postRepository.findDistinctByCategory_CategoryType(free, pageable);
+        Page<Post> notices = postRepository.findDistinctByCategory_CategoryType(notice, pageable);
 
         // then
         assertThat(allPosts.getTotalElements() - prevAllSize).isEqualTo(3);
@@ -101,9 +100,9 @@ class PostRepositoryTest implements Reflection {
         String word2 = "검색어2";
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
 
-        long prevWord1Size = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word1, word1, pageable)
+        long prevWord1Size = postRepository.findDistinctByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word1, word1, pageable)
                 .getTotalElements();
-        long prevWord2Size = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word2, word2, pageable)
+        long prevWord2Size = postRepository.findDistinctByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word2, word2, pageable)
                 .getTotalElements();
 
         setField(post1, "title", word1);
@@ -115,8 +114,8 @@ class PostRepositoryTest implements Reflection {
 
 
         // when
-        Page<Post> posts1 = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word1, word1, pageable);
-        Page<Post> posts2 = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word2, word2, pageable);
+        Page<Post> posts1 = postRepository.findDistinctByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word1, word1, pageable);
+        Page<Post> posts2 = postRepository.findDistinctByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(word2, word2, pageable);
 
         // then
         assertThat(posts1.getTotalElements() - prevWord1Size).isEqualTo(2);

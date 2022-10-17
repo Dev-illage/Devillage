@@ -1,4 +1,23 @@
 spring:
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/testonly?serverTimezone=Asia/Seoul
+#    username: testuser
+#    password: 1234
+
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: kangjiiii02@naver.com
+    password: vV2386889##
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
   jpa:
     hibernate:
       ddl-auto: update # create update create-update
@@ -9,6 +28,7 @@ spring:
     database: mysql
     open-in-view: true
   profiles:
+    include: oauth, security, database, redis
     include: oauth, security, database
   servlet:
     multipart:

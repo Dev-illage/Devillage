@@ -14,14 +14,14 @@
 ## Project Goal :golf:
 
 - [x] 기본적인 CRUD 및 좋아요, 댓글, 대댓글, 북마크, 이미지 업로드 등 커뮤니티형 웹 어플리케이션에서 지원하는 기본적인 기능 구현
-- [ ] Spring Security를 기반으로 Jwt(AccessToken, RefreshToken)와 OAuth2 인증 구현
-- [ ] WebSocket을 활용한 채팅 기능 구현
-- [ ] In-Memory DB (Redis)를 활용한 인증, 채팅처리 구현
-- [ ] Two-Factor 인증 구현
-- [ ] AWS를 이용한 Https 통신 서버 운영
+- [x] Spring Security를 기반으로 Jwt(AccessToken, RefreshToken)와 OAuth2 인증 구현
+- [x] WebSocket을 활용한 채팅 기능 구현
+- [x] In-Memory DB (Redis)를 활용한 인증처리 구현
+- [x] Two-Factor 인증 구현
+- [x] AWS를 이용한 Https 통신 서버 운영
 - [ ] CI/CD를 활요안 자동 배포 파이프라인 구축
-- [ ] SpringRestDocs를 활용한 API 문서화
-- [ ] 최대한의 Restful한 API 설계
+- [x] SpringRestDocs를 활용한 API 문서화
+- [x] Restful한 API 설계
 <br>
 
 ## Members :family:

@@ -2,6 +2,7 @@ package com.devillage.teamproject.security.resolver;
 
 import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.exception.BusinessLogicException;
+import com.devillage.teamproject.security.util.JwtConstants;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class ResultJwtArgumentResolver implements HandlerMethodArgumentResolver 
         String accessToken = webRequest.getHeader(AUTHORIZATION_HEADER);
         log.info("accessToken = {}", accessToken);
 
-        if ( accessToken==null ) {
+        if ( accessToken==null || accessToken.equals(NULL_TOKEN) ) {
 //            throw new BusinessLogicException(MALFORMED_JWT_EXCEPTION);
             return null;
         }

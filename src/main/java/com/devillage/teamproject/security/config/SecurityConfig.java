@@ -1,6 +1,7 @@
 package com.devillage.teamproject.security.config;
 
 import com.devillage.teamproject.security.authorization.CustomAccessDinedHandler;
+import com.devillage.teamproject.security.authorization.CustomAuthenticationEntryPoint;
 import com.devillage.teamproject.security.oauth.CustomOauth2Service;
 import com.devillage.teamproject.security.oauth.CustomSuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final CustomOauth2Service customOauth2Service;
     private final CustomAccessDinedHandler customAccessDinedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -62,11 +64,13 @@ public class SecurityConfig {
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(customAccessDinedHandler)
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .and()
                 .oauth2Login()
                 .successHandler(customSuccessHandler)
                 .userInfoEndpoint()
-                .userService(customOauth2Service);
+                .userService(customOauth2Service)
+                ;
 
         return http.build();
     }

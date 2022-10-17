@@ -44,8 +44,8 @@ public class Post extends AuditingEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime postLastModifiedAt;
 
-    public Post(Long id, String title, String content) {
-        this.id = id;
+    public Post(String title, String content) {
+//        this.id = id;
         this.title = title;
         this.content = content;
         this.clicks = 0L;

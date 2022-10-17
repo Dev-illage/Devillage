@@ -83,7 +83,7 @@ public class PostServiceImpl implements PostService {
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
         Category category = categoryRepository.findCategoriesByCategoryType(categoryType);
-
+        postTagRepository.deleteByPostId(postId);
         tagValue.forEach(
                 e -> {
                     if (tagRepository.findTagByName(e).isEmpty()) {
@@ -92,7 +92,7 @@ public class PostServiceImpl implements PostService {
                         postTagRepository.save(postTag);
                         verifiedPost.addPostTag(postTag);
                         verifiedPost.addCategory(category);
-                        post.editPost(verifiedPost);
+                        verifiedPost.editPost(post);
                         postRepository.save(verifiedPost);
                         findUser.addPost(verifiedPost);
                         verifiedPost.addUser(findUser);
@@ -102,7 +102,7 @@ public class PostServiceImpl implements PostService {
                         postTagRepository.save(postTag);
                         verifiedPost.addPostTag(postTag);
                         verifiedPost.addCategory(category);
-                        post.editPost(verifiedPost);
+                        verifiedPost.editPost(post);
                         postRepository.save(verifiedPost);
                         findUser.addPost(verifiedPost);
                         verifiedPost.addUser(findUser);
@@ -110,7 +110,6 @@ public class PostServiceImpl implements PostService {
                     }
                 }
         );
-//        postRepository.save(verifiedPost);
         return verifiedPost;
     }
 

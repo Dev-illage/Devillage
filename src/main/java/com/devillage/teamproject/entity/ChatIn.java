@@ -21,7 +21,12 @@ public class ChatIn extends AuditingEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chatroom_id")
     private ChatRoom chatroom;
+
+    public ChatIn(User user, ChatRoom chatRoom) {
+        this.user = user;
+        this.chatroom = chatRoom;
+    }
 }

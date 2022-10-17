@@ -29,6 +29,11 @@ spring:
     open-in-view: true
   profiles:
     include: oauth, security, database, redis
+    include: oauth, security, database
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
 
 logging:
   level:

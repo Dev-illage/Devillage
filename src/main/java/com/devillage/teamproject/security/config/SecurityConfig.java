@@ -55,6 +55,9 @@ public class SecurityConfig {
                 .mvcMatchers(GET, "/test/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(POST,"/email/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(GET, "/docs/*").permitAll()
+                .mvcMatchers(GET, "/chat/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(POST, "/chat/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(GET, "/ws/**").permitAll()
                 .anyRequest().denyAll()
                 .and()
                 .exceptionHandling()
@@ -74,6 +77,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("http://localhost:80");
+        config.addAllowedOrigin("http://localhost");
         config.addAllowedHeader("*");
         config.setAllowedMethods(List.of("GET","POST","DELETE","PATCH","OPTION","PUT"));
         source.registerCorsConfiguration("/**", config);

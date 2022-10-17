@@ -84,8 +84,6 @@ include::{snippets}/delete-/auth/token/response-body.adoc[]
 include::{snippets}/get-user-profile/curl-request.adoc[]
 .http-request
 include::{snippets}/get-user-profile/http-request.adoc[]
-.path-parameter
-include::{snippets}/get-user-profile/path-parameters.adoc[]
 .request-header
 include::{snippets}/get-user-profile/request-headers.adoc[]
 .http-response
@@ -100,8 +98,6 @@ include::{snippets}/get-user-profile/response-fields.adoc[]
 include::{snippets}/delete-user/curl-request.adoc[]
 .http-request
 include::{snippets}/delete-user/http-request.adoc[]
-.path-parameter
-include::{snippets}/delete-user/path-parameters.adoc[]
 .request-header
 include::{snippets}/delete-user/request-headers.adoc[]
 .http-response
@@ -132,45 +128,55 @@ include::{snippets}/block-user/response-fields.adoc[]
 === 게시글 작성 - 테스트가 없습니다.
 === 게시글 신고
 .curl-request
-include::{snippets}/post-report/curl-request.adoc[]
+include::{snippets}/posts/report/curl-request.adoc[]
 .http-request
-include::{snippets}/post-report/http-request.adoc[]
+include::{snippets}/posts/report/http-request.adoc[]
 .path-parameters
-include::{snippets}/post-report/path-parameters.adoc[]
+include::{snippets}/posts/report/path-parameters.adoc[]
+.request-headers
+include::{snippets}/posts/report/request-headers.adoc[]
+.request-body
+include::{snippets}/posts/report/request-body.adoc[]
+.request-fields
+include::{snippets}/posts/report/request-fields.adoc[]
 .http-response
-include::{snippets}/post-report/http-response.adoc[]
+include::{snippets}/posts/report/http-response.adoc[]
 .response-body
-include::{snippets}/post-report/response-body.adoc[]
-.response-field
-include::{snippets}/post-report/response-fields.adoc[]
+include::{snippets}/posts/report/response-body.adoc[]
+.response-fields
+include::{snippets}/posts/report/response-fields.adoc[]
 
 === 게시글 북마크 추가
 .curl-request
-include::{snippets}/post-bookmark/curl-request.adoc[]
+include::{snippets}/posts/bookmark/curl-request.adoc[]
 .http-request
-include::{snippets}/post-bookmark/http-request.adoc[]
+include::{snippets}/posts/bookmark/http-request.adoc[]
 .path-parameters
-include::{snippets}/post-bookmark/path-parameters.adoc[]
+include::{snippets}/posts/bookmark/path-parameters.adoc[]
+.request-headers
+include::{snippets}/posts/bookmark/request-headers.adoc[]
 .http-response
-include::{snippets}/post-bookmark/http-response.adoc[]
+include::{snippets}/posts/bookmark/http-response.adoc[]
 .response-body
-include::{snippets}/post-bookmark/response-body.adoc[]
+include::{snippets}/posts/bookmark/response-body.adoc[]
 .response-fields
-include::{snippets}/post-bookmark/response-fields.adoc[]
+include::{snippets}/posts/bookmark/response-fields.adoc[]
 
 === 게시글 좋아요
 .curl-request
-include::{snippets}/post-like/curl-request.adoc[]
+include::{snippets}/posts/like/curl-request.adoc[]
 .http-request
-include::{snippets}/post-like/http-request.adoc[]
+include::{snippets}/posts/like/http-request.adoc[]
 .path-parameters
-include::{snippets}/post-like/path-parameters.adoc[]
+include::{snippets}/posts/like/path-parameters.adoc[]
+.request-headers
+include::{snippets}/posts/like/request-headers.adoc[]
 .http-response
-include::{snippets}/post-like/http-response.adoc[]
+include::{snippets}/posts/like/http-response.adoc[]
 .response-body
-include::{snippets}/post-like/response-body.adoc[]
+include::{snippets}/posts/like/response-body.adoc[]
 .response-fields
-include::{snippets}/post-like/response-fields.adoc[]
+include::{snippets}/posts/like/response-fields.adoc[]
 
 === 게시글 수정 - 테스트가 없습니다.
 === 게시글 상세 조회 - 테스트에 restdocs가 없습니다.

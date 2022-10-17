@@ -5,12 +5,14 @@ import com.devillage.teamproject.security.resolver.AccessToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequestMapping("/posts")
 public interface PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    PostDto.Response postPost(@AccessToken AuthDto.UserInfo userInfo, @RequestBody PostDto.Post request);
+    PostDto.Response postPost(@AccessToken AuthDto.UserInfo userInfo, @Valid @RequestBody PostDto.Post request);
 
     @GetMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
@@ -27,7 +29,7 @@ public interface PostController {
     PostDto.Response.ReportDto postReport(
             @AccessToken AuthDto.UserInfo userInfo,
             @PathVariable("post-id") Long id,
-            @RequestBody ReportDto reportDto);
+            @Valid @RequestBody ReportDto reportDto);
 
     @PostMapping("/{post-id}/like")
     @ResponseStatus(HttpStatus.OK)
@@ -38,7 +40,7 @@ public interface PostController {
     @PatchMapping("/{post-id}")
     @ResponseStatus(HttpStatus.OK)
     PostDto.Response patchPost(@AccessToken AuthDto.UserInfo userInfo, @PathVariable("post-id") Long id,
-                               @RequestBody PostDto.Patch request);
+                               @Valid @RequestBody PostDto.Patch request);
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -67,5 +69,5 @@ public interface PostController {
 
     @DeleteMapping("/{post-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deletePost(@PathVariable("post-id") Long id);
+    void deletePost(@AccessToken AuthDto.UserInfo userInfo,@PathVariable("post-id") Long id);
 }

@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.devillage.teamproject.security.util.JwtConstants.AUTHORIZATION_HEADER;
@@ -37,6 +38,7 @@ import static com.devillage.teamproject.util.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -46,6 +48,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -85,7 +88,7 @@ class PostControllerTest implements Reflection {
     public void postPost() throws Exception {
         //given
         PostDto.Post postDto = PostDto.Post.builder()
-                .postId(post.getId())
+//                .postId(post.getId())
                 .title("안녕하세요.")
                 .content(COMMENT_CONTENT)
                 .tags(List.of("tag1", "tag2"))
@@ -170,6 +173,7 @@ class PostControllerTest implements Reflection {
         setField(post, "tags", List.of(postTag));
         setField(post, "content", "안녕하세요. 스트링 통째로 드가는게 맞나요");
         setField(post, "clicks", 1L);
+        setField(post,"postLastModifiedAt", LocalDateTime.of(0000, 12, 31, 00, 00,00,3333));
         setField(category, "categoryType", CategoryType.NOTICE);
         setField(postTag, "tag", tag);
         setField(tag, "id", 1L);
@@ -178,8 +182,8 @@ class PostControllerTest implements Reflection {
         setField(comment, "content", "잘 봤습니다.");
         setField(authorInfo, "authorId", 1L);
         setField(authorInfo, "authorName", "강지");
-        post.addUser(user);
         post.setDate();
+        post.addUser(user);
         Long id = post.getId();
         setField(user, "nickName", NICKNAME1);
 
@@ -354,6 +358,28 @@ class PostControllerTest implements Reflection {
                         )
                 ));
 
+    }
+    @Test
+    void deletePost() throws Exception{
+        //given
+        Post post = newInstance(Post.class);
+        setField(post,"id",1L);
+
+        Long postId = 1L;
+        doNothing().when(postService).deletePost(postId);
+
+        //when
+        ResultActions actions =
+                mockMvc.perform(
+                        delete("/posts/{post-id}", postId)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                );
+
+        //then
+        actions
+                .andExpect(status().isNoContent())
+                .andReturn();
     }
 
 }

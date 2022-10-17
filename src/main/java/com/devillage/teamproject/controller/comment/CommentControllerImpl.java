@@ -3,6 +3,7 @@ package com.devillage.teamproject.controller.comment;
 import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.CommentDto;
 import com.devillage.teamproject.dto.DoubleResponseDto;
+import com.devillage.teamproject.dto.PostDto;
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.ReComment;
 import com.devillage.teamproject.service.comment.CommentService;
@@ -31,12 +32,13 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    public boolean likeComment(Long postId, Long commentId, String token) {
-        Comment comment = commentService.likeComment(postId,commentId,token);
-        Long count = comment.getLikeCount();
-        if(count==1) return true;
-        else return false;
-
+    public PostDto.Response.CommentLikeDto likeComment(AuthDto.UserInfo userInfo, Long postId,Long commentId) {
+        Comment comment = commentService.likeComment(userInfo.getId(),postId,commentId);
+        return PostDto.Response.CommentLikeDto.of(
+                userInfo.getId(),
+                comment.getPost().getId(),
+                comment.getId(),
+                comment.getLikeCount());
     }
 
     @Override
@@ -75,7 +77,7 @@ public class CommentControllerImpl implements CommentController {
     public DoubleResponseDto getComments(Long postId, Integer page, Integer size, AuthDto.UserInfo userInfo) {
         Page<Comment> commentPage = commentService.findComments(postId, page - 1, size);
         return DoubleResponseDto.of(commentPage.stream().map(
-                comment -> CommentDto.ResponseWithReComment.of(comment, userInfo.getId())
+                comment -> CommentDto.ResponseWithReComment.of(comment, userInfo == null ? (Long) 0L : userInfo.getId())
         ).collect(Collectors.toList()), commentPage);
     }
 }

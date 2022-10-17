@@ -3,7 +3,9 @@ package com.devillage.teamproject.dto;
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.Modifying;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -45,11 +47,10 @@ public class PostDto {
             private Long clicks;
             private List<TagDto.Response> tag;
             private UserDto.AuthorInfo author;
-            private Long like;
-            private boolean postLike;
-            private boolean bookmarkLike;
+            private Long likeCount;
+            private boolean isLiked;
+            private boolean isBookmarked;
             private DoubleResponseDto<CommentDto.ResponseWithReComment> comments;
-            private boolean commentLike;
 
             public static PostDetail of(com.devillage.teamproject.entity.Post post, Page<Comment> commentPage,
                                         Long userId){
@@ -59,13 +60,19 @@ public class PostDto {
                         .category(post.getCategory().getCategoryType().name())
                         .createdAt(post.getCreatedAt())
                         .content(post.getContent())
-                        .isModified(post.getLastModifiedAt().isAfter(post.getCreatedAt()))
+                        .isModified(post.getPostLastModifiedAt().isAfter(post.getCreatedAt()))
                         .clicks(post.getClicks())
                         .tag(post.getTags().stream()
                                 .map(postTag -> TagDto.Response.of(postTag.getTag()))
                                 .collect(Collectors.toList()))
                         .author(UserDto.AuthorInfo.of(post.getUser()))
-                        .like(post.getLikeCount())
+                        .likeCount(post.getLikeCount())
+                        .isLiked(post.getLikes().stream().map(
+                                like -> like.getUser().getId()
+                        ).collect(Collectors.toList()).contains(userId))
+                        .isBookmarked(post.getBookmarks().stream().map(
+                                bookmark -> bookmark.getUser().getId()
+                        ).collect(Collectors.toList()).contains(userId))
                         .comments(DoubleResponseDto.of(commentPage.stream().map(
                                 comment -> CommentDto.ResponseWithReComment.of(comment, userId)
                         ).collect(Collectors.toList()), commentPage))
@@ -142,6 +149,18 @@ public class PostDto {
                 return new LikeDto(userId, postId, likeId);
             }
         }
+        @Getter
+        @AllArgsConstructor(access = AccessLevel.PROTECTED)
+        public static class CommentLikeDto {
+            private final Long userId;
+            private final Long postId;
+            private final Long commentId;
+            private final Long likeCount;
+
+            public static CommentLikeDto of(Long userId, Long postId, Long commentId, Long likeId) {
+                return new CommentLikeDto(userId, postId,commentId, likeId);
+            }
+        }
 
     }
 
@@ -150,9 +169,9 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class Post {
-        @NotEmpty
+        @NotNull
         private Long postId;
-        @NotBlank
+        @NotNull
         private CategoryType category;
         @NotBlank
         private String title;
@@ -178,7 +197,7 @@ public class PostDto {
     public static class Patch {
         @NotNull
         private Long postId;
-        @NotBlank
+        @NotNull
         private CategoryType category;
         @NotBlank
         private String title;

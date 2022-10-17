@@ -19,23 +19,23 @@ public class AuthControllerImpl implements AuthController {
     private final EmailAuthService emailAuthService;
 
     @Override
-    public AuthDto.Token postAuth(@RequestBody AuthDto.Login request) {
+    public AuthDto.Token postAuth(AuthDto.Login request) {
         return authService.loginUser(request.toEntity());
     }
 
     @Override
-    public Long postJoin(@RequestBody AuthDto.JOIN request) {
+    public Long postJoin(AuthDto.JOIN request) {
         User joinedUser = authService.joinUser(request.toEntity());
         return joinedUser.getId();
     }
 
     @Override
-    public AuthDto.Token postRefresh(@RequestHeader(REFRESH_HEADER) String refreshToken) {
+    public AuthDto.Token postRefresh(String refreshToken) {
         return authService.reIssueToken(refreshToken);
     }
 
     @Override
-    public String deleteAuth(@RequestHeader(REFRESH_HEADER) String token) {
+    public String deleteAuth(String token) {
         authService.deleteToken(token);
         return "OK";
     }

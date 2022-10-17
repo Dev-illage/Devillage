@@ -72,7 +72,7 @@ public class TagRepositoryTest implements Reflection {
         tagRepository.save(tag);
 
         // when
-        long totalElements = postTagRepository.findByTag(tag, pageRequest).getTotalElements();
+        long totalElements = postTagRepository.findDistinctByTag(tag, pageRequest).getTotalElements();
 
         // then
         assertThat(totalElements).isEqualTo(2L);

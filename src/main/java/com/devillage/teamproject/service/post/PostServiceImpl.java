@@ -13,14 +13,12 @@ import com.devillage.teamproject.repository.post.ReportedPostRepository;
 import com.devillage.teamproject.repository.posttag.PostTagRepository;
 import com.devillage.teamproject.repository.tag.TagRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
-import com.devillage.teamproject.security.util.JwtTokenUtil;
 import com.devillage.teamproject.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -139,14 +137,14 @@ public class PostServiceImpl implements PostService {
                     PageRequest.of(page - 1, size, Sort.by("id").descending()));
         }
 
-        return postRepository.findByCategory_CategoryType(
+        return postRepository.findDistinctByCategory_CategoryType(
                 CategoryType.valueOf(category.toUpperCase()),
                 PageRequest.of(page - 1, size, Sort.by("id").descending()));
     }
 
     @Override
     public Page<Post> getPostsBySearch(String word, int page, int size) {
-        return postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
+        return postRepository.findDistinctByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
                 word, word, PageRequest.of(page - 1, size, Sort.by("id").descending()));
     }
 
@@ -154,7 +152,7 @@ public class PostServiceImpl implements PostService {
     public Page<Post> getPostsByTag(String tagName, int page, int size) {
         Tag tag = tagRepository.findTagByName(tagName)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND));
-        Page<PostTag> postTags = postTagRepository.findByTag(tag,
+        Page<PostTag> postTags = postTagRepository.findDistinctByTag(tag,
                 PageRequest.of(page - 1, size, Sort.by("id").descending()));
         List<Post> posts = postTags.stream()
                 .map(PostTag::getPost)

@@ -58,7 +58,7 @@ public class GetPostsServiceTest implements Reflection {
 
         given(postRepository.findAll(pageable))
                 .willReturn(allPosts);
-        given(postRepository.findByCategory_CategoryType(CategoryType.valueOf(existCategory), pageable))
+        given(postRepository.findDistinctByCategory_CategoryType(CategoryType.valueOf(existCategory), pageable))
                 .willReturn(posts);
 
         // when
@@ -99,7 +99,7 @@ public class GetPostsServiceTest implements Reflection {
                 .willReturn(Optional.ofNullable(tag));
         given(tagRepository.findTagByName(notExistTagName))
                 .willReturn(Optional.empty());
-        given(postTagRepository.findByTag(tag, pageable))
+        given(postTagRepository.findDistinctByTag(tag, pageable))
                 .willReturn(postTags);
 
         // when

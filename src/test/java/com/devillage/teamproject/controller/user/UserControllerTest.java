@@ -8,6 +8,7 @@ import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.security.config.SecurityConfig;
 import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import com.devillage.teamproject.security.util.JwtTokenUtil;
+import com.devillage.teamproject.service.file.FileService;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
 import com.devillage.teamproject.util.TestConstants;
@@ -29,6 +30,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -73,6 +75,8 @@ class UserControllerTest implements Reflection {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+    @MockBean
+    private FileService fileService;
 
 
     @Test
@@ -112,7 +116,11 @@ class UserControllerTest implements Reflection {
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("nickname").description("닉네임"),
                                 fieldWithPath("statusMessage").description("상태메시지"),
-                                fieldWithPath("passwordModifiedAt").description("최근 암호 수정날짜")
+                                fieldWithPath("passwordModifiedAt").description("최근 암호 수정날짜"),
+                                fieldWithPath("avatar").type(JsonFieldType.OBJECT).description("프로필사진 정보"),
+                                fieldWithPath("avatar.fileId").description("프로필사진 식별자"),
+                                fieldWithPath("avatar.filename").description("프로필사진 파일 이름"),
+                                fieldWithPath("avatar.remotePath").description("프로필사진 원격 줏소")
                         )
                 ))
                 .andReturn();

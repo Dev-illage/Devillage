@@ -169,7 +169,7 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class Post {
-        @NotNull
+
         private Long postId;
         @NotNull
         private CategoryType category;
@@ -182,7 +182,6 @@ public class PostDto {
 
         public com.devillage.teamproject.entity.Post toEntity() {
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
-                    this.postId,
                     this.title,
                     this.content
             );
@@ -195,7 +194,7 @@ public class PostDto {
     @AllArgsConstructor
     @Builder
     public static class Patch {
-        @NotNull
+
         private Long postId;
         @NotNull
         private CategoryType category;
@@ -208,7 +207,6 @@ public class PostDto {
 
         public com.devillage.teamproject.entity.Post toEntity() {
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
-                    this.postId,
                     this.title,
                     this.content
             );

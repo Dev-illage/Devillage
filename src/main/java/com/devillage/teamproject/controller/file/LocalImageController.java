@@ -35,9 +35,9 @@ public class LocalImageController implements FileController {
     }
 
     @Override
-    public FileDto.Response postFile(AuthDto.UserInfo userInfo, MultipartFile multipartFile,
+    public FileDto.Response postFile(AuthDto.UserInfo userInfo, MultipartFile data,
                                      HttpServletRequest request) {
-        File savedFile = fileService.saveFile(userInfo.getId(), multipartFile, request.getRequestURL());
+        File savedFile = fileService.saveFile(userInfo.getId(), data, request.getRequestURL());
         return FileDto.Response.of(savedFile);
     }
 

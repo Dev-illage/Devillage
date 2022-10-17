@@ -143,9 +143,4 @@ public class UserServiceImpl implements UserService {
         return password;
     }
 
-    public boolean postLikeExist(Long userId,Long postId){
-        List<Like> findLikes = likeRepository.findByUserIdAndPostId(userId, postId);
-        if(findLikes.isEmpty()) return false;
-        return true;
-    }
 }

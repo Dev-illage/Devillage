@@ -26,8 +26,7 @@ public interface AuthController {
 
     @DeleteMapping("/token")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-
-    String deleteAuth(String token);
+    String deleteAuth(@RequestHeader(REFRESH_HEADER) String token);
 
     @PostMapping("/email")
     @ResponseStatus(HttpStatus.OK)
@@ -36,6 +35,4 @@ public interface AuthController {
     @PostMapping("/email/confirm")
     @ResponseStatus(HttpStatus.OK)
     boolean verifyAuthKey(@RequestBody @Valid EmailDto.AuthInfo authInfo);
-
-    String deleteAuth(@RequestHeader(REFRESH_HEADER) String token);
 }

@@ -1,7 +1,6 @@
 package com.devillage.teamproject.controller.user;
 
 import com.devillage.teamproject.dto.AuthDto;
-import com.devillage.teamproject.dto.FileDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.security.resolver.AccessToken;
@@ -10,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @RequestMapping("/users")
 public interface UserController {
@@ -40,12 +39,12 @@ public interface UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteUser(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
 
-    @PostMapping("/profile/{user-id}/avatar")
+    @PostMapping("/profile/avatar")
     @ResponseStatus(HttpStatus.CREATED)
-    FileDto.SimpleResponse postAvatar(@AccessToken AuthDto.UserInfo userInfo, @PathVariable("user-id") Long userId,
-                                      @RequestPart MultipartFile imageFile);
+    UserDto.Response postAvatar(@AccessToken AuthDto.UserInfo userInfo,
+                                      @RequestPart MultipartFile imageFile, HttpServletRequest request);
 
     @DeleteMapping("/profile/{user-id}/avatar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteUser(@AccessToken AuthDto.UserInfo userInfo, @PathVariable("user-id") Long userId);
+    void deleteAvatar(@AccessToken AuthDto.UserInfo userInfo, @PathVariable("user-id") Long userId);
 }

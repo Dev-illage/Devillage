@@ -46,9 +46,13 @@ public class User extends AuditingEntity {
     @OneToMany(mappedBy = "user")
     private List<UserRoles> userRoles = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "avatar_image_id")
     private File avatar;
+
+    public void addAvatar(File avatar) {
+        this.avatar = avatar;
+    }
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

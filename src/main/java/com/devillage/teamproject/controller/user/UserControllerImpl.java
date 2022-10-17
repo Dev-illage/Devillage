@@ -4,19 +4,19 @@ import com.devillage.teamproject.dto.AuthDto;
 import com.devillage.teamproject.dto.SingleResponseDto;
 import com.devillage.teamproject.dto.UserDto;
 import com.devillage.teamproject.entity.Block;
-import com.devillage.teamproject.security.resolver.AccessToken;
+import com.devillage.teamproject.service.file.FileService;
 import com.devillage.teamproject.service.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
+@RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
     private final UserService userService;
-
-    public UserControllerImpl(UserService userService) {
-        this.userService = userService;
-    }
+    private final FileService fileService;
 
     @Override
     public SingleResponseDto postBlock(Long targetId, String token) {
@@ -33,7 +33,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public boolean patchPassword(AuthDto.UserInfo userInfo, UserDto.PasswordDto passwordDto) {
-        userService.updatePassword(userInfo,passwordDto.getPassword(), passwordDto.getUpdatePassword());
+        userService.updatePassword(userInfo, passwordDto.getPassword(), passwordDto.getUpdatePassword());
         return true;
     }
 
@@ -46,4 +46,17 @@ public class UserControllerImpl implements UserController {
     public void deleteUser(String token) {
         userService.deleteUser(token);
     }
+
+    @Override
+    public UserDto.Response postAvatar(AuthDto.UserInfo userInfo, MultipartFile imageFile,
+                                       HttpServletRequest request) {
+        return UserDto.Response.of(fileService.addAvatarToUser(userInfo.getId(), imageFile, request));
+    }
+
+    @Override
+    public void deleteAvatar(AuthDto.UserInfo userInfo, Long userId) {
+
+    }
+
+
 }

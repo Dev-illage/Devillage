@@ -167,6 +167,15 @@ public class LocalImageService implements FileService {
         file.addRemotePath(request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 10)) + "/files?q=" + file.getFilename());
         file.addUser(findUser);
         findUser.addAvatar(file);
+        fileRepository.save(file);
         return findUser;
+    }
+
+    @Override
+    public void deleteUserAvatar(Long userId) {
+        User findUser = userService.findVerifiedUser(userId);
+        Long fileId = findUser.getAvatar().getId();
+        findUser.addAvatar(null);
+        deleteFile(fileId, userId);
     }
 }

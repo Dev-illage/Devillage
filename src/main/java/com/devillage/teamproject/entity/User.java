@@ -46,7 +46,7 @@ public class User extends AuditingEntity {
     @OneToMany(mappedBy = "user")
     private List<UserRoles> userRoles = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_image_id")
     private File avatar;
 

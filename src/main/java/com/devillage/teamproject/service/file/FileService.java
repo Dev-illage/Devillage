@@ -23,4 +23,6 @@ public interface FileService {
     File findVerifiedFile(Long fileId);
 
     User addAvatarToUser(Long userId, MultipartFile imageFile, HttpServletRequest request);
+
+    void deleteUserAvatar(Long userId);
 }

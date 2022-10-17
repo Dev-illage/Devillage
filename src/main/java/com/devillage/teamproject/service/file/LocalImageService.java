@@ -38,7 +38,8 @@ public class LocalImageService implements FileService {
     @Override
     public File saveFile(Long ownerUserId, MultipartFile multipartFile, StringBuffer requestURL) {
         User owner = userService.findVerifiedUser(ownerUserId);
-        File file = parseMultipartFile(multipartFile, requestURL);
+        File file = parseMultipartFile(multipartFile);
+        file.addRemotePath(requestURL.indexOf("/", 10) + "/files?q=" + file.getFilename());
         file.addUser(owner);
         return fileRepository.save(file);
     }
@@ -69,7 +70,7 @@ public class LocalImageService implements FileService {
         fileRepository.delete(file);
     }
 
-    public File parseMultipartFile(MultipartFile multipartFile, StringBuffer requestURL) {
+    public File parseMultipartFile(MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
             throw new BusinessLogicException(ExceptionCode.FILE_EMPTY);
         }
@@ -113,7 +114,7 @@ public class LocalImageService implements FileService {
         String newFilename = uuid + fileExtension;
 
         File file = File.createLocalImage(originalFilename, newFilename, multipartFile.getSize(),
-                path + java.io.File.separator + newFilename, requestURL);
+                path + java.io.File.separator + newFilename);
 
         String absolutePath = new java.io.File("").getAbsolutePath() + java.io.File.separator;
 

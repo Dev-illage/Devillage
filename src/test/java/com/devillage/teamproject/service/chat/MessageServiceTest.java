@@ -85,7 +85,7 @@ class MessageServiceTest implements Reflection {
         given(chatRepository.save(any(Chat.class)))
                 .willAnswer(AdditionalAnswers.returnsFirstArg());
         given(jwtTokenUtil.getUserId(notAuthorizedToken)).
-                willThrow(new BusinessLogicException(ExceptionCode.USER_AUTHORIZED));
+                willThrow(new BusinessLogicException(ExceptionCode.MALFORMED_JWT_EXCEPTION));
         given(jwtTokenUtil.getUserId(notInChatInToken)).
                 willReturn(user2.getId());
         given(jwtTokenUtil.getUserId(token)).

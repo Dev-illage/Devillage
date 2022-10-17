@@ -95,8 +95,8 @@ class ChatControllerTest implements Reflection {
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.roomName").value(room.getRoomName()))
                 .andExpect(jsonPath("$.users[0].username").value(user.getNickName()))
-                .andExpect(jsonPath("$.chats[0].type").value(chat.getMessageType().name()))
-                .andExpect(jsonPath("$.chats[0].sender").value(user.getNickName()))
+                .andExpect(jsonPath("$.chats[0].messageType").value(chat.getMessageType().name()))
+                .andExpect(jsonPath("$.chats[0].nickName").value(user.getNickName()))
                 .andExpect(jsonPath("$.chats[0].content").value("안녕하세요."))
                 .andDo(document("chat/getRoom",
                         preprocessRequest(prettyPrint()),
@@ -112,8 +112,8 @@ class ChatControllerTest implements Reflection {
                                 fieldWithPath("users").type(JsonFieldType.ARRAY).description("채팅방 유저"),
                                 fieldWithPath("users[].username").type(JsonFieldType.STRING).description("유저 닉네임"),
                                 fieldWithPath("chats").type(JsonFieldType.ARRAY).description("채팅방 채팅"),
-                                fieldWithPath("chats[].type").type(JsonFieldType.STRING).description("채팅 종류"),
-                                fieldWithPath("chats[].sender").type(JsonFieldType.STRING).description("채팅 보낸 사람"),
+                                fieldWithPath("chats[].messageType").type(JsonFieldType.STRING).description("채팅 종류"),
+                                fieldWithPath("chats[].nickName").type(JsonFieldType.STRING).description("채팅 보낸 사람"),
                                 fieldWithPath("chats[].content").type(JsonFieldType.STRING).description("채팅 내용"),
                                 fieldWithPath("chats[].createdAt").type(JsonFieldType.STRING).description("채팅 시간")
                         )

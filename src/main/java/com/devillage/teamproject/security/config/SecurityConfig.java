@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .mvcMatchers(GET, "/users/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(DELETE,"/users/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(PATCH,"/users/**").hasAnyRole("USER","MANAGER","ADMIN")
+                .mvcMatchers(POST,"/users/profile/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(GET,"/files/**").permitAll()
                 .mvcMatchers(POST,"/files/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(GET, "/test/**").hasAnyRole("USER","MANAGER","ADMIN")

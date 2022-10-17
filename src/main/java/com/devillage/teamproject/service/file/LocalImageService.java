@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,7 +40,7 @@ public class LocalImageService implements FileService {
     public File saveFile(Long ownerUserId, MultipartFile multipartFile, StringBuffer requestURL) {
         User owner = userService.findVerifiedUser(ownerUserId);
         File file = parseMultipartFile(multipartFile);
-        file.addRemotePath(requestURL.indexOf("/", 10) + "/files?q=" + file.getFilename());
+        file.addRemotePath(requestURL.substring(0, requestURL.indexOf("/", 10)) + "/files?q=" + file.getFilename());
         file.addUser(owner);
         return fileRepository.save(file);
     }
@@ -157,5 +158,15 @@ public class LocalImageService implements FileService {
         return fileRepository.findById(fileId).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.FILE_NOT_FOUND)
         );
+    }
+
+    @Override
+    public User addAvatarToUser(Long userId, MultipartFile imageFile, HttpServletRequest request) {
+        User findUser = userService.findVerifiedUser(userId);
+        File file = parseMultipartFile(imageFile);
+        file.addRemotePath(request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 10)) + "/files?q=" + file.getFilename());
+        file.addUser(findUser);
+        findUser.addAvatar(file);
+        return findUser;
     }
 }

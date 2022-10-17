@@ -54,8 +54,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void deleteAvatar(AuthDto.UserInfo userInfo, Long userId) {
-
+    public void deleteAvatar(AuthDto.UserInfo userInfo) {
+        fileService.deleteUserAvatar(userInfo.getId());
     }
 
 

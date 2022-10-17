@@ -44,7 +44,7 @@ public interface UserController {
     UserDto.Response postAvatar(@AccessToken AuthDto.UserInfo userInfo,
                                       @RequestPart MultipartFile imageFile, HttpServletRequest request);
 
-    @DeleteMapping("/profile/{user-id}/avatar")
+    @DeleteMapping("/profile/avatar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteAvatar(@AccessToken AuthDto.UserInfo userInfo, @PathVariable("user-id") Long userId);
+    void deleteAvatar(@AccessToken AuthDto.UserInfo userInfo);
 }

@@ -104,12 +104,12 @@ public class CommentServiceImpl implements CommentService {
         if (!Objects.equals(comment.getUser().getId(), jwtTokenUtil.getUserId(token))) {
             throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
         }
-        if (comment.getReComments().size() == 0) {
+//        if (comment.getReComments().size() == 0) {
             commentRepository.delete(comment);
-            return;
-        }
+//            return;
+//        }
 
-        comment.deleteComment();
+//        comment.deleteComment();
     }
 
     @Override

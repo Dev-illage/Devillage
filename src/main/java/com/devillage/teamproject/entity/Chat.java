@@ -1,8 +1,10 @@
 package com.devillage.teamproject.entity;
 
+import com.devillage.teamproject.entity.enums.MessageType;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,6 +21,15 @@ public class Chat extends AuditingEntity {
 
     @ToString.Include
     @EqualsAndHashCode.Include
+    private String nickName;
+
+    @ToString.Include
+    @EqualsAndHashCode.Include
+    @Enumerated(EnumType.STRING)
+    private MessageType messageType;
+
+    @ToString.Include
+    @EqualsAndHashCode.Include
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,4 +39,18 @@ public class Chat extends AuditingEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;
+
+    @Deprecated
+    public void setDate() {
+        setCreatedAt(LocalDateTime.now());
+        setLastModifiedAt(LocalDateTime.now());
+    }
+
+    public Chat(String nickName, MessageType messageType, String content, ChatRoom chatroom, User user) {
+        this.nickName = nickName;
+        this.messageType = messageType;
+        this.content = content;
+        this.chatroom = chatroom;
+        this.user = user;
+    }
 }

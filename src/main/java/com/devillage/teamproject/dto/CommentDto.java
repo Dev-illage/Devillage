@@ -46,11 +46,11 @@ public class CommentDto {
         private String nickname;
         private FileDto.SimpleResponse avatar;
         private String content;
-        private List<ReCommentResponse> reComments = new ArrayList<>();
         private long likeCount;
         private LocalDateTime createdAt;
         private LocalDateTime lastModifiedAt;
         private Boolean isLiked;
+        private List<ReCommentResponse> reComments = new ArrayList<>();
 
         @Deprecated
         public static ResponseWithReComment of(Comment comment) {

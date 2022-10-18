@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
         User user = optionalUser.orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
-        if (nickName != null) {
+        if (nickName != null && !nickName.equals(user.getNickName())) {
             if (userRepository.existsByNickName(nickName)) {
                 throw new BusinessLogicException(ExceptionCode.NICKNAME_ALREADY_EXISTS);
             }

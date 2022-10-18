@@ -193,6 +193,7 @@ public class UserServiceTest implements Reflection {
                 .willReturn(true);
 
         // when
+        userService.editUser(user1.getId(), user1.getNickName(), null);
         userService.editUser(user1.getId(), newNickname, null);
         userService.editUser(user2.getId(), null, newStatusMessage);
 

@@ -2,15 +2,19 @@ package com.devillage.teamproject.config;
 
 import com.devillage.teamproject.security.resolver.ResultJwtArgumentResolver;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
-@Configuration
+//@Configuration
+@Controller
+@Configurable
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
     private final ResultJwtArgumentResolver jwtArgumentResolver;

@@ -81,7 +81,7 @@ public class Post extends AuditingEntity {
         this.comments.add(comment);
     }
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",orphanRemoval = true)
     private final List<Bookmark> bookmarks = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)

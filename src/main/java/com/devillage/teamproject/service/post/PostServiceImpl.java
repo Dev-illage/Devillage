@@ -48,6 +48,15 @@ public class PostServiceImpl implements PostService {
 
         Category category = categoryRepository.findCategoriesByCategoryType(categoryType);
 
+        if(tagValue.size()==0 || tagValue.isEmpty()){
+            PostTag postTag = new PostTag();
+            postTagRepository.save(postTag);
+            post.addPostTag(postTag);
+            post.addCategory(category);
+            postRepository.save(post);
+            findUser.addPost(post);
+            post.addUser(findUser);
+        }
         tagValue.forEach(
                 e -> {
                     if (tagRepository.findTagByName(e).isEmpty()) {
@@ -82,6 +91,17 @@ public class PostServiceImpl implements PostService {
 
         Category category = categoryRepository.findCategoriesByCategoryType(categoryType);
         postTagRepository.deleteByPostId(postId);
+
+        if(tagValue.size()==0 || tagValue.isEmpty()){
+            PostTag postTag = new PostTag();
+            postTagRepository.save(postTag);
+            verifiedPost.addPostTag(postTag);
+            verifiedPost.addCategory(category);
+            verifiedPost.editPost(post);
+            postRepository.save(verifiedPost);
+            findUser.addPost(verifiedPost);
+            verifiedPost.addUser(findUser);
+        }
         tagValue.forEach(
                 e -> {
                     if (tagRepository.findTagByName(e).isEmpty()) {

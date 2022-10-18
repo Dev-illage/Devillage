@@ -181,7 +181,7 @@ class CommentServiceTest implements Reflection {
     /**
      * 일반 삭제는 단위테스트로 검증하기엔 불가능해 보입니다.
      */
-    @Test
+    @Deprecated
     @DisplayName("대댓글이 있는 상태에서의 삭제")
     public void deleteCommentWithReComment() throws Exception {
         // given

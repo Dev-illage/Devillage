@@ -22,6 +22,7 @@ public class UserDto {
         private String nickname;
         private String statusMessage;
         private LocalDateTime passwordModifiedAt;
+        private FileDto.SimpleResponse avatar;
 
         public static Response of(User user) {
             return Response.builder()
@@ -29,6 +30,7 @@ public class UserDto {
                     .nickname(user.getNickName())
                     .statusMessage(user.getStatusMessage())
                     .passwordModifiedAt(user.getPwdLastModifiedAt())
+                    .avatar(FileDto.SimpleResponse.of(user.getAvatar()))
                     .build();
         }
     }

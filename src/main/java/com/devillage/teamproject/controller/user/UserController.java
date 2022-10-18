@@ -7,9 +7,10 @@ import com.devillage.teamproject.security.resolver.AccessToken;
 import com.devillage.teamproject.security.util.JwtConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @RequestMapping("/users")
 public interface UserController {
@@ -37,4 +38,13 @@ public interface UserController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteUser(@RequestHeader(JwtConstants.AUTHORIZATION_HEADER) String token);
+
+    @PostMapping("/profile/avatar")
+    @ResponseStatus(HttpStatus.CREATED)
+    UserDto.Response postAvatar(@AccessToken AuthDto.UserInfo userInfo,
+                                      @RequestPart MultipartFile imageFile, HttpServletRequest request);
+
+    @DeleteMapping("/profile/avatar")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteAvatar(@AccessToken AuthDto.UserInfo userInfo);
 }

@@ -58,11 +58,19 @@ public class FileDto {
     @AllArgsConstructor
     @Builder
     public static class SimpleResponse {
+        private Long fileId;
         private String filename;
         private String remotePath;
 
         public static SimpleResponse of(File file) {
-            return SimpleResponse.builder()
+            return file == null ? SimpleResponse.builder()
+                    .fileId(null)
+                    .filename(null)
+                    .remotePath(null)
+                    .build()
+                    :
+                    SimpleResponse.builder()
+                    .fileId(file.getId())
                     .filename(file.getFilename())
                     .remotePath(file.getRemotePath())
                     .build();

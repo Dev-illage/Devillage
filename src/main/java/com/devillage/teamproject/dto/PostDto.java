@@ -47,6 +47,7 @@ public class PostDto {
             private Long clicks;
             private List<TagDto.Response> tag;
             private UserDto.AuthorInfo author;
+            private FileDto.SimpleResponse avatar;
             private Long likeCount;
             private boolean isLiked;
             private boolean isBookmarked;
@@ -66,6 +67,7 @@ public class PostDto {
                                 .map(postTag -> TagDto.Response.of(postTag.getTag()))
                                 .collect(Collectors.toList()))
                         .author(UserDto.AuthorInfo.of(post.getUser()))
+                        .avatar(FileDto.SimpleResponse.of(post.getUser().getAvatar()))
                         .likeCount(post.getLikeCount())
                         .isLiked(post.getLikes().stream().map(
                                 like -> like.getUser().getId()

@@ -44,36 +44,17 @@ public class CommentDto {
         private Long commentId;
         private Long userId;
         private String nickname;
+        private FileDto.SimpleResponse avatar;
         private String content;
-        private List<ReCommentResponse> reComments = new ArrayList<>();
         private long likeCount;
         private LocalDateTime createdAt;
         private LocalDateTime lastModifiedAt;
         private Boolean isLiked;
+        private List<ReCommentResponse> reComments = new ArrayList<>();
 
         @Deprecated
         public static ResponseWithReComment of(Comment comment) {
-            return comment.getCommentStatus() == CommentStatus.DELETED ?
-                    ResponseWithReComment.builder()
-                            .commentId(comment.getId())
-                            .userId(null)
-                            .content(null)
-                            .reComments(comment.getReComments().stream().map(
-                                    ReCommentResponse::of
-                            ).collect(Collectors.toList()))
-                            .createdAt(comment.getCreatedAt())
-                            .lastModifiedAt(comment.getLastModifiedAt())
-                            .build() :
-                    ResponseWithReComment.builder()
-                            .commentId(comment.getId())
-                            .userId(comment.getUser().getId())
-                            .content(comment.getContent())
-                            .reComments(comment.getReComments().stream().map(
-                                    ReCommentResponse::of
-                            ).collect(Collectors.toList()))
-                            .createdAt(comment.getCreatedAt())
-                            .lastModifiedAt(comment.getLastModifiedAt())
-                            .build();
+            return of(comment, 0L);
         }
 
         public static ResponseWithReComment of(Comment comment, Long userId) {
@@ -82,6 +63,7 @@ public class CommentDto {
                             .commentId(comment.getId())
                             .userId(null)
                             .nickname(null)
+                            .avatar(null)
                             .content(null)
                             .reComments(comment.getReComments().stream().map(
                                     ReCommentResponse::of
@@ -95,6 +77,7 @@ public class CommentDto {
                             .commentId(comment.getId())
                             .userId(comment.getUser().getId())
                             .nickname(comment.getUser().getNickName())
+                            .avatar(FileDto.SimpleResponse.of(comment.getUser().getAvatar()))
                             .content(comment.getContent())
                             .reComments(comment.getReComments().stream().map(
                                     ReCommentResponse::of
@@ -160,8 +143,9 @@ public class CommentDto {
     public static class ReCommentResponse {
         private Long reCommentId;
         private Long userId;
-        private Long parentCommentId;
         private String nickname;
+        private FileDto.SimpleResponse avatar;
+        private Long parentCommentId;
         private String content;
         private long likeCount;
         private LocalDateTime createdAt;
@@ -176,6 +160,7 @@ public class CommentDto {
             return ReCommentResponse.builder()
                     .reCommentId(reComment.getId())
                     .userId(reComment.getUser().getId())
+                    .avatar(FileDto.SimpleResponse.of(reComment.getUser().getAvatar()))
                     .parentCommentId(reComment.getComment().getId())
                     .nickname(reComment.getUser().getNickName())
                     .content(reComment.getContent())

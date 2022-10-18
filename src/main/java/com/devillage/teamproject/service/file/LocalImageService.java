@@ -163,11 +163,15 @@ public class LocalImageService implements FileService {
     @Override
     public User addAvatarToUser(Long userId, MultipartFile imageFile, HttpServletRequest request) {
         User findUser = userService.findVerifiedUser(userId);
+        File pastAvatar = findUser.getAvatar();
         File file = parseMultipartFile(imageFile);
         file.addRemotePath(request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 10)) + "/files?q=" + file.getFilename());
         file.addUser(findUser);
         findUser.addAvatar(file);
         fileRepository.save(file);
+        if (pastAvatar != null) {
+            fileRepository.delete(pastAvatar);
+        }
         return findUser;
     }
 

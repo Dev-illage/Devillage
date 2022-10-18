@@ -186,7 +186,7 @@ class ChatControllerTest implements Reflection {
 
         // then
         actions.andExpect(status().isOk())
-                .andDo(document("/chat/postRoom",
+                .andDo(document("chat/postRoom",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestHeaders(

@@ -60,7 +60,7 @@ class FileControllerTest {
         File file = File.builder().fileSize(1234512L).fileType(FileType.IMAGE).originalFilename("image1.jpg")
                 .remotePath("https://www.someserver.com/?q=some-uuid.jpg")
                 .localPath("images/20221014/some-uuid.jpg").filename("some-uuid.jpg").id(ID1).owner(user).build();
-        MockMultipartFile imageFile = new MockMultipartFile("multipartFile", "originalFilename.jpg", MediaType.IMAGE_JPEG_VALUE, "someFile".getBytes());
+        MockMultipartFile imageFile = new MockMultipartFile("file", "originalFilename.jpg", MediaType.IMAGE_JPEG_VALUE, "someFile".getBytes());
 
         given(fileService.saveFile(Mockito.any(), Mockito.any(MultipartFile.class), Mockito.any(StringBuffer.class))).willReturn(file);
 
@@ -90,7 +90,7 @@ class FileControllerTest {
                                 headerWithName(AUTHORIZATION_HEADER).description("jwt 토큰")
                         ),
                         requestPartBody(
-                          "multipartFile"
+                          "file"
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("파일 식별자"),

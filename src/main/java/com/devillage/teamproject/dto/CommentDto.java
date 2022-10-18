@@ -53,27 +53,7 @@ public class CommentDto {
 
         @Deprecated
         public static ResponseWithReComment of(Comment comment) {
-            return comment.getCommentStatus() == CommentStatus.DELETED ?
-                    ResponseWithReComment.builder()
-                            .commentId(comment.getId())
-                            .userId(null)
-                            .content(null)
-                            .reComments(comment.getReComments().stream().map(
-                                    ReCommentResponse::of
-                            ).collect(Collectors.toList()))
-                            .createdAt(comment.getCreatedAt())
-                            .lastModifiedAt(comment.getLastModifiedAt())
-                            .build() :
-                    ResponseWithReComment.builder()
-                            .commentId(comment.getId())
-                            .userId(comment.getUser().getId())
-                            .content(comment.getContent())
-                            .reComments(comment.getReComments().stream().map(
-                                    ReCommentResponse::of
-                            ).collect(Collectors.toList()))
-                            .createdAt(comment.getCreatedAt())
-                            .lastModifiedAt(comment.getLastModifiedAt())
-                            .build();
+            return of(comment, 0L);
         }
 
         public static ResponseWithReComment of(Comment comment, Long userId) {

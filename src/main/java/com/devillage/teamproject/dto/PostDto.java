@@ -175,7 +175,7 @@ public class PostDto {
         private CategoryType category;
         @NotBlank
         private String title;
-        @NotEmpty // 일단은 오류가 나니까 막아놓지만 추후 @NotNull로 바꾸고 비어있는 리스트에 대한 처리가 필요합니다.
+
         private List<String> tags;
         @NotBlank
         private String content;
@@ -200,7 +200,7 @@ public class PostDto {
         private CategoryType category;
         @NotBlank
         private String title;
-        @NotEmpty // 일단은 오류가 나니까 막아놓지만 추후 @NotNull로 바꾸고 비어있는 리스트에 대한 처리가 필요합니다.
+
         private List<String> tags;
         @NotBlank
         private String content;
@@ -212,13 +212,5 @@ public class PostDto {
             );
             return post;
         }
-//        public static Response of(com.devillage.teamproject.entity.Post post){
-//            return Response.builder()
-//                    .postId(post.getId())
-//                    .title(post.getTitle())
-//                    .content(post.getContent())
-//                    .build();
-//        }
-
     }
 }

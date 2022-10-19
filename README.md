@@ -73,7 +73,8 @@ Redux-persist, SASS, react-cookie, react-router-dom
 <br>
 
 ## Architecture :triangular_ruler:
-### (작성중)
+<img src="https://user-images.githubusercontent.com/102658715/196734704-56d1c616-7546-441c-b73f-d61b4405ef8d.png" width="950">
+
 <br>
 
 ## Documents :file_folder:

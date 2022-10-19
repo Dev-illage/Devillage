@@ -85,6 +85,7 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://localhost:80");
         config.addAllowedOrigin("http://localhost");
+        config.addAllowedOrigin("https://dev-illage.com");
         config.addAllowedHeader("*");
         config.setAllowedMethods(List.of("GET","POST","DELETE","PATCH","OPTION","PUT"));
         source.registerCorsConfiguration("/**", config);

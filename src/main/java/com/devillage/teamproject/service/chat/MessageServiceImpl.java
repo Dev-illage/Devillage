@@ -49,8 +49,8 @@ public class MessageServiceImpl implements MessageService {
         } else if (messageType.equals(MessageType.CHAT)) {
             verifyUserChatRoom(user, chatRoom);
         }
-
-        return chatRepository.save(new Chat(user.getNickName(), messageType, content, chatRoom, user));
+        return new Chat(user.getNickName(), messageType, content, chatRoom, user);
+//        return chatRepository.save(new Chat(user.getNickName(), messageType, content, chatRoom, user));
     }
 
     private void verifyUserChatRoom(User user, ChatRoom chatRoom) {

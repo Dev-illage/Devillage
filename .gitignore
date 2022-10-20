@@ -8,7 +8,7 @@ application-oauth.yml
 application-security.yml
 application-database.yml
 application-redis.yml
-application.yml
+application-aws-s3.yml
 
 ### STS ###
 .apt_generated

@@ -24,7 +24,7 @@ import java.util.UUID;
  * 사진파일의 보안 조치 참고 : https://www.opswat.com/blog/file-upload-protection-best-practices
  * https://owin2828.github.io/devlog/2020/01/09/etc-2.html
  */
-@Service
+//@Service
 @Transactional
 @Slf4j
 public class LocalImageService implements FileService {

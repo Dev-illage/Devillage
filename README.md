@@ -1,6 +1,6 @@
 # Devillage
 - 프로젝트 기간 : 2022.09.16 ~ 2022.10.
-- [배포 URL](https://dev-illage.com/)
+- [배포 URL](https://dev-illage.com/) (준비 중)
 - [Front Github](https://github.com/yangddoddi/devillage-front)
 <details>
     <summary>Preview</summary>

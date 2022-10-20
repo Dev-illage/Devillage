@@ -85,7 +85,7 @@ Redux-persist, SASS, react-cookie, react-router-dom
 - [요건 정의](https://ilyadelavie.notion.site/320d8097e3e943eea675e560bb2b0d1f)
 - [정책서](https://ilyadelavie.notion.site/edc37f90d8104e45a7c297f630afd1a1)
 - [Flow chart](https://ilyadelavie.notion.site/Flow-Chart-51b10f6d002349ba9296890e0071a333)
-- [시나리오 정의서](9f97ae4679f44d37bf517ee9151ed5b8)
+- [시나리오 정의서](https://ilyadelavie.notion.site/9f97ae4679f44d37bf517ee9151ed5b8)
 
 </details>
 
@@ -95,7 +95,7 @@ Redux-persist, SASS, react-cookie, react-router-dom
 - [API](https://ilyadelavie.notion.site/d77663d629b9456487067a73397ec29f?v=a12dc9c5377a4e5f972d9eb2a47b20e9)
 - [ERD](https://www.erdcloud.com/d/Ny3Nm3SXFKjY3KWSh)
 - [Sequence Diagram](https://ilyadelavie.notion.site/Flow-Chart-51b10f6d002349ba9296890e0071a333)
-- [클라이언트 통신](9f97ae4679f44d37bf517ee9151ed5b8)
+- [클라이언트 통신](https://ilyadelavie.notion.site/3b79acf1bce94b2289d52f30016b377b)
 
 </details>
 <br>

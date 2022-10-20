@@ -10,6 +10,6 @@ public class JwtConstants {
     public final static String REFRESH_HEADER = "RefreshToken";
     public final static String ROLES = "roles";
     public final static String SEQUENCE = "sequence";
-    public final static String REDIRECT_URL_OAUTH2 = "http://localhost:3000/login/oauth";
+    public final static String REDIRECT_URL_OAUTH2 = "https://dev-illage.com/login/oauth";
     public final static String NULL_TOKEN = "Bearer null";
 }

@@ -68,6 +68,16 @@ public class File extends AuditingEntity {
         return file;
     }
 
+    public static File createS3Image(String originalFilename, String filename, Long fileSize, String remotePath) {
+        File file = new File();
+        file.originalFilename = originalFilename;
+        file.filename = filename;
+        file.fileSize = fileSize;
+        file.remotePath = remotePath;
+        file.fileType = FileType.IMAGE;
+        return file;
+    }
+
     public void addRemotePath(String remotePath) {
         this.remotePath = remotePath;
     }

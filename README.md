@@ -93,7 +93,7 @@ Redux-persist, SASS, react-cookie, react-router-dom
     <summary>개발 문서</summary>
 
 - [API](https://ilyadelavie.notion.site/d77663d629b9456487067a73397ec29f?v=a12dc9c5377a4e5f972d9eb2a47b20e9)
-- [ERD](https://ilyadelavie.notion.site/edc37f90d8104e45a7c297f630afd1a1)
+- [ERD](https://www.erdcloud.com/d/Ny3Nm3SXFKjY3KWSh)
 - [Sequence Diagram](https://ilyadelavie.notion.site/Flow-Chart-51b10f6d002349ba9296890e0071a333)
 - [클라이언트 통신](9f97ae4679f44d37bf517ee9151ed5b8)
 

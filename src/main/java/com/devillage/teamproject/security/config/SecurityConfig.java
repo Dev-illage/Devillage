@@ -35,6 +35,8 @@ public class SecurityConfig {
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .headers().frameOptions().sameOrigin()
+                .and()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .csrf().disable()

@@ -9,26 +9,84 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
-permissions:
-  contents: read
+env:
+  S3_BUCKET_NAME: devillage-deploy
+  RESOURCE_PATH: ./src/main/resources/application.yaml
+  CODE_DEPLOY_APPLICATION_NAME: devillage
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: devillage-auto
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: build
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+        
+        # [1] application.yml 생성
+      - name: Set yaml file 
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.RESOURCE_PATH }} 
+        env:
+          spring.datasource.url: ${{ secret.RDS_URL }}
+          spring.datasource.username: ${{ secret.RDS_ID }}
+          spring.datasource.password: ${{ secret.RDS_PASSWORD }}
+          spring.redis.host: ${{ secret.REDIS_URL }}
+          spring.redis.port: ${{ secret.REDIS_PORT }}
+          spring.mail.host: ${{ secret.MAIL_HOST }}
+          spring.mail.port: ${{ secret.MAIL_PORT }}
+          spring.mail.username: ${{ secret.MAIL_ID }}
+          spring.mail.password: ${{ secret.MAIL_PASSWORD }}
+          spring.security.oauth2.client.registration.github.client-id: ${{ secret.OAUTH_GITHUB_ID }}
+          spring.security.oauth2.client.registration.github.password: ${{ secret.OAUTH_GITHUB_PASSWORD }}
+          spring.security.oauth2.client.registration.google.client-id: ${{ secret.OAUTH_GOOGLE_ID }}
+          spring.security.oauth2.client.registration.google.password: ${{ secret.OAUTH_GOOGLE_PASSWORD }}
+          jwt.secretKey: ${{ secret.SECURITY_SECRET_KEY }}
+          jwt.refreshKey: ${{ secret.SECURITY_REFRESH_KEY }}
+          cloud.aws.credentials.accessKey: ${{ secret.AWS_IMAGE_ACCESS_KEY }}
+          cloud.aws.credentials.secretKey: ${{ secret.AWS_IMAGE_SECRET_KEY }}
+          cloud.aws.s3.bucket: ${{ secret.AWS_IMAGE_BUCKET_NAME }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
+
+        # [2] build
+      - name: Build with Gradle
+        run: ./gradlew build
+        shell: bash
+
+        # [3] save build
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+        shell: bash
+
+        # [4] aws 권한
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} 
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
+          aws-region: ${{ secrets.AWS_REGION }} 
+
+        # [5] upload
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
+
+        # [6] deploy
+      - name: Code Deploy
+        run: | 
+          aws deploy create-deployment \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip

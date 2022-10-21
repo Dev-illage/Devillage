@@ -39,19 +39,19 @@ public class S3ImageService implements FileService {
 
         validateImage(multipartFile);
 
-        String s3FileName = folder + "/" + UUID.randomUUID() + contentTypeToExtension(multipartFile);
+        String s3FileName = UUID.randomUUID() + contentTypeToExtension(multipartFile);
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getSize());
 
         try {
-            amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objectMetadata);
+            amazonS3.putObject(bucket, folder + "/" + s3FileName, multipartFile.getInputStream(), objectMetadata);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         File file = File.createS3Image(multipartFile.getOriginalFilename(), s3FileName, multipartFile.getSize(),
-                amazonS3.getUrl(bucket, s3FileName).toString());
+                amazonS3.getUrl(bucket, folder + "/" + s3FileName).toString());
 
         file.addUser(owner);
         return fileRepository.save(file);

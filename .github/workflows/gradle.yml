@@ -56,18 +56,6 @@ jobs:
           cloud.aws.credentials.accessKey: ${{ secrets.AWS_IMAGE_ACCESS_KEY }}
           cloud.aws.credentials.secretKey: ${{ secrets.AWS_IMAGE_SECRET_KEY }}
           cloud.aws.s3.bucket: ${{ secrets.AWS_IMAGE_BUCKET_NAME }}
-        
-      - name: get runner ip addresses
-        id: ip
-        uses: haythem/public-ip@v1.2
-        
-      - name: whitelist runner ip address
-        run: |
-          aws ec2 authorize-security-group-ingress \
-            --group-id $AWS_INSTANCE_SG_ID \
-            --protocol tcp \
-            --port 22 \
-            --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -82,14 +70,6 @@ jobs:
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
         shell: bash
-        
-      - name: revoke runner ip address
-        run: |
-          aws ec2 revoke-security-group-ingress \
-            --group-id $AWS_INSTANCE_SG_ID \
-            --protocol tcp \
-            --port 22 \
-            --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
         # [4] aws 권한
       - name: Configure AWS credentials

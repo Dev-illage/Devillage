@@ -13,6 +13,7 @@ import com.devillage.teamproject.repository.post.ReportedPostRepository;
 import com.devillage.teamproject.repository.posttag.PostTagRepository;
 import com.devillage.teamproject.repository.tag.TagRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.service.file.FileService;
 import com.devillage.teamproject.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,12 +43,21 @@ public class PostServiceImpl implements PostService {
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
     private final UserRepository userRepository;
+    private final FileService fileService;
 
     @Override
     public Post savePost(Post post, CategoryType categoryType, List<String> tagValue, Long userId) {
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
         Category category = categoryRepository.findCategoriesByCategoryType(categoryType);
+
+        post.getPostsFiles().forEach(
+                postsFile -> {
+                    if (!Objects.equals(fileService.findVerifiedFile(postsFile.getFile().getId()).getOwner().getId(), userId)) {
+                        throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
+                    }
+                }
+        );
 
         if(tagValue.size()==0 || tagValue.isEmpty()){
             PostTag postTag = new PostTag();
@@ -89,6 +100,9 @@ public class PostServiceImpl implements PostService {
         Post verifiedPost = findVerifyPost(postId);
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
+        List<File> pastFiles = verifiedPost.getPostsFiles().stream()
+                .map(PostsFile::getFile).collect(Collectors.toList());
+
         Category category = categoryRepository.findCategoriesByCategoryType(categoryType);
         postTagRepository.deleteByPostId(postId);
 
@@ -128,6 +142,16 @@ public class PostServiceImpl implements PostService {
                     }
                 }
         );
+        pastFiles.forEach(
+                pastFile -> {
+                    if (!post.getPostsFiles().stream()
+                            .map(postsFile -> postsFile.getFile().getId()).collect(Collectors.toList())
+                            .contains(pastFile.getId())) {
+                        fileService.deleteFile(pastFile.getId(), pastFile.getOwner().getId());
+                    }
+                }
+        );
+
         return verifiedPost;
     }
 

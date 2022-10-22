@@ -104,6 +104,8 @@ public class Post extends AuditingEntity {
         this.content = post.getContent();
         this.title = post.getTitle();
         this.postLastModifiedAt = LocalDateTime.now();
+        this.getPostsFiles().clear();
+        this.getPostsFiles().addAll(post.getPostsFiles());
     }
 
     public void addPostTag(PostTag postTag) {

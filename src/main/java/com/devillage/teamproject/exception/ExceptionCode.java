@@ -21,6 +21,7 @@ public enum ExceptionCode {
     REPORT_TYPE_NOT_FOUND(404, "ReportType not found"),
     CHAT_ROOM_NOT_FOUND(404, "ChatRoom not found"),
     CHAT_IN_NOT_FOUND(404, "ChatIn not found"),
+    RANKING_PROPERTY_NOT_FOUND(404, "RankingProperty not found"),
 
     EXISTING_USER(409, "Existing User"),
     ALREADY_REPORTED(409, "Already reported"),

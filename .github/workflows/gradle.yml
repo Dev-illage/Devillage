@@ -37,24 +37,24 @@ jobs:
         with:
           files: ${{ env.RESOURCE_PATH }} 
         env:
-          spring.datasource.url: ${{ secret.RDS_URL }}
-          spring.datasource.username: ${{ secret.RDS_ID }}
-          spring.datasource.password: ${{ secret.RDS_PASSWORD }}
-          spring.redis.host: ${{ secret.REDIS_URL }}
-          spring.redis.port: ${{ secret.REDIS_PORT }}
-          spring.mail.host: ${{ secret.MAIL_HOST }}
-          spring.mail.port: ${{ secret.MAIL_PORT }}
-          spring.mail.username: ${{ secret.MAIL_ID }}
-          spring.mail.password: ${{ secret.MAIL_PASSWORD }}
-          spring.security.oauth2.client.registration.github.client-id: ${{ secret.OAUTH_GITHUB_ID }}
-          spring.security.oauth2.client.registration.github.password: ${{ secret.OAUTH_GITHUB_PASSWORD }}
-          spring.security.oauth2.client.registration.google.client-id: ${{ secret.OAUTH_GOOGLE_ID }}
-          spring.security.oauth2.client.registration.google.password: ${{ secret.OAUTH_GOOGLE_PASSWORD }}
-          jwt.secretKey: ${{ secret.SECURITY_SECRET_KEY }}
-          jwt.refreshKey: ${{ secret.SECURITY_REFRESH_KEY }}
-          cloud.aws.credentials.accessKey: ${{ secret.AWS_IMAGE_ACCESS_KEY }}
-          cloud.aws.credentials.secretKey: ${{ secret.AWS_IMAGE_SECRET_KEY }}
-          cloud.aws.s3.bucket: ${{ secret.AWS_IMAGE_BUCKET_NAME }}
+          spring.datasource.url: ${{ secrets.RDS_URL }}
+          spring.datasource.username: ${{ secrets.RDS_ID }}
+          spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
+          spring.redis.host: ${{ secrets.REDIS_URL }}
+          spring.redis.port: ${{ secrets.REDIS_PORT }}
+          spring.mail.host: ${{ secrets.MAIL_HOST }}
+          spring.mail.port: ${{ secrets.MAIL_PORT }}
+          spring.mail.username: ${{ secrets.MAIL_ID }}
+          spring.mail.password: ${{ secrets.MAIL_PASSWORD }}
+          spring.security.oauth2.client.registration.github.client-id: ${{ secrets.OAUTH_GITHUB_ID }}
+          spring.security.oauth2.client.registration.github.password: ${{ secrets.OAUTH_GITHUB_PASSWORD }}
+          spring.security.oauth2.client.registration.google.client-id: ${{ secrets.OAUTH_GOOGLE_ID }}
+          spring.security.oauth2.client.registration.google.password: ${{ secrets.OAUTH_GOOGLE_PASSWORD }}
+          jwt.secretKey: ${{ secrets.SECURITY_SECRET_KEY }}
+          jwt.refreshKey: ${{ secrets.SECURITY_REFRESH_KEY }}
+          cloud.aws.credentials.accessKey: ${{ secrets.AWS_IMAGE_ACCESS_KEY }}
+          cloud.aws.credentials.secretKey: ${{ secrets.AWS_IMAGE_SECRET_KEY }}
+          cloud.aws.s3.bucket: ${{ secrets.AWS_IMAGE_BUCKET_NAME }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew

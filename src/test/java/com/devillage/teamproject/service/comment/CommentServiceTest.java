@@ -60,6 +60,7 @@ class CommentServiceTest implements Reflection {
         setField(post, "id", 1L);
         setField(comment, "id", 2L);
         setField(reComment, "id", 3L);
+        setField(reComment, "user", newInstance(User.class));
 
         setField(reComment, "comment", comment);
         setField(comment, "post", post);
@@ -85,7 +86,7 @@ class CommentServiceTest implements Reflection {
     @DisplayName("createComment")
     public void createComment() throws Exception {
         // given
-        User user = User.builder().id(ID1).build();
+        User user = User.builder().id(ID1).point(0L).postCount(0L).commentCount(0L).build();
         Post post = Post.builder().id(ID1).build();
         Comment comment = Comment.builder().content(COMMENT_CONTENT).post(post).build();
 
@@ -159,7 +160,7 @@ class CommentServiceTest implements Reflection {
     @DisplayName("createReComment")
     public void createReComment() throws Exception {
         // given
-        User user = User.builder().id(ID1).build();
+        User user = User.builder().id(ID1).point(0L).postCount(0L).commentCount(0L).build();
         Comment comment = Comment.builder().id(ID1).build();
         ReComment reCommentDto = ReComment.builder().content(COMMENT_CONTENT)
                 .comment(comment).build();

@@ -159,7 +159,7 @@ public class CommentServiceImpl implements CommentService {
             throw new BusinessLogicException(ExceptionCode.ID_DOES_NOT_MATCH);
         }
 
-        reComment.getComment().getUser().reducePoint(User.PointEnum.comment);
+        reComment.getUser().reducePoint(User.PointEnum.comment);
         reCommentRepository.deleteById(reCommentId);
     }
 

@@ -111,7 +111,7 @@ public class GetPostsControllerTest implements Reflection {
         setField(post, "clicks", 1L);
         setField(post, "category", category);
         setField(post, "tags", List.of(postTag));
-        setField(post, "postsFile", List.of(postsFile));
+        setField(post, "postsFiles", List.of(postsFile));
         post.setDate();
 
         posts.add(post);

@@ -4,6 +4,8 @@ import com.devillage.teamproject.entity.enums.FileType;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -46,6 +48,9 @@ public class File extends AuditingEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_user_id")
     private User owner;
+
+    @OneToMany(mappedBy = "file", cascade = {CascadeType.REMOVE})
+    private List<PostsFile> postsFiles = new ArrayList<>();
 
     public static File ofOauth2UserPicture(String path) {
         File file = new File();

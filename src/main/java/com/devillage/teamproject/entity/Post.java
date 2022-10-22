@@ -44,13 +44,16 @@ public class Post extends AuditingEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime postLastModifiedAt;
 
-    public Post(String title, String content) {
+    public Post(String title, String content, List<Long> fileIds) {
 //        this.id = id;
         this.title = title;
         this.content = content;
         this.clicks = 0L;
         this.likeCount = 0L;
         this.postLastModifiedAt = LocalDateTime.of(0000, 12, 31, 00, 00,00,3333);
+        fileIds.forEach(
+                fileId -> postsFiles.add(PostsFile.builder().file(File.builder().id(fileId).build()).build())
+        );
     }
 
     public void setClickCount(Long clickCount){
@@ -68,8 +71,8 @@ public class Post extends AuditingEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "post")
-    private final List<PostsFile> postsFile = new ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private final List<PostsFile> postsFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostTag> tags = new ArrayList<>();
@@ -101,6 +104,9 @@ public class Post extends AuditingEntity {
         this.content = post.getContent();
         this.title = post.getTitle();
         this.postLastModifiedAt = LocalDateTime.now();
+        this.getPostsFiles().clear();
+        this.getPostsFiles().addAll(post.getPostsFiles());
+        getPostsFiles().forEach(postsFile -> postsFile.addPost(this));
     }
 
     public void addPostTag(PostTag postTag) {

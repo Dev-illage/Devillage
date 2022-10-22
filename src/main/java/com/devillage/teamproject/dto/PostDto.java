@@ -3,12 +3,9 @@ package com.devillage.teamproject.dto;
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.repository.Modifying;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,6 +48,7 @@ public class PostDto {
             private Long likeCount;
             private boolean isLiked;
             private boolean isBookmarked;
+            private List<FileDto.SimpleResponse> images;
             private DoubleResponseDto<CommentDto.ResponseWithReComment> comments;
 
             public static PostDetail of(com.devillage.teamproject.entity.Post post, Page<Comment> commentPage,
@@ -75,6 +73,9 @@ public class PostDto {
                         .isBookmarked(post.getBookmarks().stream().map(
                                 bookmark -> bookmark.getUser().getId()
                         ).collect(Collectors.toList()).contains(userId))
+                        .images(post.getPostsFiles().stream().map(
+                                postsFile -> FileDto.SimpleResponse.of(postsFile.getFile())
+                        ).collect(Collectors.toList()))
                         .comments(DoubleResponseDto.of(commentPage.stream().map(
                                 comment -> CommentDto.ResponseWithReComment.of(comment, userId)
                         ).collect(Collectors.toList()), commentPage))
@@ -107,7 +108,7 @@ public class PostDto {
                         post.getTags().stream()
                                 .map(postTag -> TagDto.Response.of(postTag.getTag()))
                                 .collect(Collectors.toList()),
-                        post.getPostsFile().stream()
+                        post.getPostsFiles().stream()
                                 .map(postsFile -> FileDto.Response.of(postsFile.getFile()))
                                 .collect(Collectors.toList()),
                         post.getCreatedAt(),
@@ -181,11 +182,13 @@ public class PostDto {
         private List<String> tags;
         @NotBlank
         private String content;
+        private List<Long> fileIds;
 
         public com.devillage.teamproject.entity.Post toEntity() {
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
                     this.title,
-                    this.content
+                    this.content,
+                    this.fileIds
             );
             return post;
         }
@@ -206,11 +209,13 @@ public class PostDto {
         private List<String> tags;
         @NotBlank
         private String content;
+        private List<Long> fileIds;
 
         public com.devillage.teamproject.entity.Post toEntity() {
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
                     this.title,
-                    this.content
+                    this.content,
+                    this.fileIds
             );
             return post;
         }

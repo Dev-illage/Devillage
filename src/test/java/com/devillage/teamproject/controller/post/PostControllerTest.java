@@ -93,6 +93,7 @@ class PostControllerTest implements Reflection {
                 .content(COMMENT_CONTENT)
                 .tags(List.of("tag1", "tag2"))
                 .category(CategoryType.NOTICE)
+                .fileIds(List.of())
                 .build();
 
 
@@ -131,6 +132,7 @@ class PostControllerTest implements Reflection {
                 .content(COMMENT_CONTENT)
                 .tags(List.of("tag1", "tag2"))
                 .category(CategoryType.NOTICE)
+                .fileIds(List.of())
                 .build();
 
         String content = objectMapper.writeValueAsString(patchDto);

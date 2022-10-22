@@ -3,6 +3,7 @@ package com.devillage.teamproject.repository.query_dsl;
 import com.devillage.teamproject.entity.User;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,33 +27,27 @@ public class QueryDslRepositoryImpl implements QueryDslRepository {
 
     @Override
     public Page<Pair<Long, User>> findUserRanking(String p, Pageable pageable) {
-        List<User> users;
+
+        OrderSpecifier<Long> orderSpecifier;
         switch (p) {
             case "point":
-                users = jpaQueryFactory
-                        .selectFrom(user)
-                        .orderBy(user.point.asc())
-                        .limit(pageable.getPageSize())
-                        .fetch();
+                orderSpecifier = user.point.asc();
                 break;
             case "post":
-                users = jpaQueryFactory
-                        .selectFrom(user)
-                        .orderBy(user.postCount.asc())
-                        .limit(pageable.getPageSize())
-                        .fetch();
+                orderSpecifier = user.postCount.asc();
                 break;
             case "comment":
-                users = jpaQueryFactory
-                        .selectFrom(user)
-                        .orderBy(user.commentCount.asc())
-                        .limit(pageable.getPageSize())
-                        .fetch();
+                orderSpecifier = user.commentCount.asc();
                 break;
             default:
                 throw new BusinessLogicException(ExceptionCode.RANKING_PROPERTY_NOT_FOUND);
         }
 
+        List<User> users = jpaQueryFactory
+                .selectFrom(user)
+                .orderBy(orderSpecifier)
+                .limit(pageable.getPageSize())
+                .fetch();;
         Long count = jpaQueryFactory
                 .select(user.count())
                 .from(user)

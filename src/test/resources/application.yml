@@ -1,3 +1,73 @@
 spring:
   jpa:
+    hibernate:
+      ddl-auto: update # create update create-update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
     database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+  redis:
+    host: localhost
+    port: 6379
+  mail:
+    host: host
+    port: 443
+    username: id
+    password: password
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: client
+            client-secret: secret
+            scope:
+              - read:user
+              - user:email
+          google:
+            client-id: client
+            client-secret: secret
+            scope:
+              - email
+              - profile
+
+logging:
+  level:
+    org.springframework.web.client: debug
+    org.hibernate.sql: debug
+    org.hibernate.type: trace
+    org.springframework.security: debug
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+cloud:
+  aws:
+    credentials:
+      accessKey: accessKey
+      secretKey: secretKey
+    s3:
+      bucket: bucket
+      dir: /image
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+jwt:
+  secretKey: This-is-a-test-only-security-key
+  refreshKey: This-is-a-test-only-refresh-key

@@ -17,7 +17,7 @@ env:
   RESOURCE_PATH: ./src/main/resources/application.yml
   CODE_DEPLOY_APPLICATION_NAME: devillage
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: devillage-auto
-  AWS_INSTANCE_SG_ID: sg-0af4676e39f46b45c - rds-ec2-1
+  AWS_INSTANCE_SG_ID: sg-0af4676e39f46b45c
 
 jobs:
   build:

@@ -81,6 +81,7 @@ public class PostServiceImpl implements PostService {
                 }
         );
 
+        findUser.earnPoint(User.PointEnum.post);
         return post;
     }
 
@@ -133,7 +134,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePost(Long postId) {
-        findVerifyPost(postId);
+        Post verifyPost = findVerifyPost(postId);
+        verifyPost.getUser().reducePoint(User.PointEnum.post);
         postRepository.deleteById(postId);
     }
 

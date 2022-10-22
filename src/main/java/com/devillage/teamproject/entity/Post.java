@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -44,13 +45,16 @@ public class Post extends AuditingEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime postLastModifiedAt;
 
-    public Post(String title, String content) {
+    public Post(String title, String content, List<Long> fileIds) {
 //        this.id = id;
         this.title = title;
         this.content = content;
         this.clicks = 0L;
         this.likeCount = 0L;
         this.postLastModifiedAt = LocalDateTime.of(0000, 12, 31, 00, 00,00,3333);
+        fileIds.forEach(
+                fileId -> postsFile.add(PostsFile.builder().file(File.builder().id(fileId).build()).build())
+        );
     }
 
     public void setClickCount(Long clickCount){

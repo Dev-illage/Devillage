@@ -181,11 +181,13 @@ public class PostDto {
         private List<String> tags;
         @NotBlank
         private String content;
+        private List<Long> fileIds;
 
         public com.devillage.teamproject.entity.Post toEntity() {
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
                     this.title,
-                    this.content
+                    this.content,
+                    this.fileIds
             );
             return post;
         }
@@ -206,11 +208,13 @@ public class PostDto {
         private List<String> tags;
         @NotBlank
         private String content;
+        private List<Long> fileIds;
 
         public com.devillage.teamproject.entity.Post toEntity() {
             com.devillage.teamproject.entity.Post post = new com.devillage.teamproject.entity.Post(
                     this.title,
-                    this.content
+                    this.content,
+                    this.fileIds
             );
             return post;
         }

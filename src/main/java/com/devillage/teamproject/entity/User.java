@@ -63,12 +63,15 @@ public class User extends AuditingEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
+    @Builder.Default
     @ToString.Include
     private Long point = 0L;
 
+    @Builder.Default
     @ToString.Include
     private Long postCount = 0L;
 
+    @Builder.Default
     @ToString.Include
     private Long commentCount = 0L;
 

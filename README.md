@@ -19,7 +19,7 @@
 - [x] In-Memory DB (Redis)를 활용한 인증처리 구현
 - [x] Two-Factor 인증 구현
 - [x] AWS를 이용한 Https 통신 서버 운영
-- [ ] CI/CD를 활용한 자동 배포 파이프라인 구축
+- [x] CI/CD를 활용한 자동 배포 파이프라인 구축
 - [x] SpringRestDocs를 활용한 API 문서화
 - [x] Restful한 API 설계
 <br>
@@ -61,7 +61,7 @@
 #### #라이브러리
 
 React.js, ReduxToolkit, Toast-Editor, antd, axios, jwt-decode <br />
-Redux-persist, SASS, react-cookie, react-router-dom
+Redux-persist, SASS, react-cookie
 <br>
 <br>
 

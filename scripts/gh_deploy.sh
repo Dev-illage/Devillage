@@ -10,7 +10,7 @@ git stash
 echo "> GIT PULL"
 git pull
 
-APP_NAME=action_codedeploy
+APP_NAME=devillage
 JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep '.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
 
@@ -21,7 +21,7 @@ then
   echo "> 종료할것 없음."
 else
   echo "> kill -9 $CURRENT_PID"
-  kill -15 $CURRENT_PID
+  sudo kill -15 $CURRENT_PID
   sleep 5
 fi
 
@@ -32,4 +32,8 @@ echo "> GRADLE BUILD"
 sudo ./gradlew build
 
 echo "> $JAR_PATH 배포"
+<<<<<<< HEAD
 nohup java -jar $JAR_PATH > /dev/null 2> /dev/null < /dev/null &
+=======
+shdo nohup java -jar $JAR_PATH > /dev/null 2> /dev/null < /dev/null &
+>>>>>>> 629cdb514f806c009635c918d34d411c204c888a

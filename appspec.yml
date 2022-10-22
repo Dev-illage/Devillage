@@ -3,6 +3,8 @@ os: linux
 files:
   - source:  /
     destination: /home/ec2-user/project/devillage/backend/Devillage
+    overwrite: yes
+file_exists_behavior: OVERWRITE
 
 permissions:
   - object: /
@@ -13,5 +15,5 @@ permissions:
 hooks:
   ApplicationStart:
     - location: scripts/gh_deploy.sh
-      timeout: 60
+      timeout: 600
       runas: root

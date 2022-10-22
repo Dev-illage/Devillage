@@ -105,6 +105,15 @@ public class PostServiceImpl implements PostService {
         }
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
+        post.getPostsFiles().forEach(
+                postsFile -> {
+                    if (!Objects.equals(fileService.findVerifiedFile(postsFile.getFile().getId()).getOwner().getId(), userId)) {
+                        throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
+                    }
+                    postsFile.addPost(post);
+                }
+        );
+
         List<File> pastFiles = verifiedPost.getPostsFiles().stream()
                 .map(PostsFile::getFile).collect(Collectors.toList());
 

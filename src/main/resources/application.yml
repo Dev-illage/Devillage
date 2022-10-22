@@ -67,7 +67,7 @@ cloud:
       secretKey: secretKey
     s3:
       bucket: bucket
-      dir: /image
+      dir: image
     region:
       static: ap-northeast-2
     stack:

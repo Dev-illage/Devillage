@@ -26,4 +26,8 @@ public class PostsFile extends AuditingEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    public void addPost(Post post) {
+        this.post = post;
+    }
 }

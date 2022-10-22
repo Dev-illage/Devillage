@@ -6,6 +6,7 @@ import com.devillage.teamproject.entity.enums.ReportType;
 import com.devillage.teamproject.exception.BusinessLogicException;
 import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.repository.category.CategoryRepository;
+import com.devillage.teamproject.repository.file.FileRepository;
 import com.devillage.teamproject.repository.post.BookmarkRepository;
 import com.devillage.teamproject.repository.post.LikeRepository;
 import com.devillage.teamproject.repository.post.PostRepository;
@@ -56,6 +57,7 @@ public class PostServiceImpl implements PostService {
                     if (!Objects.equals(fileService.findVerifiedFile(postsFile.getFile().getId()).getOwner().getId(), userId)) {
                         throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
                     }
+                    postsFile.addPost(post);
                 }
         );
 

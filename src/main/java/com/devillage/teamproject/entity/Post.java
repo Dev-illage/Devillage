@@ -71,7 +71,7 @@ public class Post extends AuditingEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private final List<PostsFile> postsFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
@@ -106,6 +106,7 @@ public class Post extends AuditingEntity {
         this.postLastModifiedAt = LocalDateTime.now();
         this.getPostsFiles().clear();
         this.getPostsFiles().addAll(post.getPostsFiles());
+        getPostsFiles().forEach(postsFile -> postsFile.addPost(this));
     }
 
     public void addPostTag(PostTag postTag) {

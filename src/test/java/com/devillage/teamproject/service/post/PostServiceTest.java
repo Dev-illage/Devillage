@@ -212,6 +212,7 @@ public class PostServiceTest implements Reflection {
         //given
         Post post = newInstance(Post.class);
         setField(post,"id",1L);
+        setField(post,"user", newInstance(User.class));
 
         Long postId = 1L;
         doNothing().when(postRepository).deleteById(postId);

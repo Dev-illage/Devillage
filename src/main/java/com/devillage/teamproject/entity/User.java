@@ -64,7 +64,43 @@ public class User extends AuditingEntity {
     private UserStatus userStatus;
 
     @ToString.Include
-    private Long point;
+    private Long point = 0L;
+
+    @ToString.Include
+    private Long postCount = 0L;
+
+    @ToString.Include
+    private Long commentCount = 0L;
+
+    public enum PointEnum {
+        post, comment
+    }
+
+    public void earnPoint(PointEnum pointEnum) {
+        switch (pointEnum) {
+            case post:
+                postCount += 1;
+                point += 5;
+                break;
+            case comment:
+                commentCount += 1;
+                point += 1;
+                break;
+        }
+    }
+
+    public void reducePoint(PointEnum pointEnum) {
+        switch (pointEnum) {
+            case post:
+                postCount += 1;
+                point -= 5;
+                break;
+            case comment:
+                commentCount += 1;
+                point -= 1;
+                break;
+        }
+    }
 
     @ToString.Include
     private String statusMessage;

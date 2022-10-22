@@ -35,6 +35,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment createComment(Comment comment, String token) {
         User user = userService.findVerifiedUser(jwtTokenUtil.getUserId(token));
         Post post = postService.getPost(comment.getPost().getId());
+        user.earnPoint(User.PointEnum.comment);
         return commentRepository.save(Comment.createComment(comment, user, post));
     }
 
@@ -104,6 +105,7 @@ public class CommentServiceImpl implements CommentService {
         if (!Objects.equals(comment.getUser().getId(), jwtTokenUtil.getUserId(token))) {
             throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
         }
+        comment.getUser().reducePoint(User.PointEnum.comment);
 //        if (comment.getReComments().size() == 0) {
             commentRepository.delete(comment);
 //            return;
@@ -116,6 +118,7 @@ public class CommentServiceImpl implements CommentService {
     public ReComment createReComment(ReComment reComment, String token) {
         Comment comment = findVerifiedComment(reComment.getComment().getId());
         User user = userService.findVerifiedUser(jwtTokenUtil.getUserId(token));
+        user.earnPoint(User.PointEnum.comment);
         return reCommentRepository.save(ReComment.createReComment(user, comment, reComment.getContent()));
     }
 
@@ -156,6 +159,7 @@ public class CommentServiceImpl implements CommentService {
             throw new BusinessLogicException(ExceptionCode.ID_DOES_NOT_MATCH);
         }
 
+        reComment.getComment().getUser().reducePoint(User.PointEnum.comment);
         reCommentRepository.deleteById(reCommentId);
     }
 

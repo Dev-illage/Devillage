@@ -48,6 +48,7 @@ public class PostDto {
             private Long likeCount;
             private boolean isLiked;
             private boolean isBookmarked;
+            private List<FileDto.SimpleResponse> images;
             private DoubleResponseDto<CommentDto.ResponseWithReComment> comments;
 
             public static PostDetail of(com.devillage.teamproject.entity.Post post, Page<Comment> commentPage,
@@ -72,6 +73,9 @@ public class PostDto {
                         .isBookmarked(post.getBookmarks().stream().map(
                                 bookmark -> bookmark.getUser().getId()
                         ).collect(Collectors.toList()).contains(userId))
+                        .images(post.getPostsFiles().stream().map(
+                                postsFile -> FileDto.SimpleResponse.of(postsFile.getFile())
+                        ).collect(Collectors.toList()))
                         .comments(DoubleResponseDto.of(commentPage.stream().map(
                                 comment -> CommentDto.ResponseWithReComment.of(comment, userId)
                         ).collect(Collectors.toList()), commentPage))

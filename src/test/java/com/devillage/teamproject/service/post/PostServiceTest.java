@@ -10,6 +10,7 @@ import com.devillage.teamproject.repository.post.PostRepository;
 import com.devillage.teamproject.repository.posttag.PostTagRepository;
 import com.devillage.teamproject.repository.tag.TagRepository;
 import com.devillage.teamproject.repository.user.UserRepository;
+import com.devillage.teamproject.service.file.FileService;
 import com.devillage.teamproject.service.user.UserService;
 import com.devillage.teamproject.util.Reflection;
 import org.junit.jupiter.api.DisplayName;
@@ -53,6 +54,8 @@ public class PostServiceTest implements Reflection {
 
     @Mock
     private UserService userService;
+    @Mock
+    private FileService fileService;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -112,12 +115,14 @@ public class PostServiceTest implements Reflection {
         setField(post, "category", category);
         setField(post, "tags", new ArrayList<>());
         setField(post, "title", "titleTest");
+        setField(post, "user", user);
         setField(category, "id", 1L);
         setField(category, "categoryType", CategoryType.NOTICE);
         setField(postTag,"id",1L);
         setField(postTag, "tag", tag);
         setField(tag, "id", 1L);
         setField(tag, "name", "mvcTest");
+        File file = File.builder().owner(User.builder().id(user.getId()).build()).build();
 
 
         given(postRepository.findById(postId)).willReturn(Optional.of(post));

@@ -14,7 +14,7 @@ on:
 
 env:
   S3_BUCKET_NAME: devillage-deploy
-  RESOURCE_PATH: ./src/main/resources/application.yaml
+  RESOURCE_PATH: ./src/main/resources/application.yml
   CODE_DEPLOY_APPLICATION_NAME: devillage
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: devillage-auto
 

@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source:  /
+    destination: /home/ec2-user/project/devillage/backend/Devillage
+    overwrite: yes
+
+permissions:
+  - object: /
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+
+hooks:
+  ApplicationStart:
+    - location: scripts/gh_deploy.sh
+      timeout: 60
+      runas: ubuntu

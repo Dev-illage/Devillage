@@ -6,23 +6,18 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-    database: mysql
+    database-platform: org.hibernate.dialect.H2Dialect
     open-in-view: true
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 20MB
-  datasource:
-    url: url
-    username: name
-    password: password
-    driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
-    host: host
-    port: port
+    host: localhost
+    port: 6379
   mail:
     host: host
-    port: port
+    port: 443
     username: id
     password: password
     properties:
@@ -59,7 +54,7 @@ server:
     encoding:
       charset: UTF-8
       force: true
-      
+
 cloud:
   aws:
     credentials:
@@ -72,9 +67,7 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
-      
+
 jwt:
-  secretKey: secret
-  refreshKey: refresh
-
-
+  secretKey: This-is-a-test-only-security-key
+  refreshKey: This-is-a-test-only-refresh-key

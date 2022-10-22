@@ -98,6 +98,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post editPost(Post post, CategoryType categoryType, List<String> tagValue, Long userId, Long postId) {
         Post verifiedPost = findVerifyPost(postId);
+        if (!Objects.equals(verifiedPost.getUser().getId(), userId)) {
+            throw new BusinessLogicException(ExceptionCode.USER_UNAUTHORIZED);
+        }
         User findUser = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
         List<File> pastFiles = verifiedPost.getPostsFiles().stream()

@@ -3,12 +3,9 @@ package com.devillage.teamproject.dto;
 import com.devillage.teamproject.entity.Comment;
 import com.devillage.teamproject.entity.enums.CategoryType;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.repository.Modifying;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -107,7 +104,7 @@ public class PostDto {
                         post.getTags().stream()
                                 .map(postTag -> TagDto.Response.of(postTag.getTag()))
                                 .collect(Collectors.toList()),
-                        post.getPostsFile().stream()
+                        post.getPostsFiles().stream()
                                 .map(postsFile -> FileDto.Response.of(postsFile.getFile()))
                                 .collect(Collectors.toList()),
                         post.getCreatedAt(),

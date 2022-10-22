@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -53,7 +52,7 @@ public class Post extends AuditingEntity {
         this.likeCount = 0L;
         this.postLastModifiedAt = LocalDateTime.of(0000, 12, 31, 00, 00,00,3333);
         fileIds.forEach(
-                fileId -> postsFile.add(PostsFile.builder().file(File.builder().id(fileId).build()).build())
+                fileId -> postsFiles.add(PostsFile.builder().file(File.builder().id(fileId).build()).build())
         );
     }
 
@@ -73,7 +72,7 @@ public class Post extends AuditingEntity {
     private User user;
 
     @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private final List<PostsFile> postsFile = new ArrayList<>();
+    private final List<PostsFile> postsFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostTag> tags = new ArrayList<>();

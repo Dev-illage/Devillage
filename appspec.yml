@@ -4,6 +4,7 @@ files:
   - source:  /
     destination: /home/ec2-user/project/devillage/backend/Devillage
     overwrite: yes
+file_exists_behavior: OVERWRITE
 
 permissions:
   - object: /

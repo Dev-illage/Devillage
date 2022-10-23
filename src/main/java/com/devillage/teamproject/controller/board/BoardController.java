@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping("/board")
 public interface BoardController {
 
-    @GetMapping("ranking")
+    @GetMapping("/ranking")
     @ResponseStatus(HttpStatus.OK)
     DoubleResponseDto<RankingDto> getRanking(@RequestParam String p,
                                              @RequestParam int page,

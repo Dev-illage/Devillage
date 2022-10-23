@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .mvcMatchers(GET, "/chat/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(POST, "/chat/**").hasAnyRole("USER","MANAGER","ADMIN")
                 .mvcMatchers(GET, "/ws/**").permitAll()
-                .mvcMatchers(GET, "/board/ranking/**").permitAll()
+                .mvcMatchers(GET, "/board/**").permitAll()
                 .anyRequest().denyAll()
                 .and()
                 .exceptionHandling()

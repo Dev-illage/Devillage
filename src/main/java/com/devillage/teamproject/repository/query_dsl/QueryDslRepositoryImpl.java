@@ -31,13 +31,13 @@ public class QueryDslRepositoryImpl implements QueryDslRepository {
         OrderSpecifier<Long> orderSpecifier;
         switch (p) {
             case "point":
-                orderSpecifier = user.point.asc();
+                orderSpecifier = user.point.desc();
                 break;
             case "post":
-                orderSpecifier = user.postCount.asc();
+                orderSpecifier = user.postCount.desc();
                 break;
             case "comment":
-                orderSpecifier = user.commentCount.asc();
+                orderSpecifier = user.commentCount.desc();
                 break;
             default:
                 throw new BusinessLogicException(ExceptionCode.RANKING_PROPERTY_NOT_FOUND);

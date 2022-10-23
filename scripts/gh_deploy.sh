@@ -32,4 +32,8 @@ echo "> GRADLE BUILD"
 sudo ./gradlew build
 
 echo "> $JAR_PATH 배포"
+<<<<<<< HEAD
+nohup java -jar $JAR_PATH > /dev/null 2> /dev/null < /dev/null &
+=======
 shdo nohup java -jar $JAR_PATH > /dev/null 2> /dev/null < /dev/null &
+>>>>>>> 629cdb514f806c009635c918d34d411c204c888a

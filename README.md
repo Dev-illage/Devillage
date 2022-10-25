@@ -5,8 +5,13 @@
 <details>
     <summary>Preview</summary>
 
-![image](https://user-images.githubusercontent.com/97802103/194878762-84c284c9-c507-46ff-bcc1-92b8d743eb57.png)
-![image](https://user-images.githubusercontent.com/97802103/194982365-96b59c55-b8f4-4b46-8191-58475812c37e.png)
+![image](https://user-images.githubusercontent.com/97802103/197799722-9081c549-79ac-478f-8e01-b6bb9adcbad7.png)
+![image](https://user-images.githubusercontent.com/97802103/197799863-d5ebbf41-0433-4528-87b3-93138ea9b239.png)
+![image](https://user-images.githubusercontent.com/97802103/197799947-dffc0ee3-397d-41a5-b278-c4295c5e1484.png)
+![image](https://user-images.githubusercontent.com/97802103/197800086-c02b68ec-f29b-42e0-87ba-8511884ed869.png)
+![image](https://user-images.githubusercontent.com/97802103/197800864-38a3a794-951c-4048-87f5-7e88f41b1a52.png)
+
+
 
 </details>
 <br>

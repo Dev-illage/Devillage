@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void checkJwt(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, String jwt) throws IOException, ServletException {
-            if (!StringUtils.hasLength(jwt) || !jwt.startsWith(BEARER_TYPE)) {
+            if (!StringUtils.hasLength(jwt) || !jwt.startsWith(BEARER_TYPE) || jwt.equals(NULL_TOKEN)) {
                 filterChain.doFilter(request, response);
             } else {
                 getAuthentication(jwt);

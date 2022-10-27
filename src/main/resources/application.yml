@@ -8,6 +8,10 @@ spring:
         show_sql: true
     database: mysql
     open-in-view: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
   datasource:
     url: url
     username: name
@@ -45,12 +49,17 @@ spring:
 
 logging:
   level:
-	@@ -58,23 +26,4 @@ server:
+    org.springframework.web.client: debug
+    org.hibernate.sql: debug
+    org.hibernate.type: trace
+    org.springframework.security: debug
+
+server:
   servlet:
     encoding:
       charset: UTF-8
       force: true
-
+      
 cloud:
   aws:
     credentials:
@@ -63,7 +72,7 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
-
+      
 jwt:
   secretKey: secret
   refreshKey: refresh

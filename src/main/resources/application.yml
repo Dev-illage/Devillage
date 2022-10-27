@@ -8,44 +8,12 @@ spring:
         show_sql: true
     database: mysql
     open-in-view: true
+  profiles:
+    include: oauth, security, database, redis, aws-s3, aws
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 20MB
-  datasource:
-    url: url
-    username: name
-    password: password
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  redis:
-    host: host
-    port: port
-  mail:
-    host: host
-    port: port
-    username: id
-    password: password
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-      mail.smtp.ssl.enable: true
-      mail.smtp.ssl.trust: smtp.naver.com
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: client
-            client-secret: secret
-            scope:
-              - read:user
-              - user:email
-          google:
-            client-id: client
-            client-secret: secret
-            scope:
-              - email
-              - profile
 
 logging:
   level:
@@ -59,22 +27,3 @@ server:
     encoding:
       charset: UTF-8
       force: true
-      
-cloud:
-  aws:
-    credentials:
-      accessKey: accessKey
-      secretKey: secretKey
-    s3:
-      bucket: bucket
-      dir: image
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
-      
-jwt:
-  secretKey: secret
-  refreshKey: refresh
-
-

@@ -10,11 +10,13 @@ import com.devillage.teamproject.exception.ExceptionCode;
 import com.devillage.teamproject.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
     private final UserService userService;
@@ -44,6 +46,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    @Transactional
     public ChatRoom postRoom(Long userId, String roomName) {
         User user = userService.findVerifiedUser(userId);
         if (chatRoomRepository.existsByRoomName(roomName)) {

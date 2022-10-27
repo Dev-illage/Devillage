@@ -23,7 +23,7 @@ public class AuthDto {
         private String password;
 
         @NotEmpty
-        @Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$") // 영문, 숫자 8자 이상 16자 이하(자음,모음만 사용 불가능)
+        @Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣].{2,16}$") // 영문, 숫자 8자 이상 16자 이하(자음,모음만 사용 불가능)
         private String nickname;
 
         @Builder

@@ -140,6 +140,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Post getPost(Long userId) {
         Post post = findVerifyPost(userId);
         post.setClickCount(updateClicks(post));
@@ -147,6 +148,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Post> getPostsByCategory(String category, int page, int size) {
         try {
             CategoryType.valueOf(category.toUpperCase());
@@ -165,12 +167,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Post> getPostsBySearch(String word, int page, int size) {
         return postRepository.findDistinctByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
                 word, word, PageRequest.of(page - 1, size, Sort.by("id").descending()));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Post> getPostsByTag(String tagName, int page, int size) {
         Tag tag = tagRepository.findTagByName(tagName)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND));
@@ -186,6 +190,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Post> getPostsByBookmark(Long userId, int page, int size) {
         User user = userService.findVerifiedUser(userId);
 
@@ -265,6 +270,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Post findVerifyPost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
 

@@ -7,6 +7,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
+import static com.devillage.teamproject.dto.ValidConstants.*;
+import static com.devillage.teamproject.dto.ValidConstants.CAN_NOT_NULL;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthDto {
@@ -14,16 +17,16 @@ public class AuthDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class JOIN {
-        @NotEmpty
-        @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
+        @NotEmpty(message = CAN_NOT_NULL)
+        @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = INVALID_EMAIL)
         private String email;
 
-        @NotEmpty
-        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$") // 영문, 특수문자 8자 이상 20자 이하
+        @NotEmpty(message = CAN_NOT_NULL)
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = INVALID_PASSWORD) // 소문자 + 대문자 + 특수문자 8자 이상 20자 이하
         private String password;
 
-        @NotEmpty
-        @Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣].{2,16}$") // 영문, 숫자 8자 이상 16자 이하(자음,모음만 사용 불가능)
+        @NotEmpty(message = CAN_NOT_NULL)
+        @Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣].{1,16}$", message = INVALID_NICKNAME) // 영문, 숫자, 한글 2자 이상 16자 이하(공백 및 초성, 자음 불가능)
         private String nickname;
 
         @Builder

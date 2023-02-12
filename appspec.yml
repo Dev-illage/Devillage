@@ -17,3 +17,5 @@ hooks:
     - location: scripts/gh_deploy.sh
       timeout: 600
       runas: root
+      
+      

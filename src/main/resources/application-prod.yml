@@ -19,7 +19,7 @@ spring:
     password: db-password
     driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
-    host: devillage.51trim.ng.0001.apn2.cache.amazonaws.com
+    host: my-redis-ro.51trim.ng.0001.apn2.cache.amazonaws.com
     port: '6379'
   mail:
     host: smtp.naver.com

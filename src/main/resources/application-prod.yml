@@ -13,12 +13,13 @@ spring:
       max-file-size: 10MB
       max-request-size: 20MB
   datasource:
-    url:
+    url: >-
+      jdbc:mysql://database-real.cu1hvqihmdeb.ap-northeast-2.rds.amazonaws.com:3306/devillage?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username:
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
-    host:
+    host: devillage.51trim.ng.0001.apn2.cache.amazonaws.com
     port: '6379'
   mail:
     host: smtp.naver.com

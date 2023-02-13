@@ -15,8 +15,8 @@ spring:
   datasource:
     url: >-
       jdbc:mysql://database-real.cu1hvqihmdeb.ap-northeast-2.rds.amazonaws.com:3306/devillage?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username:
-    password:
+    username: db-username
+    password: db-password
     driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
     host: devillage.51trim.ng.0001.apn2.cache.amazonaws.com
@@ -24,8 +24,8 @@ spring:
   mail:
     host: smtp.naver.com
     port: '465'
-    username:
-    password:
+    username: mail-username
+    password: mail-password
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
@@ -37,7 +37,7 @@ spring:
         registration:
           github:
             client-id: 058a14d6662214899e57
-            client-secret:
+            client-secret: github-secret
             scope:
               - 'read:user'
               - 'user:email'
@@ -61,8 +61,8 @@ server:
 cloud:
   aws:
     credentials:
-      accessKey:
-      secretKey:
+      accessKey: aws-accessKey
+      secretKey: aws-secretKey
     s3:
       bucket: devillage-image
       dir: image
@@ -71,5 +71,5 @@ cloud:
     stack:
       auto: false
 jwt:
-  secretKey:
-  refreshKey:
+  secretKey: jwt-secretKey
+  refreshKey: jwt-refreshKey
